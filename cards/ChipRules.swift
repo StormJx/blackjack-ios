@@ -2,30 +2,36 @@
 //  ChipRules.swift
 //  cards
 //
-//  阶段 3（v1.7）：筹码与赔率常量。与 VERSION_ROADMAP「筹码与赔率」锁定决策一致。
+//  阶段 3（v1.7）+ 3.5（v1.7.1）：筹码与赔率常量；庄家资金池规则。
 //
 
 import Foundation
 
 /// 桌面经济规则（纯常量，无状态）。
 enum ChipRules {
-    /// 起始筹码 / 一键补码目标。
+    /// 玩家起始筹码 / 开新游戏重置目标。
     static let startingBalance = 1000
 
-    /// 最小下注。
-    static let minimumBet = 10
+    /// 庄家筹码池起始（庄家不另下注；玩家赢则从此池派彩）。
+    static let dealerStartingBank = 2000
+
+    /// 最小下注（相对起始 1000，小面额节奏过慢）。
+    static let minimumBet = 100
 
     /// 下注页筹码面额：从 0 累加；单次累加后总注不得超过余额。
-    static let betChipValues = [10, 25, 50, 100, 200]
+    static let betChipValues = [100, 200, 500]
 
-    /// 普通 All In：余额须严格大于该值（等于起始筹码时开局不可 All In，降低一局梭哈的波动）。
+    /// （旧）开局 All In 解锁阈值；现已改为对局中见牌后 All In，保留常量供兼容/测试。
     static let allInUnlockBalance = startingBalance
 
-    /// 一副牌「强制 All In」触发：本局实际开打前剩余张数 ≤ 该值（且不会先重洗）。
+    /// 一副牌残局：剩余张数 ≤ 该值且本局不重洗时，对局中 All In 以强调样式展示。
     static let forcedAllInRemainingCards = 15
 
-    /// UserDefaults 键：持久化余额。
+    /// UserDefaults 键：玩家余额。
     static let balanceStorageKey = "chipBank.balance"
+
+    /// UserDefaults 键：庄家筹码池。
+    static let dealerBankStorageKey = "chipBank.dealerBank"
 
     /// UserDefaults 键：尚未结算的本局注码（用于杀进程 / 异常退出后退注）。
     static let activeBetStorageKey = "chipBank.activeBet"
@@ -54,6 +60,9 @@ enum ChipRules {
     /// 普通获胜赔率文案。
     static let evenMoneyOddsLabel = "普通胜负 1:1"
 
+    /// 庄家筹码不足、只赔剩余时的说明。
+    static let partialPayoutLabel = "庄家筹码不足，已赔付全部剩余"
+
     /// 黑杰克净赢：下注 × 3/2（整数向下取整）。本金另计退还。
     static func blackjackProfit(forBet bet: Int) -> Int {
         (bet * 3) / 2
@@ -62,5 +71,41 @@ enum ChipRules {
     /// 普通获胜净赢：1:1。
     static func evenMoneyProfit(forBet bet: Int) -> Int {
         bet
+    }
+
+    /// 某结局在庄家资金充足时应付的利润（不含退本；输/平为 0）。
+    static func idealProfit(forBet bet: Int, outcome: RoundOutcome) -> Int {
+        switch outcome {
+        case .playerBlackjack:
+            return blackjackProfit(forBet: bet)
+        case .playerWin:
+            return evenMoneyProfit(forBet: bet)
+        case .playerLose, .push:
+            return 0
+        }
+    }
+}
+
+/// 练习会话因任一方筹码耗尽而结束时的原因。
+enum SessionEndReason: Equatable, Sendable {
+    /// 玩家余额不足以最小下注。
+    case playerBroke
+    /// 庄家筹码池已掏空。
+    case dealerBroke
+
+    var title: String {
+        switch self {
+        case .playerBroke: return "你已破产"
+        case .dealerBroke: return "庄家已破产"
+        }
+    }
+
+    var detail: String {
+        switch self {
+        case .playerBroke:
+            return "余额不足以继续下注，本局游戏结束。"
+        case .dealerBroke:
+            return "庄家筹码已全部赔出，本局游戏结束。"
+        }
     }
 }

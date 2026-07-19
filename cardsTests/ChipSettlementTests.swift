@@ -2,7 +2,7 @@
 //  ChipSettlementTests.swift
 //  cardsTests
 //
-//  阶段 3（v1.7）：筹码结算与账户单元测试。
+//  阶段 3 / 3.5：筹码结算、庄家资金池与会话结束单元测试。
 //
 
 import Testing
@@ -11,18 +11,23 @@ import Foundation
 
 struct ChipSettlementTests {
 
-    // MARK: - 纯结算算术
+    // MARK: - 纯结算算术（庄家资金充足）
 
     @Test func blackjackPaysThreeToTwo() {
         let result = RoundSettlement.settle(
             balanceAfterBet: 900,
             betAmount: 100,
+            dealerBank: ChipRules.dealerStartingBank,
             outcome: .playerBlackjack
         )
-        // 净盈 +150（相对开局前 1000）；退本 100 + 派彩 150 → 打回 250 → 余额 1150
+        // 净盈 +150；退本 100 + 派彩 150 → 打回 250 → 余额 1150；庄家 2000−150
         #expect(result.netChange == 150)
         #expect(result.amountReturned == 250)
         #expect(result.balanceAfter == 1150)
+        #expect(result.dealerBankAfter == 1850)
+        #expect(result.profitPaid == 150)
+        #expect(result.idealProfit == 150)
+        #expect(result.wasPartialPayout == false)
         #expect(result.oddsLabel == ChipRules.blackjackOddsLabel)
         #expect(result.netChangeLabel == "+150")
     }
@@ -31,51 +36,58 @@ struct ChipSettlementTests {
         let result = RoundSettlement.settle(
             balanceAfterBet: 900,
             betAmount: 100,
+            dealerBank: ChipRules.dealerStartingBank,
             outcome: .playerWin
         )
         #expect(result.netChange == 100)
         #expect(result.amountReturned == 200)
         #expect(result.balanceAfter == 1100)
+        #expect(result.dealerBankAfter == 1900)
         #expect(result.oddsLabel == ChipRules.evenMoneyOddsLabel)
     }
 
-    @Test func loseForfeitsStake() {
+    @Test func loseForfeitsStakeToDealerBank() {
         let result = RoundSettlement.settle(
             balanceAfterBet: 900,
             betAmount: 100,
+            dealerBank: ChipRules.dealerStartingBank,
             outcome: .playerLose
         )
         #expect(result.netChange == -100)
         #expect(result.amountReturned == 0)
         #expect(result.balanceAfter == 900)
+        #expect(result.dealerBankAfter == 2100)
         #expect(result.oddsLabel == nil)
         #expect(result.netChangeLabel == "-100")
     }
 
-    @Test func pushReturnsStakeWithZeroNet() {
+    @Test func pushReturnsStakeWithDealerBankUnchanged() {
         let result = RoundSettlement.settle(
             balanceAfterBet: 900,
             betAmount: 100,
+            dealerBank: ChipRules.dealerStartingBank,
             outcome: .push
         )
         #expect(result.netChange == 0)
         #expect(result.amountReturned == 100)
         #expect(result.balanceAfter == 1000)
+        #expect(result.dealerBankAfter == ChipRules.dealerStartingBank)
         #expect(result.netChangeLabel == "0（平局退注）")
         #expect(result.oddsLabel == nil)
     }
 
     @Test func blackjackProfitUsesIntegerDivision() {
-        // 25 × 3 / 2 = 37（向下取整）
         #expect(ChipRules.blackjackProfit(forBet: 25) == 37)
         let result = RoundSettlement.settle(
             balanceAfterBet: 975,
             betAmount: 25,
+            dealerBank: ChipRules.dealerStartingBank,
             outcome: .playerBlackjack
         )
         #expect(result.netChange == 37)
         #expect(result.amountReturned == 62)
         #expect(result.balanceAfter == 1037)
+        #expect(result.dealerBankAfter == ChipRules.dealerStartingBank - 37)
     }
 
     @Test(arguments: [10, 20, 50, 100, 200])
@@ -86,18 +98,78 @@ struct ChipSettlementTests {
         let result = RoundSettlement.settle(
             balanceAfterBet: before,
             betAmount: bet,
+            dealerBank: ChipRules.dealerStartingBank,
             outcome: .playerBlackjack
         )
         #expect(result.balanceAfter == before + bet + profit)
         #expect(result.balanceAfter == 1000 + profit)
+        #expect(result.dealerBankAfter == ChipRules.dealerStartingBank - profit)
     }
 
-    // MARK: - All In 门槛与强制 All In
+    // MARK: - 不足额赔付（有多少赔多少）
 
-    @Test func standardAllInRequiresBalanceAboveStarting() {
-        #expect(ChipRules.canUseStandardAllIn(balance: ChipRules.startingBalance) == false)
-        #expect(ChipRules.canUseStandardAllIn(balance: ChipRules.startingBalance + 1))
-        #expect(ChipRules.canUseStandardAllIn(balance: ChipRules.minimumBet) == false)
+    @Test func partialPayoutWhenDealerCannotCoverFullProfit() {
+        // 应付 150，庄家仅剩 40 → 只赔 40，本金仍退回。
+        let result = RoundSettlement.settle(
+            balanceAfterBet: 900,
+            betAmount: 100,
+            dealerBank: 40,
+            outcome: .playerBlackjack
+        )
+        #expect(result.idealProfit == 150)
+        #expect(result.profitPaid == 40)
+        #expect(result.netChange == 40)
+        #expect(result.amountReturned == 140)
+        #expect(result.balanceAfter == 1040)
+        #expect(result.dealerBankAfter == 0)
+        #expect(result.wasPartialPayout)
+        #expect(result.partialPayoutLabel == ChipRules.partialPayoutLabel)
+    }
+
+    @Test func partialPayoutEvenMoneyEmptiesDealerBank() {
+        let result = RoundSettlement.settle(
+            balanceAfterBet: 800,
+            betAmount: 200,
+            dealerBank: 50,
+            outcome: .playerWin
+        )
+        #expect(result.idealProfit == 200)
+        #expect(result.profitPaid == 50)
+        #expect(result.netChange == 50)
+        #expect(result.amountReturned == 250)
+        #expect(result.balanceAfter == 1050)
+        #expect(result.dealerBankAfter == 0)
+        #expect(result.wasPartialPayout)
+    }
+
+    @Test func zeroDealerBankOnWinReturnsStakeOnly() {
+        let result = RoundSettlement.settle(
+            balanceAfterBet: 900,
+            betAmount: 100,
+            dealerBank: 0,
+            outcome: .playerWin
+        )
+        #expect(result.profitPaid == 0)
+        #expect(result.netChange == 0)
+        #expect(result.amountReturned == 100)
+        #expect(result.balanceAfter == 1000)
+        #expect(result.dealerBankAfter == 0)
+        #expect(result.wasPartialPayout)
+    }
+
+    // MARK: - 对局中 All In / 强制 All In 强调条件
+
+    @MainActor
+    @Test func midHandGoAllInAddsRemainingBalanceToActiveBet() {
+        let defaults = Self.makeEphemeralDefaults()
+        let bank = ChipBank(defaults: defaults)
+        #expect(bank.placeBet(100))
+        #expect(bank.balance == 900)
+        #expect(bank.activeBet == 100)
+        #expect(bank.goAllIn() == 900)
+        #expect(bank.balance == 0)
+        #expect(bank.activeBet == 1000)
+        #expect(bank.goAllIn() == nil)
     }
 
     @Test func forcedAllInOnSingleDeckWhenRemainingAtMostThresholdAndNoReshuffle() {
@@ -141,29 +213,42 @@ struct ChipSettlementTests {
     // MARK: - ChipBank 协调层
 
     @MainActor
-    @Test func placeBetDeductsBalanceOnce() {
+    @Test func freshInstallStartsWithPlayerAndDealerBanks() {
         let defaults = Self.makeEphemeralDefaults()
         let bank = ChipBank(defaults: defaults)
         #expect(bank.balance == ChipRules.startingBalance)
+        #expect(bank.dealerBank == ChipRules.dealerStartingBank)
+        #expect(bank.isSessionOver == false)
+        #expect(bank.activeBet == 0)
+        #expect(defaults.integer(forKey: ChipRules.balanceStorageKey) == ChipRules.startingBalance)
+        #expect(defaults.integer(forKey: ChipRules.dealerBankStorageKey) == ChipRules.dealerStartingBank)
+    }
+
+    @MainActor
+    @Test func placeBetDeductsBalanceOnce() {
+        let defaults = Self.makeEphemeralDefaults()
+        let bank = ChipBank(defaults: defaults)
         #expect(bank.placeBet(100))
         #expect(bank.balance == 900)
         #expect(bank.activeBet == 100)
-        #expect(bank.placeBet(50) == false) // 不可重复下注
+        #expect(bank.dealerBank == ChipRules.dealerStartingBank)
+        #expect(bank.placeBet(50) == false)
         #expect(bank.balance == 900)
     }
 
     @MainActor
-    @Test func settleBlackjackUpdatesPersistedBalance() {
+    @Test func settleBlackjackUpdatesBothBanks() {
         let defaults = Self.makeEphemeralDefaults()
         let bank = ChipBank(defaults: defaults)
         #expect(bank.placeBet(100))
         let result = bank.settle(outcome: .playerBlackjack)
         #expect(result?.netChange == 150)
         #expect(bank.balance == 1150)
+        #expect(bank.dealerBank == 1850)
         #expect(bank.activeBet == 0)
         #expect(defaults.integer(forKey: ChipRules.balanceStorageKey) == 1150)
+        #expect(defaults.integer(forKey: ChipRules.dealerBankStorageKey) == 1850)
 
-        // 同一局不可重复结算
         #expect(bank.settle(outcome: .playerWin) == nil)
         #expect(bank.balance == 1150)
     }
@@ -173,64 +258,99 @@ struct ChipSettlementTests {
         let defaults = Self.makeEphemeralDefaults()
         let bank = ChipBank(defaults: defaults)
 
-        #expect(bank.placeBet(50))
+        #expect(bank.placeBet(100))
         let lose = bank.settle(outcome: .playerLose)
-        #expect(lose?.netChangeLabel == "-50")
-        #expect(bank.balance == 950)
+        #expect(lose?.netChangeLabel == "-100")
+        #expect(bank.balance == 900)
+        #expect(bank.dealerBank == 2100)
 
-        #expect(bank.placeBet(50))
+        #expect(bank.placeBet(100))
         let push = bank.settle(outcome: .push)
         #expect(push?.netChangeLabel == "0（平局退注）")
-        #expect(bank.balance == 950)
+        #expect(bank.balance == 900)
+        #expect(bank.dealerBank == 2100)
     }
 
     @MainActor
-    @Test func refillRestoresStartingBalanceWhenBroke() {
+    @Test func settlePartialPayoutEndsDealerSession() {
         let defaults = Self.makeEphemeralDefaults()
-        // 已写入 activeBet 键，表示非「旧版误扣款」；低余额视为真实破产。
-        defaults.set(5, forKey: ChipRules.balanceStorageKey)
+        defaults.set(1000, forKey: ChipRules.balanceStorageKey)
+        defaults.set(40, forKey: ChipRules.dealerBankStorageKey)
         defaults.set(0, forKey: ChipRules.activeBetStorageKey)
         let bank = ChipBank(defaults: defaults)
-        #expect(bank.needsRefill)
+        #expect(bank.placeBet(100))
+        let result = bank.settle(outcome: .playerBlackjack)
+        #expect(result?.wasPartialPayout == true)
+        #expect(bank.dealerBank == 0)
+        #expect(bank.sessionEndReason == .dealerBroke)
+        #expect(bank.isSessionOver)
         #expect(bank.placeBet(ChipRules.minimumBet) == false)
-        bank.refillToStartingBalance()
-        #expect(bank.balance == ChipRules.startingBalance)
-        #expect(bank.needsRefill == false)
-        #expect(defaults.integer(forKey: ChipRules.balanceStorageKey) == ChipRules.startingBalance)
     }
 
     @MainActor
-    @Test func freshInstallStartsWithStartingBalance() {
+    @Test func playerBrokeEndsSession() {
+        let defaults = Self.makeEphemeralDefaults()
+        defaults.set(5, forKey: ChipRules.balanceStorageKey)
+        defaults.set(ChipRules.dealerStartingBank, forKey: ChipRules.dealerBankStorageKey)
+        defaults.set(0, forKey: ChipRules.activeBetStorageKey)
+        let bank = ChipBank(defaults: defaults)
+        #expect(bank.sessionEndReason == .playerBroke)
+        #expect(bank.isSessionOver)
+        #expect(bank.placeBet(ChipRules.minimumBet) == false)
+    }
+
+    @MainActor
+    @Test func resetSessionRestoresBothStartingBanks() {
+        let defaults = Self.makeEphemeralDefaults()
+        defaults.set(5, forKey: ChipRules.balanceStorageKey)
+        defaults.set(0, forKey: ChipRules.dealerBankStorageKey)
+        defaults.set(0, forKey: ChipRules.activeBetStorageKey)
+        let bank = ChipBank(defaults: defaults)
+        #expect(bank.isSessionOver)
+        bank.resetSession()
+        #expect(bank.balance == ChipRules.startingBalance)
+        #expect(bank.dealerBank == ChipRules.dealerStartingBank)
+        #expect(bank.isSessionOver == false)
+        #expect(bank.lastSettlement == nil)
+    }
+
+    @MainActor
+    @Test func abandonSessionClearsProgressLikeReset() {
         let defaults = Self.makeEphemeralDefaults()
         let bank = ChipBank(defaults: defaults)
+        #expect(bank.placeBet(100))
+        _ = bank.settle(outcome: .playerWin)
+        #expect(bank.balance == 1100)
+        bank.abandonSession()
         #expect(bank.balance == ChipRules.startingBalance)
-        #expect(bank.needsRefill == false)
-        #expect(bank.activeBet == 0)
+        #expect(bank.dealerBank == ChipRules.dealerStartingBank)
         #expect(defaults.integer(forKey: ChipRules.balanceStorageKey) == ChipRules.startingBalance)
     }
 
     @MainActor
     @Test func orphanActiveBetIsRefundedOnLaunch() {
         let defaults = Self.makeEphemeralDefaults()
-        // 模拟：已扣注并存盘后进程中断，activeBet 未结算。
         defaults.set(0, forKey: ChipRules.balanceStorageKey)
+        defaults.set(ChipRules.dealerStartingBank, forKey: ChipRules.dealerBankStorageKey)
         defaults.set(1000, forKey: ChipRules.activeBetStorageKey)
         let bank = ChipBank(defaults: defaults)
         #expect(bank.balance == 1000)
+        #expect(bank.dealerBank == ChipRules.dealerStartingBank)
         #expect(bank.activeBet == 0)
-        #expect(bank.needsRefill == false)
+        #expect(bank.isSessionOver == false)
         #expect(defaults.integer(forKey: ChipRules.activeBetStorageKey) == 0)
     }
 
     @MainActor
-    @Test func legacyLowBalanceWithoutActiveBetKeyIsRepaired() {
+    @Test func legacyLowBalanceWithoutDealerKeyIsRepaired() {
         let defaults = Self.makeEphemeralDefaults()
-        // 旧版：扣光余额后返回，未写入 activeBet 键。
         defaults.set(0, forKey: ChipRules.balanceStorageKey)
         #expect(defaults.object(forKey: ChipRules.activeBetStorageKey) == nil)
+        #expect(defaults.object(forKey: ChipRules.dealerBankStorageKey) == nil)
         let bank = ChipBank(defaults: defaults)
         #expect(bank.balance == ChipRules.startingBalance)
-        #expect(bank.needsRefill == false)
+        #expect(bank.dealerBank == ChipRules.dealerStartingBank)
+        #expect(bank.isSessionOver == false)
     }
 
     @MainActor
@@ -240,6 +360,7 @@ struct ChipSettlementTests {
         #expect(bank.placeBet(100))
         bank.refundActiveBet()
         #expect(bank.balance == ChipRules.startingBalance)
+        #expect(bank.dealerBank == ChipRules.dealerStartingBank)
         #expect(bank.activeBet == 0)
         #expect(bank.lastSettlement == nil)
     }
@@ -248,7 +369,7 @@ struct ChipSettlementTests {
     @Test func rejectedBetsBelowMinimumOrAboveBalance() {
         let defaults = Self.makeEphemeralDefaults()
         let bank = ChipBank(defaults: defaults)
-        #expect(bank.placeBet(5) == false)
+        #expect(bank.placeBet(ChipRules.minimumBet - 1) == false)
         #expect(bank.placeBet(ChipRules.startingBalance + 1) == false)
         #expect(bank.balance == ChipRules.startingBalance)
         #expect(bank.activeBet == 0)
