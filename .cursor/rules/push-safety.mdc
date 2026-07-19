@@ -1,0 +1,11 @@
+---
+description: 推送 GitHub 前禁止路线图与密钥
+alwaysApply: true
+---
+
+# 推送安全
+
+- 不要把 `VERSION_ROADMAP.txt`、其它 `*ROADMAP*`、`.env`、私钥、证书推到 GitHub。
+- 本地可保留路线图文件；它必须在 `.gitignore` 中，且不能被 `git ls-files` 跟踪。
+- 执行 `git push` 前先跑 `./scripts/check-before-push.sh`；失败则禁止推送。
+- 克隆仓库后若 hooks 未生效，运行 `./scripts/install-git-hooks.sh`。

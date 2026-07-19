@@ -14,3 +14,23 @@ xcuserdata/
 
 # 可选：若使用 CocoaPods
 # Pods/
+
+# 本地产品路线图 / 后续计划（勿推送到公开仓库）
+VERSION_ROADMAP.txt
+*ROADMAP*.txt
+*ROADMAP*.md
+docs/private/
+PRIVATE_*
+
+# 密钥与本地环境
+.env
+.env.*
+*.pem
+*.p12
+*.mobileprovision
+Secrets.xcconfig
+**/GoogleService-Info.plist
+**/AuthKey_*.p8
+id_rsa
+id_ed25519
+*.keystore

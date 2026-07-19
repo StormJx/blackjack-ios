@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Git pre-push：推送前强制跑私有计划/密钥检查。
+# 启用方式（克隆后执行一次）：git config core.hooksPath .githooks
+
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+CHECK="$ROOT/scripts/check-before-push.sh"
+
+if [[ ! -x "$CHECK" ]]; then
+  chmod +x "$CHECK" 2>/dev/null || true
+fi
+
+remote_name="${1:-origin}"
+remote_url="${2:-}"
+
+# 消费 stdin（refs 列表），避免 git 管道阻塞
+cat >/dev/null
+
+exec "$CHECK" "$remote_name" "$remote_url"

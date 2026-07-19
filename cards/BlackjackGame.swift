@@ -30,10 +30,28 @@ final class BlackjackGame: ObservableObject {
     @Published private(set) var handAreaScale: CGFloat = 1
     /// 每局递增，用于牌视图 identity，避免动画串台
     @Published private(set) var roundToken: Int = 0
-    /// 新局洗牌提示（短文案）
+    /// 新局洗牌提示（短文案；局间全屏洗牌时同步为「洗牌中…」）
     @Published private(set) var dealingCaption: String?
+    /// 局间需要重洗时展示专用洗牌页（盖住牌桌）
+    @Published private(set) var isShowingShuffleScreen: Bool = false
+    /// 当前牌堆剩余张数（局间 / 局中均可读）
+    @Published private(set) var remainingCardCount: Int = 0
+    /// 当前模式整副总张数
+    @Published private(set) var totalCardCount: Int = 0
 
-    private var deck = Deck()
+    /// 当前练习变体（一副 / 两副 / 六副）；整局生命周期内不变。
+    let practiceMode: PracticeMode
+
+    private var deck: Deck
+
+    init(practiceMode: PracticeMode = .singleDeck) {
+        self.practiceMode = practiceMode
+        var initialDeck = Deck(numberOfDecks: practiceMode.numberOfDecks)
+        initialDeck.shuffleAndCut()
+        self.deck = initialDeck
+        self.remainingCardCount = initialDeck.remainingCount
+        self.totalCardCount = initialDeck.totalCardCount
+    }
 
     private let delayInitialDeal: UInt64 = 165_000_000
     private let delayAfterDealStep: UInt64 = 95_000_000
@@ -43,7 +61,8 @@ final class BlackjackGame: ObservableObject {
     private let delayAfterHit: UInt64 = 200_000_000
     private let delayClearFadeOut: UInt64 = 400_000_000
     private let delayClearFadeIn: UInt64 = 200_000_000
-    private let delayShuffleCaption: UInt64 = 340_000_000
+    /// 局间全屏洗牌页停留时长
+    private let delayShuffleScreen: UInt64 = 1_600_000_000
 
     var playerBestValue: Int {
         Hand(cards: playerCards).bestValue
@@ -51,6 +70,11 @@ final class BlackjackGame: ObservableObject {
 
     var dealerBestValue: Int {
         Hand(cards: dealerCards).bestValue
+    }
+
+    /// 牌桌副标题：共 N 张 + 剩余张数。
+    var shoeStatusLine: String {
+        "共 \(totalCardCount) 张，剩余 \(remainingCardCount) 张"
     }
 
     /// 玩家回合或发牌中或庄家未翻暗牌时，第二张庄家牌盖着
@@ -66,6 +90,7 @@ final class BlackjackGame: ObservableObject {
         isAnimating = true
         dealerHoleRevealed = true
         dealingCaption = nil
+        isShowingShuffleScreen = false
 
         roundToken += 1
 
@@ -82,9 +107,6 @@ final class BlackjackGame: ObservableObject {
         playerCards = []
         dealerCards = []
 
-        deck = Deck()
-        deck.shuffle()
-
         if hadCards {
             withAnimation(.spring(response: 0.48, dampingFraction: 0.82)) {
                 handAreaOpacity = 1
@@ -93,20 +115,22 @@ final class BlackjackGame: ObservableObject {
             try? await Task.sleep(nanoseconds: delayClearFadeIn)
         }
 
-        dealingCaption = "洗牌中…"
-        GameFeedback.shared.shuffleHint()
-        try? await Task.sleep(nanoseconds: delayShuffleCaption)
-        dealingCaption = nil
+        if deck.needsReshuffleBeforeNextRound {
+            await presentShuffleScreenAndReshuffle()
+        }
 
         phase = .dealing
+        publishDeckCounts()
 
         guard let c1 = deck.draw(), let c2 = deck.draw(), let c3 = deck.draw(), let c4 = deck.draw() else {
             outcomeMessage = "洗牌异常，请重试"
             phase = .finished
             GameFeedback.shared.notifyError()
             isAnimating = false
+            publishDeckCounts()
             return
         }
+        publishDeckCounts()
 
         try? await Task.sleep(nanoseconds: delayInitialDeal)
 
@@ -155,12 +179,12 @@ final class BlackjackGame: ObservableObject {
         try? await Task.sleep(nanoseconds: delayAfterHit)
 
         guard let card = deck.draw() else {
-            outcomeMessage = "牌堆已空"
-            phase = .finished
-            GameFeedback.shared.notifyError()
-            isAnimating = false
+            // 尾牌已尽：不再报错，按现有手牌进入庄家回合并结算。
+            publishDeckCounts()
+            await playDealerTurnAsync()
             return
         }
+        publishDeckCounts()
 
         withAnimation(cardDealAnimation) {
             playerCards.append(card)
@@ -219,6 +243,7 @@ final class BlackjackGame: ObservableObject {
         var hand = Hand(cards: dealerCards)
         while hand.bestValue < 17 {
             guard let card = deck.draw() else { break }
+            publishDeckCounts()
             withAnimation(cardDealAnimation) {
                 dealerCards.append(card)
             }
@@ -230,6 +255,28 @@ final class BlackjackGame: ObservableObject {
         resolveOutcome()
         phase = .finished
         isAnimating = false
+    }
+
+    /// 局间全屏洗牌：展示洗牌页 → 播提示音 → 整副重洗并更新剩余张数。
+    private func presentShuffleScreenAndReshuffle() async {
+        withAnimation(.easeInOut(duration: 0.28)) {
+            isShowingShuffleScreen = true
+            dealingCaption = "洗牌中…"
+        }
+        GameFeedback.shared.shuffleHint()
+        try? await Task.sleep(nanoseconds: delayShuffleScreen)
+        deck.shuffleAndCut()
+        publishDeckCounts()
+        withAnimation(.easeInOut(duration: 0.28)) {
+            isShowingShuffleScreen = false
+            dealingCaption = nil
+        }
+        try? await Task.sleep(nanoseconds: 120_000_000)
+    }
+
+    private func publishDeckCounts() {
+        remainingCardCount = deck.remainingCount
+        totalCardCount = deck.totalCardCount
     }
 
     private func resolveOutcome() {
