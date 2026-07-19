@@ -38,6 +38,8 @@ final class BlackjackGame: ObservableObject {
     @Published private(set) var remainingCardCount: Int = 0
     /// 当前模式整副总张数
     @Published private(set) var totalCardCount: Int = 0
+    /// 本局胜负类别（供筹码结算模块消费；不含金额）
+    @Published private(set) var lastOutcome: RoundOutcome?
 
     /// 当前练习变体（一副 / 两副 / 六副）；整局生命周期内不变。
     let practiceMode: PracticeMode
@@ -77,6 +79,20 @@ final class BlackjackGame: ObservableObject {
         "共 \(totalCardCount) 张，剩余 \(remainingCardCount) 张"
     }
 
+    /// 下一局发牌前是否会整副重洗（下注页据此判断「剩余张数」是否仍是本局牌况）。
+    var willReshuffleBeforeNextRound: Bool {
+        deck.needsReshuffleBeforeNextRound
+    }
+
+    /// 一副牌且本局将以剩余 ≤15 张开打时，可展示「强制 All In」。
+    var isForcedAllInAvailable: Bool {
+        ChipRules.canUseForcedAllIn(
+            isSingleDeck: practiceMode == .singleDeck,
+            remainingCards: remainingCardCount,
+            willReshuffle: willReshuffleBeforeNextRound
+        )
+    }
+
     /// 玩家回合或发牌中或庄家未翻暗牌时，第二张庄家牌盖着
     var hideDealerHoleCard: Bool {
         guard dealerCards.count >= 2 else { return false }
@@ -104,6 +120,7 @@ final class BlackjackGame: ObservableObject {
         }
 
         outcomeMessage = ""
+        lastOutcome = nil
         playerCards = []
         dealerCards = []
 
@@ -194,9 +211,12 @@ final class BlackjackGame: ObservableObject {
 
         let hand = Hand(cards: playerCards)
         if hand.isBusted {
-            outcomeMessage = "爆牌，你输了"
-            phase = .finished
-            GameFeedback.shared.roundOutcome(playerWon: false, isPush: false)
+            finishRound(
+                message: "爆牌，你输了",
+                outcome: .playerLose,
+                playerWon: false,
+                isPush: false
+            )
             isAnimating = false
             return
         }
@@ -218,13 +238,20 @@ final class BlackjackGame: ObservableObject {
     private func resolvePlayerNaturalBlackjack() {
         let dealerHand = Hand(cards: dealerCards)
         if dealerHand.isNaturalBlackjack {
-            outcomeMessage = "双方黑杰克，平局"
-            GameFeedback.shared.roundOutcome(playerWon: nil, isPush: true)
+            finishRound(
+                message: "双方黑杰克，平局",
+                outcome: .push,
+                playerWon: nil,
+                isPush: true
+            )
         } else {
-            outcomeMessage = "黑杰克！你赢了"
-            GameFeedback.shared.roundOutcome(playerWon: true, isPush: false)
+            finishRound(
+                message: "黑杰克！你赢了（\(ChipRules.blackjackOddsLabel)）",
+                outcome: .playerBlackjack,
+                playerWon: true,
+                isPush: false
+            )
         }
-        phase = .finished
     }
 
     private func playDealerTurnAsync() async {
@@ -253,7 +280,6 @@ final class BlackjackGame: ObservableObject {
         }
 
         resolveOutcome()
-        phase = .finished
         isAnimating = false
     }
 
@@ -284,17 +310,47 @@ final class BlackjackGame: ObservableObject {
         let d = Hand(cards: dealerCards).bestValue
 
         if d > 21 {
-            outcomeMessage = "庄家爆牌，你赢了"
-            GameFeedback.shared.roundOutcome(playerWon: true, isPush: false)
+            finishRound(
+                message: "庄家爆牌，你赢了",
+                outcome: .playerWin,
+                playerWon: true,
+                isPush: false
+            )
         } else if p > d {
-            outcomeMessage = "你赢了"
-            GameFeedback.shared.roundOutcome(playerWon: true, isPush: false)
+            finishRound(
+                message: "你赢了",
+                outcome: .playerWin,
+                playerWon: true,
+                isPush: false
+            )
         } else if p < d {
-            outcomeMessage = "你输了"
-            GameFeedback.shared.roundOutcome(playerWon: false, isPush: false)
+            finishRound(
+                message: "你输了",
+                outcome: .playerLose,
+                playerWon: false,
+                isPush: false
+            )
         } else {
-            outcomeMessage = "平局"
-            GameFeedback.shared.roundOutcome(playerWon: nil, isPush: true)
+            finishRound(
+                message: "平局",
+                outcome: .push,
+                playerWon: nil,
+                isPush: true
+            )
         }
     }
+
+    /// 写入结果文案与胜负类别，并触发反馈；筹码结算由 ChipBank 在 UI 层完成。
+    private func finishRound(
+        message: String,
+        outcome: RoundOutcome,
+        playerWon: Bool?,
+        isPush: Bool
+    ) {
+        outcomeMessage = message
+        lastOutcome = outcome
+        phase = .finished
+        GameFeedback.shared.roundOutcome(playerWon: playerWon, isPush: isPush)
+    }
 }
+

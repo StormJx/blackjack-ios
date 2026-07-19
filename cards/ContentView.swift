@@ -45,7 +45,7 @@ struct ContentView: View {
                 Text("练习模式")
                     .font(.headline)
                     .foregroundStyle(.secondary)
-                Text("选择几副牌后进入对局；规则与庄家逻辑不变，无筹码。")
+                Text("选择几副牌后进入对局；下注结算独立于发牌流程。")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -68,7 +68,7 @@ struct ContentView: View {
                 HStack(spacing: 8) {
                     welcomeTag(selectedMode.shortLabel)
                     welcomeTag("庄家 17 停")
-                    welcomeTag("练习节奏")
+                    welcomeTag(ChipRules.blackjackOddsLabel)
                 }
                 .padding(.top, 2)
 
@@ -113,10 +113,14 @@ struct ContentView: View {
 
 private struct GameSessionView: View {
     @StateObject private var game: BlackjackGame
+    @StateObject private var chipBank = ChipBank()
     let practiceMode: PracticeMode
     let onEndSession: () -> Void
-    @State private var didAutoStart = false
+    @State private var didPresentInitialBet = false
+    @State private var showBetSheet = false
     @State private var showRoundEndSheet = false
+    /// 草稿注码：从 0 累加筹码；确认时须 ≥ 最小下注。
+    @State private var draftBet = 0
 
     init(practiceMode: PracticeMode, onEndSession: @escaping () -> Void) {
         self.practiceMode = practiceMode
@@ -134,27 +138,163 @@ private struct GameSessionView: View {
             }
         }
         .animation(.easeInOut(duration: 0.28), value: game.isShowingShuffleScreen)
+        .sheet(isPresented: $showBetSheet) {
+            betSheet
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.hidden)
+                .interactiveDismissDisabled(true)
+        }
         .sheet(isPresented: $showRoundEndSheet) {
             roundEndSheet
-                .presentationDetents([.medium])
+                .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.hidden)
                 .interactiveDismissDisabled(true)
         }
         .onChange(of: game.phase) { _, newPhase in
             if newPhase == .finished {
+                settleCurrentRoundIfNeeded()
                 showRoundEndSheet = true
             } else {
                 showRoundEndSheet = false
             }
         }
         .onAppear {
-            guard !didAutoStart else { return }
-            didAutoStart = true
-            Task { await game.startNewRound() }
+            guard !didPresentInitialBet else { return }
+            didPresentInitialBet = true
+            prepareBetDraft()
+            showBetSheet = true
         }
     }
 
-    /// 本局结束后的弹窗：结果 +「新一局」；预留扩展区供后续筹码等展示。
+    /// 开局前下注；与发牌状态机分离，确认后再 `startNewRound`。
+    private var betSheet: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                VStack(spacing: 10) {
+                    Text(chipBank.needsRefill ? "筹码不足" : "本局下注")
+                        .font(.title2.weight(.semibold))
+                    Text("余额 \(chipBank.balance)")
+                        .font(.title3.weight(.medium))
+                        .monospacedDigit()
+                        .foregroundStyle(.secondary)
+                    if !chipBank.needsRefill {
+                        Text(draftBet == 0 ? "点击筹码累加下注" : "当前下注 \(draftBet)")
+                            .font(.headline)
+                            .monospacedDigit()
+                        Text("最小 \(ChipRules.minimumBet) · \(ChipRules.blackjackOddsLabel)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.top, 8)
+
+                if chipBank.needsRefill {
+                    Text("余额不足以最小下注（\(ChipRules.minimumBet)），可一键补至起始筹码 \(ChipRules.startingBalance)。")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 16)
+
+                    Spacer(minLength: 24)
+
+                    Button {
+                        GameFeedback.shared.buttonTap()
+                        chipBank.refillToStartingBalance()
+                        prepareBetDraft()
+                    } label: {
+                        Text("一键补至 \(ChipRules.startingBalance)")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    .tint(.green)
+                } else {
+                    LazyVGrid(
+                        columns: [GridItem(.adaptive(minimum: 72), spacing: 10)],
+                        spacing: 10
+                    ) {
+                        ForEach(ChipRules.betChipValues, id: \.self) { value in
+                            Button {
+                                GameFeedback.shared.buttonTap()
+                                addChip(value)
+                            } label: {
+                                Text("+\(value)")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.bordered)
+                            .disabled(!canAddChip(value))
+                        }
+                    }
+                    .padding(.top, 18)
+
+                    HStack(spacing: 12) {
+                        Button("清空") {
+                            GameFeedback.shared.buttonTap()
+                            clearDraftBet()
+                        }
+                        .font(.subheadline.weight(.semibold))
+                        .disabled(draftBet == 0)
+
+                        if showStandardAllInButton {
+                            Button("All In") {
+                                GameFeedback.shared.buttonTap()
+                                allInDraftBet()
+                            }
+                            .font(.subheadline.weight(.semibold))
+                            .disabled(!canStandardAllIn)
+                        }
+                    }
+                    .padding(.top, 12)
+
+                    if showForcedAllInButton {
+                        Button {
+                            GameFeedback.shared.buttonTap()
+                            allInDraftBet(forced: true)
+                        } label: {
+                            VStack(spacing: 4) {
+                                Text("强制 All In")
+                                    .font(.headline.weight(.semibold))
+                                Text("一副牌 · 剩余 ≤\(ChipRules.forcedAllInRemainingCards) 张")
+                                    .font(.caption)
+                            }
+                            .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
+                        .tint(.orange)
+                        .disabled(!canForcedAllIn)
+                        .padding(.top, 10)
+                    } else if !showStandardAllInButton {
+                        Text("余额超过 \(ChipRules.allInUnlockBalance) 可 All In")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                            .padding(.top, 8)
+                    }
+
+                    Spacer(minLength: 24)
+
+                    Button {
+                        GameFeedback.shared.buttonTap()
+                        confirmBetAndDeal()
+                    } label: {
+                        Text("确认下注并发牌")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    .tint(.green)
+                    .disabled(!canConfirmBet)
+                    .opacity(canConfirmBet ? 1 : 0.55)
+                }
+            }
+            .padding(24)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .background(Color(.systemGroupedBackground))
+        }
+    }
+
+    /// 本局结束后的弹窗：结果 + 盈亏 / 余额 +「新一局」。
     private var roundEndSheet: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -171,19 +311,41 @@ private struct GameSessionView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.top, 8)
 
-                // 后续扩展：例如「本局筹码 +12」「余额 100」等，与 BlackjackGame 结算协调层对接即可。
-                Text(game.shoeStatusLine)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .monospacedDigit()
-                    .padding(.top, 16)
+                VStack(spacing: 8) {
+                    if let settlement = chipBank.lastSettlement {
+                        Text("本局盈亏 \(settlement.netChangeLabel)")
+                            .font(.headline)
+                            .monospacedDigit()
+                            .foregroundStyle(settlementNetColor(settlement.netChange))
+                        if let odds = settlement.oddsLabel {
+                            Text(odds)
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                        }
+                        Text("余额 \(settlement.balanceAfter)")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .monospacedDigit()
+                    } else {
+                        Text("余额 \(chipBank.balance)")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .monospacedDigit()
+                    }
+                    Text(game.shoeStatusLine)
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                        .monospacedDigit()
+                }
+                .padding(.top, 16)
 
                 Spacer(minLength: 24)
 
                 Button {
                     GameFeedback.shared.buttonTap()
                     showRoundEndSheet = false
-                    Task { await game.startNewRound() }
+                    prepareBetDraft()
+                    showBetSheet = true
                 } label: {
                     Text("新一局")
                         .frame(maxWidth: .infinity)
@@ -198,14 +360,91 @@ private struct GameSessionView: View {
         }
     }
 
+    private var canConfirmBet: Bool {
+        draftBet >= ChipRules.minimumBet
+            && draftBet <= chipBank.balance
+            && chipBank.activeBet == 0
+            && !game.isAnimating
+    }
+
+    /// 从当前草稿累加该面额后仍不超过余额。
+    private func canAddChip(_ value: Int) -> Bool {
+        value > 0 && draftBet + value <= chipBank.balance
+    }
+
+    /// 余额已解锁时展示普通 All In（未解锁则隐藏，避免开局梭哈）。
+    private var showStandardAllInButton: Bool {
+        ChipRules.canUseStandardAllIn(balance: chipBank.balance)
+            && chipBank.activeBet == 0
+    }
+
+    private var canStandardAllIn: Bool {
+        showStandardAllInButton && draftBet != chipBank.balance
+    }
+
+    /// 一副牌残局入口：平常隐藏，仅本局将以剩余 ≤15 张开打时出现。
+    private var showForcedAllInButton: Bool {
+        game.isForcedAllInAvailable
+            && chipBank.balance >= ChipRules.minimumBet
+            && chipBank.activeBet == 0
+    }
+
+    private var canForcedAllIn: Bool {
+        showForcedAllInButton && draftBet != chipBank.balance
+    }
+
+    /// 每局重新从 0 累加，避免「草稿已含旧注 + 再点 200」误判为余额不足。
+    private func prepareBetDraft() {
+        draftBet = 0
+    }
+
+    private func clearDraftBet() {
+        draftBet = 0
+    }
+
+    private func allInDraftBet(forced: Bool = false) {
+        if forced {
+            guard canForcedAllIn else { return }
+        } else {
+            guard canStandardAllIn else { return }
+        }
+        draftBet = chipBank.balance
+    }
+
+    private func addChip(_ value: Int) {
+        guard canAddChip(value) else { return }
+        draftBet += value
+    }
+
+    private func confirmBetAndDeal() {
+        guard chipBank.placeBet(draftBet) else { return }
+        showBetSheet = false
+        Task { await game.startNewRound() }
+    }
+
+    private func settleCurrentRoundIfNeeded() {
+        if let outcome = game.lastOutcome {
+            _ = chipBank.settle(outcome: outcome)
+        } else if chipBank.activeBet > 0 {
+            // 发牌异常等未产生胜负时退注，避免重复扣款。
+            chipBank.refundActiveBet()
+        }
+    }
+
+    private func settlementNetColor(_ net: Int) -> Color {
+        if net > 0 { return .green }
+        if net < 0 { return .red }
+        return .orange
+    }
+
     /// 牌面与状态区可滚动；底部仅保留要牌 / 停牌。新一局在本局结束弹窗内操作。
     private var gameTableView: some View {
         VStack(spacing: 0) {
             ScrollView(showsIndicators: true) {
                 VStack(spacing: 16) {
                     tableTitle
-                    if game.phase == .idle && game.playerCards.isEmpty {
-                        Text("使用下方「要牌」「停牌」进行游戏；每局结束后在弹窗中开新一局。")
+                    if game.phase == .idle && game.playerCards.isEmpty && !showBetSheet {
+                        Text("确认下注后发牌；使用「要牌」「停牌」进行游戏。")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
@@ -247,6 +486,8 @@ private struct GameSessionView: View {
         HStack(alignment: .center, spacing: 10) {
             Button {
                 GameFeedback.shared.buttonTap()
+                // 下注已从余额扣出；未结算就返回时须退注，否则下次开局会变成「筹码不足」。
+                chipBank.refundActiveBet()
                 onEndSession()
             } label: {
                 Image(systemName: "chevron.backward.circle.fill")
@@ -264,9 +505,18 @@ private struct GameSessionView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .monospacedDigit()
-                Text("切牌点后重洗")
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
+                HStack(spacing: 8) {
+                    Text("余额 \(chipBank.balance)")
+                        .font(.caption.weight(.semibold))
+                        .monospacedDigit()
+                    if chipBank.activeBet > 0 {
+                        Text("注 \(chipBank.activeBet)")
+                            .font(.caption)
+                            .monospacedDigit()
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .foregroundStyle(.secondary)
             }
             Spacer(minLength: 0)
             Text(game.practiceMode.shortLabel)
