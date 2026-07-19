@@ -8,15 +8,21 @@ import SwiftUI
 struct ContentView: View {
     @State private var session: PracticeMode?
     @State private var selectedMode: PracticeMode = .singleDeck
+    /// 破产回主页后的短暂提示；开始新局或超时后清除。
+    @State private var welcomeNotice: String?
+    @State private var welcomeNoticeClearTask: Task<Void, Never>?
 
     var body: some View {
         NavigationStack {
             ZStack {
                 TableBackgroundView()
                 if let mode = session {
-                    GameSessionView(practiceMode: mode, onEndSession: {
+                    GameSessionView(practiceMode: mode, onEndSession: { showClearedHint in
                         withAnimation(.easeInOut(duration: 0.28)) {
                             session = nil
+                        }
+                        if showClearedHint {
+                            presentWelcomeNotice(ChipRules.sessionClearedReturnHomeHint)
                         }
                     })
                     .transition(.asymmetric(
@@ -45,11 +51,19 @@ struct ContentView: View {
                 Text("练习模式")
                     .font(.headline)
                     .foregroundStyle(.secondary)
-                Text("选择几副牌后进入对局。挑战庄家 \(ChipRules.dealerStartingBank) 筹码；打光庄家或自己破产即本局结束。天然黑杰克见牌即结算（无对局中全下）。")
+                Text(ChipRules.welcomeRulesSummary)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 8)
+
+                if let welcomeNotice {
+                    Text(welcomeNotice)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.orange)
+                        .multilineTextAlignment(.center)
+                        .transition(.opacity.combined(with: .move(edge: .top)))
+                }
 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("牌副")
@@ -74,6 +88,7 @@ struct ContentView: View {
 
                 Button("开始游戏") {
                     GameFeedback.shared.buttonTap()
+                    clearWelcomeNotice()
                     withAnimation(.easeInOut(duration: 0.28)) {
                         session = selectedMode
                     }
@@ -93,6 +108,29 @@ struct ContentView: View {
             }
             .padding(.horizontal, 20)
             Spacer(minLength: 0)
+        }
+        .animation(.easeInOut(duration: 0.22), value: welcomeNotice)
+    }
+
+    private func presentWelcomeNotice(_ text: String) {
+        welcomeNoticeClearTask?.cancel()
+        withAnimation(.easeInOut(duration: 0.22)) {
+            welcomeNotice = text
+        }
+        welcomeNoticeClearTask = Task {
+            try? await Task.sleep(nanoseconds: 3_500_000_000)
+            guard !Task.isCancelled else { return }
+            await MainActor.run {
+                clearWelcomeNotice()
+            }
+        }
+    }
+
+    private func clearWelcomeNotice() {
+        welcomeNoticeClearTask?.cancel()
+        welcomeNoticeClearTask = nil
+        withAnimation(.easeInOut(duration: 0.22)) {
+            welcomeNotice = nil
         }
     }
 
@@ -115,7 +153,8 @@ private struct GameSessionView: View {
     @StateObject private var game: BlackjackGame
     @StateObject private var chipBank = ChipBank()
     let practiceMode: PracticeMode
-    let onEndSession: () -> Void
+    /// `true`：破产「返回主页」后提示进度已清空；主动退出叉号则为 `false`。
+    let onEndSession: (_ showClearedHint: Bool) -> Void
     @State private var didPresentInitialBet = false
     @State private var showBetSheet = false
     @State private var showRoundEndSheet = false
@@ -125,7 +164,7 @@ private struct GameSessionView: View {
     /// 草稿注码：从 0 累加筹码；确认时须 ≥ 最小下注。
     @State private var draftBet = 0
 
-    init(practiceMode: PracticeMode, onEndSession: @escaping () -> Void) {
+    init(practiceMode: PracticeMode, onEndSession: @escaping (_ showClearedHint: Bool) -> Void) {
         self.practiceMode = practiceMode
         self.onEndSession = onEndSession
         _game = StateObject(wrappedValue: BlackjackGame(practiceMode: practiceMode))
@@ -225,9 +264,11 @@ private struct GameSessionView: View {
             draftBet: $draftBet,
             showRestoreHint: chipBank.didRestoreAfterInterrupt,
             canConfirm: canConfirmBet,
+            emphasizeForcedAllIn: game.isForcedAllInAvailable,
             onClear: clearDraftBet,
             onAddChip: addChip,
             onAddRemaining: addRemainingBalance,
+            onAllIn: applyPreDealAllIn,
             onConfirm: confirmBetAndDeal
         )
     }
@@ -259,6 +300,7 @@ private struct GameSessionView: View {
             showRoundEndPanel: showRoundEndSheet,
             canHit: canHit,
             canStand: canStand,
+            showsMidHandAllIn: ChipRules.midHandAllInEnabled,
             canMidHandAllIn: canMidHandAllIn,
             emphasizeForcedAllIn: emphasizeForcedAllIn,
             onHit: { Task { await game.hit() } },
@@ -303,16 +345,17 @@ private struct GameSessionView: View {
         game.phase == .playerTurn && !game.isAnimating && !controlsLockedAfterAllIn
     }
 
-    /// 玩家回合见牌后：尚有剩余余额时可 All In 追加进本局注。
+    /// 道具预留：见牌后再全下（默认 `midHandAllInEnabled == false` 时 UI 不展示）。
     private var canMidHandAllIn: Bool {
-        game.phase == .playerTurn
+        ChipRules.midHandAllInEnabled
+            && game.phase == .playerTurn
             && !game.isAnimating
             && !controlsLockedAfterAllIn
             && chipBank.activeBet > 0
             && chipBank.balance > 0
     }
 
-    /// 一副牌残局时用强调样式提示全下。
+    /// 道具预留：一副牌残局时对局中全下的强调样式。
     private var emphasizeForcedAllIn: Bool {
         canMidHandAllIn && game.isForcedAllInAvailable
     }
@@ -337,6 +380,13 @@ private struct GameSessionView: View {
         draftBet += amount
     }
 
+    /// 开局全下：草稿注码设为全部余额，再由「确认并发牌」落注。
+    private func applyPreDealAllIn() {
+        guard ChipRules.canPreDealAllIn(balance: chipBank.balance) else { return }
+        draftBet = chipBank.balance
+    }
+
+    /// 道具预留：见牌后全下并自动停牌（`ChipBank.goAllIn`）。
     private func performMidHandAllIn() {
         guard canMidHandAllIn else { return }
         // 先于 goAllIn / stand 上锁，避免 isAnimating 尚未置位时要牌/停牌仍可点。
@@ -371,7 +421,7 @@ private struct GameSessionView: View {
         showRoundEndSheet = false
         chipBank.acknowledgeRestoreHint()
         chipBank.abandonSession()
-        onEndSession()
+        onEndSession(true)
     }
 
     /// 放弃整局：退未结算注、清空会话筹码、返回欢迎页（不计入历史；与杀进程恢复相对）。
@@ -381,7 +431,7 @@ private struct GameSessionView: View {
         chipBank.refundActiveBet()
         chipBank.acknowledgeRestoreHint()
         chipBank.abandonSession()
-        onEndSession()
+        onEndSession(false)
     }
 }
 

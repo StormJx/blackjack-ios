@@ -22,18 +22,33 @@ enum ChipRules {
     static let betChipValues = [100, 200, 500]
 
     /// 下注页「余下全部」可追加进草稿的金额；0 表示不必显示 / 不可用。
-    /// 解决余额落在档位之间（如 100–199）或累加后剩零头时无法一次下满的问题（非对局中全下）。
+    /// 仅在剩余额不是现有筹码档（100/200/500）时出现，避免与档位按钮重复。
     static func remainingDraftAddAmount(draftBet: Int, balance: Int) -> Int {
         guard draftBet >= 0, balance >= minimumBet else { return 0 }
         let remaining = balance - draftBet
         guard remaining > 0 else { return 0 }
         let newDraft = draftBet + remaining
         guard newDraft >= minimumBet, newDraft <= balance else { return 0 }
+        // 恰好一档时用 +100 / +200 / +500 即可。
+        if betChipValues.contains(remaining) { return 0 }
         return remaining
     }
 
-    /// 产品锁定：天然黑杰克开局见牌即结算，不进入玩家回合，故无法对局中全下（与多数赌场桌一致）。
+    /// 破产回主页后欢迎页短提示。
+    static let sessionClearedReturnHomeHint = "进度已清空，可重新开始。"
+
+    /// 产品锁定：天然黑杰克开局见牌即结算，不进入玩家回合。
+    /// 默认全下在发牌前完成，故天然 BJ 仍可吃到开局全下；见牌后再全下见道具规划。
     static let naturalBlackjackResolvesBeforePlayerTurn = true
+
+    /// 默认练习：全下仅在开局下注页。对局中见牌后再全下留给道具（默认关闭）。
+    /// - Note: 开启后接回 `ChipBank.goAllIn` + 牌桌「全下」键（见 `GameTableView`）。
+    static let midHandAllInEnabled = false
+
+    /// 开局下注页是否可「全下」（余额 ≥ 最小注）。
+    static func canPreDealAllIn(balance: Int) -> Bool {
+        balance >= minimumBet
+    }
 
     /// 杀进程恢复后下注页提示（未结算注已退回，双方进度保留）。
     static let restoreAfterInterruptHint =
@@ -43,7 +58,13 @@ enum ChipRules {
     static let abandonSessionConfirmDetail =
         "将清空双方筹码并返回主页（与杀进程后自动恢复进度不同）。当前进度不记入历史。"
 
-    /// 一副牌残局：剩余张数 ≤ 该值且本局不重洗时，对局中「全下」以强调样式展示。
+    /// 欢迎页规则说明（短文案，适配小屏）。
+    static var welcomeRulesSummary: String {
+        "挑战庄家 \(dealerStartingBank)；打光或破产即结束。黑杰克见牌结算。"
+    }
+
+    /// 一副牌残局：剩余张数 ≤ 该值且本局不重洗时，开局「全下」以强调样式展示（强制全下）。
+    /// 道具启用对局中全下时，同条件也可用于见牌后强调。
     static let forcedAllInRemainingCards = 15
 
     /// UserDefaults 键：玩家余额。
@@ -55,7 +76,7 @@ enum ChipRules {
     /// UserDefaults 键：尚未结算的本局注码（用于杀进程 / 异常退出后退注）。
     static let activeBetStorageKey = "chipBank.activeBet"
 
-    /// 一副牌残局「强制全下」强调样式是否应出现。
+    /// 一副牌残局「强制全下」强调样式是否应出现（开局下注页；道具开启后亦可用于对局中）。
     /// - Note: `willReshuffle` 为 true 时本局会先重洗，剩余张数不再是开局牌况，故不展示。
     static func canUseForcedAllIn(
         isSingleDeck: Bool,

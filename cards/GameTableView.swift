@@ -14,6 +14,8 @@ struct GameTableView: View {
     let showRoundEndPanel: Bool
     let canHit: Bool
     let canStand: Bool
+    /// 道具预留：默认 `false`；为 true 时显示见牌后「全下」。
+    let showsMidHandAllIn: Bool
     let canMidHandAllIn: Bool
     let emphasizeForcedAllIn: Bool
     let onHit: () -> Void
@@ -215,17 +217,20 @@ struct GameTableView: View {
             .opacity(canStand ? 1 : 0.55)
             .saturation(canStand ? 1 : 0.2)
 
-            Button(emphasizeForcedAllIn ? "强制全下" : "全下") {
-                GameFeedback.shared.buttonTap()
-                onAllIn()
+            // 默认隐藏；道具「见牌后再全下」开启后显示（逻辑见 ChipBank.goAllIn）。
+            if showsMidHandAllIn {
+                Button(emphasizeForcedAllIn ? "强制全下" : "全下") {
+                    GameFeedback.shared.buttonTap()
+                    onAllIn()
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .frame(maxWidth: .infinity)
+                .tint(emphasizeForcedAllIn ? .orange : .red.opacity(0.85))
+                .disabled(!canMidHandAllIn)
+                .opacity(canMidHandAllIn ? 1 : 0.55)
+                .saturation(canMidHandAllIn ? 1 : 0.2)
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .frame(maxWidth: .infinity)
-            .tint(emphasizeForcedAllIn ? .orange : .red.opacity(0.85))
-            .disabled(!canMidHandAllIn)
-            .opacity(canMidHandAllIn ? 1 : 0.55)
-            .saturation(canMidHandAllIn ? 1 : 0.2)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }

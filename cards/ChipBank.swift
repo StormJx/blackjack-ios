@@ -111,7 +111,8 @@ final class ChipBank: ObservableObject {
         return true
     }
 
-    /// 对局中 All In：见牌后将剩余余额全部追加进本局注码；返回追加额，失败为 nil。
+    /// 对局中 All In（道具预留）：见牌后将剩余余额全部追加进本局注码；返回追加额，失败为 nil。
+    /// 默认练习关闭（`ChipRules.midHandAllInEnabled == false`）；开局全下请用 `placeBet(balance)`。
     @discardableResult
     func goAllIn() -> Int? {
         guard activeBet > 0, balance > 0 else { return nil }

@@ -167,14 +167,35 @@ struct ChipSettlementTests {
         #expect(ChipRules.remainingDraftAddAmount(draftBet: 150, balance: 150) == 0)
         // 低于最小注：不可用。
         #expect(ChipRules.remainingDraftAddAmount(draftBet: 0, balance: 50) == 0)
-        // 恰好一档时也可一次下满。
-        #expect(ChipRules.remainingDraftAddAmount(draftBet: 0, balance: 100) == 100)
+        // 恰好一档时不显示「余下全部」，改用 +100 / +200 / +500。
+        #expect(ChipRules.remainingDraftAddAmount(draftBet: 0, balance: 100) == 0)
+        #expect(ChipRules.remainingDraftAddAmount(draftBet: 0, balance: 200) == 0)
+        #expect(ChipRules.remainingDraftAddAmount(draftBet: 100, balance: 300) == 0)
     }
 
-    // MARK: - 对局中 All In / 强制 All In 强调条件
+    // MARK: - 开局全下 / 对局中全下（道具预留 API）
+
+    @Test func canPreDealAllInRequiresMinimumBalance() {
+        #expect(ChipRules.canPreDealAllIn(balance: ChipRules.minimumBet))
+        #expect(ChipRules.canPreDealAllIn(balance: ChipRules.startingBalance))
+        #expect(ChipRules.canPreDealAllIn(balance: ChipRules.minimumBet - 1) == false)
+        #expect(ChipRules.midHandAllInEnabled == false)
+    }
+
+    @MainActor
+    @Test func preDealAllInPlacesEntireBalance() {
+        let defaults = Self.makeEphemeralDefaults()
+        let bank = ChipBank(defaults: defaults)
+        let stake = bank.balance
+        #expect(ChipRules.canPreDealAllIn(balance: stake))
+        #expect(bank.placeBet(stake))
+        #expect(bank.balance == 0)
+        #expect(bank.activeBet == stake)
+    }
 
     @MainActor
     @Test func midHandGoAllInAddsRemainingBalanceToActiveBet() {
+        // 道具预留 API：默认 UI 关闭，结算层仍保留见牌后追加。
         let defaults = Self.makeEphemeralDefaults()
         let bank = ChipBank(defaults: defaults)
         #expect(bank.placeBet(100))

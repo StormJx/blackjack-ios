@@ -84,7 +84,7 @@ final class BlackjackGame: ObservableObject {
         deck.needsReshuffleBeforeNextRound
     }
 
-    /// 一副牌且本局将以剩余 ≤15 张开打时，可展示「强制 All In」。
+    /// 一副牌且本局将以剩余 ≤15 张开打时，开局「全下」用强调样式（强制全下）。
     var isForcedAllInAvailable: Bool {
         ChipRules.canUseForcedAllIn(
             isSingleDeck: practiceMode == .singleDeck,
@@ -176,8 +176,8 @@ final class BlackjackGame: ObservableObject {
         try? await Task.sleep(nanoseconds: delayAfterDealStep)
 
         let playerHand = Hand(cards: playerCards)
-        // C8：天然黑杰克见牌即结算，不进入玩家回合 → 无法对局中全下（多数赌场桌一致；保持）。
-        // 见 `ChipRules.naturalBlackjackResolvesBeforePlayerTurn`。
+        // 天然黑杰克见牌即结算，不进入玩家回合。默认全下在发牌前，故仍可吃到开局全下。
+        // 见牌后再全下留给道具（`ChipRules.midHandAllInEnabled`）。
         if playerHand.isNaturalBlackjack {
             resolvePlayerNaturalBlackjack()
             isAnimating = false
