@@ -157,6 +157,20 @@ struct ChipSettlementTests {
         #expect(result.wasPartialPayout)
     }
 
+    // MARK: - C7 下注「余下全部」
+
+    @Test func remainingDraftAddCoversBalanceBetweenChipTiers() {
+        // 余额 150：无法用 +200，余下全部应一次下满。
+        #expect(ChipRules.remainingDraftAddAmount(draftBet: 0, balance: 150) == 150)
+        // 已加 100、剩 50 零头。
+        #expect(ChipRules.remainingDraftAddAmount(draftBet: 100, balance: 150) == 50)
+        #expect(ChipRules.remainingDraftAddAmount(draftBet: 150, balance: 150) == 0)
+        // 低于最小注：不可用。
+        #expect(ChipRules.remainingDraftAddAmount(draftBet: 0, balance: 50) == 0)
+        // 恰好一档时也可一次下满。
+        #expect(ChipRules.remainingDraftAddAmount(draftBet: 0, balance: 100) == 100)
+    }
+
     // MARK: - 对局中 All In / 强制 All In 强调条件
 
     @MainActor
@@ -339,6 +353,24 @@ struct ChipSettlementTests {
         #expect(bank.activeBet == 0)
         #expect(bank.isSessionOver == false)
         #expect(defaults.integer(forKey: ChipRules.activeBetStorageKey) == 0)
+        // C9：杀进程恢复应打标，供 UI 提示（与主动退出清空相对）。
+        #expect(bank.didRestoreAfterInterrupt)
+        bank.acknowledgeRestoreHint()
+        #expect(bank.didRestoreAfterInterrupt == false)
+    }
+
+    @MainActor
+    @Test func placeBetAcceptsRemainingBalanceBetweenChipTiers() {
+        let defaults = Self.makeEphemeralDefaults()
+        defaults.set(150, forKey: ChipRules.balanceStorageKey)
+        defaults.set(ChipRules.dealerStartingBank, forKey: ChipRules.dealerBankStorageKey)
+        defaults.set(0, forKey: ChipRules.activeBetStorageKey)
+        let bank = ChipBank(defaults: defaults)
+        let draft = ChipRules.remainingDraftAddAmount(draftBet: 0, balance: bank.balance)
+        #expect(draft == 150)
+        #expect(bank.placeBet(draft))
+        #expect(bank.balance == 0)
+        #expect(bank.activeBet == 150)
     }
 
     @MainActor

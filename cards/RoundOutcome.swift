@@ -17,4 +17,24 @@ enum RoundOutcome: Equatable, Sendable {
     case playerLose
     /// 平局（含双方黑杰克）→ 退回本金。
     case push
+
+    /// 双方停牌后的比点（不含天然黑杰克、玩家中途爆牌）。
+    static func fromFinalPoints(playerBest: Int, dealerBest: Int) -> RoundOutcome {
+        if dealerBest > 21 { return .playerWin }
+        if playerBest > dealerBest { return .playerWin }
+        if playerBest < dealerBest { return .playerLose }
+        return .push
+    }
+
+    /// 结果区 SF Symbol 名（UI 着色见 `statusColor`）。
+    var statusIconName: String {
+        switch self {
+        case .playerBlackjack, .playerWin:
+            return "checkmark.circle.fill"
+        case .playerLose:
+            return "xmark.circle.fill"
+        case .push:
+            return "equal.circle.fill"
+        }
+    }
 }

@@ -176,6 +176,8 @@ final class BlackjackGame: ObservableObject {
         try? await Task.sleep(nanoseconds: delayAfterDealStep)
 
         let playerHand = Hand(cards: playerCards)
+        // C8：天然黑杰克见牌即结算，不进入玩家回合 → 无法对局中全下（多数赌场桌一致；保持）。
+        // 见 `ChipRules.naturalBlackjackResolvesBeforePlayerTurn`。
         if playerHand.isNaturalBlackjack {
             resolvePlayerNaturalBlackjack()
             isAnimating = false
@@ -308,34 +310,44 @@ final class BlackjackGame: ObservableObject {
     private func resolveOutcome() {
         let p = Hand(cards: playerCards).bestValue
         let d = Hand(cards: dealerCards).bestValue
+        let outcome = RoundOutcome.fromFinalPoints(playerBest: p, dealerBest: d)
 
-        if d > 21 {
+        switch outcome {
+        case .playerWin where d > 21:
             finishRound(
                 message: "庄家爆牌，你赢了",
                 outcome: .playerWin,
                 playerWon: true,
                 isPush: false
             )
-        } else if p > d {
+        case .playerWin:
             finishRound(
                 message: "你赢了",
                 outcome: .playerWin,
                 playerWon: true,
                 isPush: false
             )
-        } else if p < d {
+        case .playerLose:
             finishRound(
                 message: "你输了",
                 outcome: .playerLose,
                 playerWon: false,
                 isPush: false
             )
-        } else {
+        case .push:
             finishRound(
                 message: "平局",
                 outcome: .push,
                 playerWon: nil,
                 isPush: true
+            )
+        case .playerBlackjack:
+            // 比点路径不会产生天然黑杰克结局。
+            finishRound(
+                message: "你赢了",
+                outcome: .playerWin,
+                playerWon: true,
+                isPush: false
             )
         }
     }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// 筹码账户：持久化双方余额与未结算注码；会话结束 / 开新游戏 / 放弃会话。
+/// 筹码账户：持久化双方余额与未结算注码；会话结束回主页 / 放弃会话。
 @MainActor
 final class ChipBank: ObservableObject {
     @Published private(set) var balance: Int
@@ -15,6 +15,8 @@ final class ChipBank: ObservableObject {
     /// 已确认、尚未结算的本局下注；0 表示无进行中的注。
     @Published private(set) var activeBet: Int = 0
     @Published private(set) var lastSettlement: SettlementResult?
+    /// 启动时因杀进程等退回了未结算注码；供 UI 提示一次（与主动「退出清空」相对）。
+    @Published private(set) var didRestoreAfterInterrupt: Bool = false
 
     private let defaults: UserDefaults
     private let storageKey: String
@@ -46,11 +48,13 @@ final class ChipBank: ObservableObject {
             loadedDealer = ChipRules.dealerStartingBank
         }
 
-        // 进行中的注码若未结算就退出 / 杀进程，activeBet 必须退回。
+        // 进行中的注码若未结算就杀进程 / 异常退出：退回注码并保留双方进度（非主动退出清空）。
         let hadActiveBetRecord = defaults.object(forKey: activeBetKey) != nil
         let orphanBet = max(0, defaults.integer(forKey: activeBetKey))
+        var restoredInterrupt = false
         if orphanBet > 0 {
             loadedBalance += orphanBet
+            restoredInterrupt = true
         } else if !hadActiveBetRecord
             && defaults.object(forKey: dealerBankKey) == nil
             && loadedBalance < ChipRules.minimumBet {
@@ -62,7 +66,13 @@ final class ChipBank: ObservableObject {
         self.balance = loadedBalance
         self.dealerBank = loadedDealer
         self.activeBet = 0
+        self.didRestoreAfterInterrupt = restoredInterrupt
         persist()
+    }
+
+    /// UI 已展示恢复提示后清除，避免重复打扰。
+    func acknowledgeRestoreHint() {
+        didRestoreAfterInterrupt = false
     }
 
     /// 玩家是否已无法继续最小下注（会话可能结束）。
@@ -139,7 +149,7 @@ final class ChipBank: ObservableObject {
         persist()
     }
 
-    /// 会话结束后开新游戏：双方重置为起始筹码（留在同副牌模式桌内）。
+    /// 清空本会话筹码至起始状态（破产回主页 / 主动退出共用）。
     func resetSession() {
         balance = ChipRules.startingBalance
         dealerBank = ChipRules.dealerStartingBank
@@ -148,7 +158,7 @@ final class ChipBank: ObservableObject {
         persist()
     }
 
-    /// 放弃整局返回主页：清空本会话筹码状态（不写入历史；历史统计尚未实现）。
+    /// 结束会话返回主页：清空筹码状态（不写入历史；历史统计尚未实现）。
     func abandonSession() {
         resetSession()
     }

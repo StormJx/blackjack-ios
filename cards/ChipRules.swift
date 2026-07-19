@@ -9,7 +9,7 @@ import Foundation
 
 /// 桌面经济规则（纯常量，无状态）。
 enum ChipRules {
-    /// 玩家起始筹码 / 开新游戏重置目标。
+    /// 玩家起始筹码 / 会话重置目标。
     static let startingBalance = 1000
 
     /// 庄家筹码池起始（庄家不另下注；玩家赢则从此池派彩）。
@@ -21,10 +21,29 @@ enum ChipRules {
     /// 下注页筹码面额：从 0 累加；单次累加后总注不得超过余额。
     static let betChipValues = [100, 200, 500]
 
-    /// （旧）开局 All In 解锁阈值；现已改为对局中见牌后 All In，保留常量供兼容/测试。
-    static let allInUnlockBalance = startingBalance
+    /// 下注页「余下全部」可追加进草稿的金额；0 表示不必显示 / 不可用。
+    /// 解决余额落在档位之间（如 100–199）或累加后剩零头时无法一次下满的问题（非对局中全下）。
+    static func remainingDraftAddAmount(draftBet: Int, balance: Int) -> Int {
+        guard draftBet >= 0, balance >= minimumBet else { return 0 }
+        let remaining = balance - draftBet
+        guard remaining > 0 else { return 0 }
+        let newDraft = draftBet + remaining
+        guard newDraft >= minimumBet, newDraft <= balance else { return 0 }
+        return remaining
+    }
 
-    /// 一副牌残局：剩余张数 ≤ 该值且本局不重洗时，对局中 All In 以强调样式展示。
+    /// 产品锁定：天然黑杰克开局见牌即结算，不进入玩家回合，故无法对局中全下（与多数赌场桌一致）。
+    static let naturalBlackjackResolvesBeforePlayerTurn = true
+
+    /// 杀进程恢复后下注页提示（未结算注已退回，双方进度保留）。
+    static let restoreAfterInterruptHint =
+        "上次对局未完成，未结算注码已退回；双方筹码进度已保留。"
+
+    /// 主动退出确认说明（与杀进程自动恢复相对）。
+    static let abandonSessionConfirmDetail =
+        "将清空双方筹码并返回主页（与杀进程后自动恢复进度不同）。当前进度不记入历史。"
+
+    /// 一副牌残局：剩余张数 ≤ 该值且本局不重洗时，对局中「全下」以强调样式展示。
     static let forcedAllInRemainingCards = 15
 
     /// UserDefaults 键：玩家余额。
@@ -36,12 +55,7 @@ enum ChipRules {
     /// UserDefaults 键：尚未结算的本局注码（用于杀进程 / 异常退出后退注）。
     static let activeBetStorageKey = "chipBank.activeBet"
 
-    /// 普通 All In 是否可用（与牌堆无关）。
-    static func canUseStandardAllIn(balance: Int) -> Bool {
-        balance > allInUnlockBalance
-    }
-
-    /// 一副牌残局「强制 All In」入口是否应出现。
+    /// 一副牌残局「强制全下」强调样式是否应出现。
     /// - Note: `willReshuffle` 为 true 时本局会先重洗，剩余张数不再是开局牌况，故不展示。
     static func canUseForcedAllIn(
         isSingleDeck: Bool,
@@ -103,9 +117,9 @@ enum SessionEndReason: Equatable, Sendable {
     var detail: String {
         switch self {
         case .playerBroke:
-            return "余额不足以继续下注，本局游戏结束。"
+            return "余额不足以继续下注，本局游戏结束。请返回主页后再开启新的一局。"
         case .dealerBroke:
-            return "庄家筹码已全部赔出，本局游戏结束。"
+            return "庄家筹码已全部赔出，本局游戏结束。请返回主页后再开启新的一局。"
         }
     }
 }

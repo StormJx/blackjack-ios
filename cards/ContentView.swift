@@ -45,7 +45,7 @@ struct ContentView: View {
                 Text("练习模式")
                     .font(.headline)
                     .foregroundStyle(.secondary)
-                Text("选择几副牌后进入对局；挑战庄家筹码池，打光或破产即本局结束。")
+                Text("选择几副牌后进入对局。挑战庄家 \(ChipRules.dealerStartingBank) 筹码；打光庄家或自己破产即本局结束。天然黑杰克见牌即结算（无对局中全下）。")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -120,6 +120,8 @@ private struct GameSessionView: View {
     @State private var showBetSheet = false
     @State private var showRoundEndSheet = false
     @State private var showAbandonConfirm = false
+    /// 全下已提交、stand 动画尚未把 isAnimating 置 true 时，锁住底部键防连点。
+    @State private var controlsLockedAfterAllIn = false
     /// 草稿注码：从 0 累加筹码；确认时须 ≥ 最小下注。
     @State private var draftBet = 0
 
@@ -132,35 +134,48 @@ private struct GameSessionView: View {
     var body: some View {
         ZStack {
             gameTableView
-            if game.isShowingShuffleScreen {
-                ZStack(alignment: .topLeading) {
-                    ShuffleScreenOverlay()
-                    exitToolbarButton
-                        .padding(.leading, 20)
-                        .padding(.top, 16)
-                }
-                .transition(.opacity.combined(with: .scale(scale: 0.98)))
-                .zIndex(1)
+
+            if showBetSheet {
+                sessionPanelOverlay { betPanelContent }
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .zIndex(2)
             }
+
+            if showRoundEndSheet {
+                sessionPanelOverlay { roundEndPanelContent }
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .zIndex(3)
+            }
+
+            if game.isShowingShuffleScreen {
+                ShuffleScreenOverlay()
+                    .transition(.opacity.combined(with: .scale(scale: 0.98)))
+                    .zIndex(4)
+            }
+
+            // 全会话唯一退出入口：始终在界面左上角；下注/结果面板不再放叉号。
+            VStack {
+                HStack {
+                    exitToolbarButton
+                        .padding(.leading, 34)
+                        .padding(.top, 30)
+                    Spacer(minLength: 0)
+                }
+                Spacer(minLength: 0)
+            }
+            .zIndex(10)
         }
         .animation(.easeInOut(duration: 0.28), value: game.isShowingShuffleScreen)
+        .animation(.easeInOut(duration: 0.28), value: showBetSheet)
+        .animation(.easeInOut(duration: 0.28), value: showRoundEndSheet)
         .modifier(AbandonConfirmModifier(
             isPresented: $showAbandonConfirm,
             onConfirm: abandonSessionToWelcome
         ))
-        .sheet(isPresented: $showBetSheet) {
-            betSheet
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.hidden)
-                .interactiveDismissDisabled(true)
-        }
-        .sheet(isPresented: $showRoundEndSheet) {
-            roundEndSheet
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.hidden)
-                .interactiveDismissDisabled(true)
-        }
         .onChange(of: game.phase) { _, newPhase in
+            if newPhase != .playerTurn {
+                controlsLockedAfterAllIn = false
+            }
             if newPhase == .finished {
                 settleCurrentRoundIfNeeded()
                 showRoundEndSheet = true
@@ -181,177 +196,78 @@ private struct GameSessionView: View {
         }
     }
 
-    /// 开局前下注；All In 不在此页（见牌后在对局操作区）。
-    private var betSheet: some View {
-        NavigationStack {
-            VStack(spacing: 16) {
-                VStack(spacing: 6) {
-                    Text("下注")
-                        .font(.title2.weight(.semibold))
-                    Text(draftBet == 0
-                         ? "余额 \(chipBank.balance)"
-                         : "余额 \(chipBank.balance) · 注 \(draftBet)")
-                        .font(.headline)
-                        .monospacedDigit()
-                        .foregroundStyle(.secondary)
-                }
-                .frame(maxWidth: .infinity)
-
-                HStack(spacing: 10) {
-                    ForEach(ChipRules.betChipValues, id: \.self) { value in
-                        Button {
-                            GameFeedback.shared.buttonTap()
-                            addChip(value)
-                        } label: {
-                            Text("+\(value)")
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.bordered)
-                        .disabled(!canAddChip(value))
-                    }
-                }
-
-                Button("清空") {
-                    GameFeedback.shared.buttonTap()
-                    clearDraftBet()
-                }
-                .font(.subheadline.weight(.semibold))
-                .disabled(draftBet == 0)
-
-                Spacer(minLength: 8)
-
-                Button {
-                    GameFeedback.shared.buttonTap()
-                    confirmBetAndDeal()
-                } label: {
-                    Text("确认并发牌")
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .tint(.green)
-                .disabled(!canConfirmBet)
-                .opacity(canConfirmBet ? 1 : 0.55)
-            }
-            .padding(20)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .background(Color(.systemGroupedBackground))
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    exitToolbarButton
-                }
-            }
-            .modifier(AbandonConfirmModifier(
-                isPresented: $showAbandonConfirm,
-                onConfirm: abandonSessionToWelcome
-            ))
+    /// 底部面板：留出顶部给牌桌标题与唯一退出叉号。
+    private func sessionPanelOverlay<Content: View>(
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(spacing: 0) {
+            Spacer(minLength: 88)
+            content()
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .background(Color(.systemGroupedBackground))
+                .clipShape(
+                    UnevenRoundedRectangle(
+                        topLeadingRadius: 22,
+                        bottomLeadingRadius: 0,
+                        bottomTrailingRadius: 0,
+                        topTrailingRadius: 22,
+                        style: .continuous
+                    )
+                )
+                .shadow(color: .black.opacity(0.12), radius: 16, y: -4)
         }
+        .background(Color.black.opacity(0.35).ignoresSafeArea())
     }
 
-    /// 本局结束弹窗；若会话因破产结束则切换为最终结果 +「开新游戏」。
-    private var roundEndSheet: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                VStack(spacing: 12) {
-                    Text(chipBank.isSessionOver ? "本局游戏结束" : "本局结束")
-                        .font(.title2.weight(.semibold))
-                    if let reason = chipBank.sessionEndReason {
-                        Text(reason.title)
-                            .font(.title3.weight(.bold))
-                            .foregroundStyle(reason == .dealerBroke ? .green : .red)
-                        Text(reason.detail)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                    }
-                    Text(game.outcomeMessage)
-                        .font(chipBank.isSessionOver ? .body.weight(.semibold) : .title3.weight(.semibold))
-                        .foregroundStyle(statusColor)
-                        .multilineTextAlignment(.center)
-                        .lineLimit(4)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.top, 8)
-
-                VStack(spacing: 8) {
-                    if let settlement = chipBank.lastSettlement {
-                        Text("本局盈亏 \(settlement.netChangeLabel)")
-                            .font(.headline)
-                            .monospacedDigit()
-                            .foregroundStyle(settlementNetColor(settlement.netChange))
-                        if let odds = settlement.oddsLabel {
-                            Text(odds)
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(.secondary)
-                        }
-                        if let partial = settlement.partialPayoutLabel {
-                            Text(partial)
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(.orange)
-                                .multilineTextAlignment(.center)
-                        }
-                        Text("你 \(settlement.balanceAfter) · 庄家 \(settlement.dealerBankAfter)")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .monospacedDigit()
-                    } else {
-                        Text("你 \(chipBank.balance) · 庄家 \(chipBank.dealerBank)")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .monospacedDigit()
-                    }
-                    Text(game.shoeStatusLine)
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
-                        .monospacedDigit()
-                }
-                .padding(.top, 16)
-
-                Spacer(minLength: 24)
-
-                if chipBank.isSessionOver {
-                    Button {
-                        GameFeedback.shared.buttonTap()
-                        startFreshSessionOnTable()
-                    } label: {
-                        Text("开新游戏")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
-                    .tint(.green)
-                } else {
-                    Button {
-                        GameFeedback.shared.buttonTap()
-                        showRoundEndSheet = false
-                        prepareBetDraft()
-                        showBetSheet = true
-                    } label: {
-                        Text("继续")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
-                    .tint(.green)
-                }
-            }
-            .padding(24)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .background(Color(.systemGroupedBackground))
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    exitToolbarButton
-                }
-            }
-            .modifier(AbandonConfirmModifier(
-                isPresented: $showAbandonConfirm,
-                onConfirm: abandonSessionToWelcome
-            ))
-        }
+    private var betPanelContent: some View {
+        SessionBetPanel(
+            balance: chipBank.balance,
+            draftBet: $draftBet,
+            showRestoreHint: chipBank.didRestoreAfterInterrupt,
+            canConfirm: canConfirmBet,
+            onClear: clearDraftBet,
+            onAddChip: addChip,
+            onAddRemaining: addRemainingBalance,
+            onConfirm: confirmBetAndDeal
+        )
     }
 
-    /// 弹窗与牌桌共用的退出入口（先确认，防误触）。
+    private var roundEndPanelContent: some View {
+        SessionRoundEndPanel(
+            isSessionOver: chipBank.isSessionOver,
+            sessionEndReason: chipBank.sessionEndReason,
+            outcomeMessage: game.outcomeMessage,
+            outcome: game.lastOutcome,
+            settlement: chipBank.lastSettlement,
+            balance: chipBank.balance,
+            dealerBank: chipBank.dealerBank,
+            shoeStatusLine: game.shoeStatusLine,
+            onReturnHome: returnToWelcomeAfterSessionEnd,
+            onContinue: {
+                showRoundEndSheet = false
+                prepareBetDraft()
+                showBetSheet = true
+            }
+        )
+    }
+
+    private var gameTableView: some View {
+        GameTableView(
+            game: game,
+            chipBank: chipBank,
+            showBetPanel: showBetSheet,
+            showRoundEndPanel: showRoundEndSheet,
+            canHit: canHit,
+            canStand: canStand,
+            canMidHandAllIn: canMidHandAllIn,
+            emphasizeForcedAllIn: emphasizeForcedAllIn,
+            onHit: { Task { await game.hit() } },
+            onStand: { Task { await game.stand() } },
+            onAllIn: performMidHandAllIn
+        )
+    }
+
+    /// 全会话唯一退出入口（牌桌左上角；先确认，防误触）。
     private var exitToolbarButton: some View {
         Button {
             GameFeedback.shared.buttonTap()
@@ -359,9 +275,15 @@ private struct GameSessionView: View {
         } label: {
             Image(systemName: "xmark.circle.fill")
                 .font(.title2)
-                .symbolRenderingMode(.hierarchical)
-                .foregroundStyle(.secondary)
+                .symbolRenderingMode(.palette)
+                .foregroundStyle(.primary.opacity(0.85), Color.primary.opacity(0.12))
+                .padding(4)
+                .background(
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                )
         }
+        .buttonStyle(.plain)
         .accessibilityLabel("退出本局")
     }
 
@@ -373,20 +295,24 @@ private struct GameSessionView: View {
             && !game.isAnimating
     }
 
-    /// 从当前草稿累加该面额后仍不超过余额。
-    private func canAddChip(_ value: Int) -> Bool {
-        value > 0 && draftBet + value <= chipBank.balance
+    private var canHit: Bool {
+        game.phase == .playerTurn && !game.isAnimating && !controlsLockedAfterAllIn
+    }
+
+    private var canStand: Bool {
+        game.phase == .playerTurn && !game.isAnimating && !controlsLockedAfterAllIn
     }
 
     /// 玩家回合见牌后：尚有剩余余额时可 All In 追加进本局注。
     private var canMidHandAllIn: Bool {
         game.phase == .playerTurn
             && !game.isAnimating
+            && !controlsLockedAfterAllIn
             && chipBank.activeBet > 0
             && chipBank.balance > 0
     }
 
-    /// 一副牌残局时用强调样式提示 All In。
+    /// 一副牌残局时用强调样式提示全下。
     private var emphasizeForcedAllIn: Bool {
         canMidHandAllIn && game.isForcedAllInAvailable
     }
@@ -401,19 +327,31 @@ private struct GameSessionView: View {
     }
 
     private func addChip(_ value: Int) {
-        guard canAddChip(value) else { return }
+        guard value > 0, draftBet + value <= chipBank.balance else { return }
         draftBet += value
+    }
+
+    private func addRemainingBalance() {
+        let amount = ChipRules.remainingDraftAddAmount(draftBet: draftBet, balance: chipBank.balance)
+        guard amount > 0 else { return }
+        draftBet += amount
     }
 
     private func performMidHandAllIn() {
         guard canMidHandAllIn else { return }
-        guard chipBank.goAllIn() != nil else { return }
+        // 先于 goAllIn / stand 上锁，避免 isAnimating 尚未置位时要牌/停牌仍可点。
+        controlsLockedAfterAllIn = true
+        guard chipBank.goAllIn() != nil else {
+            controlsLockedAfterAllIn = false
+            return
+        }
         // 全下后本局注码已定，自动停牌进入庄家回合。
         Task { await game.stand() }
     }
 
     private func confirmBetAndDeal() {
         guard chipBank.placeBet(draftBet) else { return }
+        chipBank.acknowledgeRestoreHint()
         showBetSheet = false
         Task { await game.startNewRound() }
     }
@@ -427,324 +365,23 @@ private struct GameSessionView: View {
         }
     }
 
-    /// 会话结束后留在同副牌模式桌内重置双方筹码，并进入下注。
-    private func startFreshSessionOnTable() {
-        showRoundEndSheet = false
-        chipBank.resetSession()
-        prepareBetDraft()
-        showBetSheet = true
-    }
-
-    /// 放弃整局：退未结算注、清空会话筹码、返回欢迎页（不计入历史）。
-    private func abandonSessionToWelcome() {
+    /// 破产会话结束：清空筹码并回欢迎页；新一局须从主页再次「开始游戏」。
+    private func returnToWelcomeAfterSessionEnd() {
         showBetSheet = false
         showRoundEndSheet = false
-        chipBank.refundActiveBet()
+        chipBank.acknowledgeRestoreHint()
         chipBank.abandonSession()
         onEndSession()
     }
 
-    private func settlementNetColor(_ net: Int) -> Color {
-        if net > 0 { return .green }
-        if net < 0 { return .red }
-        return .orange
-    }
-
-    /// 牌面与状态区可滚动；底部仅保留要牌 / 停牌。新一局在本局结束弹窗内操作。
-    private var gameTableView: some View {
-        VStack(spacing: 0) {
-            ScrollView(showsIndicators: true) {
-                VStack(spacing: 16) {
-                    tableTitle
-                    if game.phase == .idle && game.playerCards.isEmpty && !showBetSheet {
-                        Text("确认下注后发牌；使用「要牌」「停牌」进行游戏。")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                    }
-                    VStack(spacing: 14) {
-                        dealerSection
-                        playerSection
-                        statusSection
-                    }
-                    .opacity(game.handAreaOpacity)
-                    .scaleEffect(game.handAreaScale, anchor: .center)
-                    .animation(.easeInOut(duration: 0.35), value: game.handAreaOpacity)
-                }
-                .padding(18)
-                .frame(maxWidth: .infinity, alignment: .top)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-            VStack(spacing: 0) {
-                Divider()
-                    .opacity(0.35)
-                controls
-                    .padding(.horizontal, 18)
-                    .padding(.top, 12)
-                    .padding(.bottom, 14)
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background {
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(.regularMaterial)
-                .shadow(color: .black.opacity(0.06), radius: 24, x: 0, y: 12)
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-    }
-
-    private var tableTitle: some View {
-        HStack(alignment: .center, spacing: 10) {
-            exitToolbarButton
-                .buttonStyle(.plain)
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text("二十一点")
-                    .font(.system(.title2, design: .rounded).weight(.heavy))
-                Text(game.shoeStatusLine)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .monospacedDigit()
-                HStack(spacing: 8) {
-                    Text("你 \(chipBank.balance)")
-                        .font(.caption.weight(.semibold))
-                        .monospacedDigit()
-                    Text("庄家 \(chipBank.dealerBank)")
-                        .font(.caption.weight(.semibold))
-                        .monospacedDigit()
-                    if chipBank.activeBet > 0 {
-                        Text("注 \(chipBank.activeBet)")
-                            .font(.caption)
-                            .monospacedDigit()
-                            .foregroundStyle(.tertiary)
-                    }
-                }
-                .foregroundStyle(.secondary)
-            }
-            Spacer(minLength: 0)
-            Text(game.practiceMode.shortLabel)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 6)
-                .background(
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(Color.primary.opacity(0.08))
-                )
-        }
-        .padding(.horizontal, 2)
-    }
-
-    private var dealerSection: some View {
-        sectionCard {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    Text("庄家")
-                        .font(.title3.weight(.semibold))
-                    Spacer(minLength: 0)
-                    Text("筹码 \(chipBank.dealerBank)")
-                        .font(.caption.weight(.semibold))
-                        .monospacedDigit()
-                        .foregroundStyle(.secondary)
-                }
-                LazyVGrid(columns: cardGridColumns, alignment: .leading, spacing: 8) {
-                    ForEach(0..<dealerCardFaces.count, id: \.self) { i in
-                        PlayingCardView(face: dealerCardFaces[i])
-                            .id("\(game.roundToken)-d-\(i)")
-                            .cardDealEntrance()
-                    }
-                }
-                .animation(.spring(response: 0.38, dampingFraction: 0.78), value: dealerCardFaces.count)
-                .animation(.easeInOut(duration: 0.32), value: game.dealerHoleRevealed)
-                if !game.hideDealerHoleCard || game.phase == .idle {
-                    Text("点数：\(visibleDealerValueText())")
-                        .font(.subheadline.weight(.medium))
-                        .monospacedDigit()
-                        .foregroundStyle(.primary.opacity(0.78))
-                } else {
-                    Text("明牌点数：\(dealerUpcardValueText())")
-                        .font(.subheadline.weight(.medium))
-                        .monospacedDigit()
-                        .foregroundStyle(.primary.opacity(0.78))
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private var playerSection: some View {
-        sectionCard {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    Text("玩家")
-                        .font(.title3.weight(.semibold))
-                    Spacer(minLength: 0)
-                    Text("筹码 \(chipBank.balance)")
-                        .font(.caption.weight(.semibold))
-                        .monospacedDigit()
-                        .foregroundStyle(.secondary)
-                }
-                LazyVGrid(columns: cardGridColumns, alignment: .leading, spacing: 8) {
-                    ForEach(0..<game.playerCards.count, id: \.self) { i in
-                        PlayingCardView(face: .faceUp(game.playerCards[i]))
-                            .id("\(game.roundToken)-p-\(i)")
-                            .cardDealEntrance()
-                    }
-                }
-                .animation(.spring(response: 0.38, dampingFraction: 0.78), value: game.playerCards.count)
-                Text("点数：\(playerPointsLabel)")
-                    .font(.subheadline.weight(.medium))
-                    .monospacedDigit()
-                    .foregroundStyle(.primary.opacity(0.78))
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private var statusSection: some View {
-        let hasOutcome = !game.outcomeMessage.isEmpty
-        return HStack(spacing: 8) {
-            Image(systemName: statusIcon)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(hasOutcome ? statusColor : .secondary)
-            Text(hasOutcome ? game.outcomeMessage : "等待本局结果")
-                .font(.title3.weight(.semibold))
-                .foregroundStyle(hasOutcome ? statusColor : .secondary)
-                .multilineTextAlignment(.center)
-                .lineLimit(2)
-        }
-        .frame(maxWidth: .infinity, minHeight: 36)
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
-        .background(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(statusColor.opacity(hasOutcome ? 0.14 : 0.06))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .strokeBorder(statusColor.opacity(hasOutcome ? 0.28 : 0.08), lineWidth: 1)
-        )
-    }
-
-    private var controls: some View {
-        HStack(spacing: 12) {
-            Button("要牌") {
-                GameFeedback.shared.buttonTap()
-                Task { await game.hit() }
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .frame(maxWidth: .infinity)
-            .tint(.blue)
-            .disabled(!canHit)
-            .opacity(canHit ? 1 : 0.55)
-            .saturation(canHit ? 1 : 0.2)
-
-            Button("停牌") {
-                GameFeedback.shared.buttonTap()
-                Task { await game.stand() }
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .frame(maxWidth: .infinity)
-            .tint(.orange)
-            .disabled(!canStand)
-            .opacity(canStand ? 1 : 0.55)
-            .saturation(canStand ? 1 : 0.2)
-
-            Button(emphasizeForcedAllIn ? "强制全下" : "全下") {
-                GameFeedback.shared.buttonTap()
-                performMidHandAllIn()
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .frame(maxWidth: .infinity)
-            .tint(emphasizeForcedAllIn ? .orange : .red.opacity(0.85))
-            .disabled(!canMidHandAllIn)
-            .opacity(canMidHandAllIn ? 1 : 0.55)
-            .saturation(canMidHandAllIn ? 1 : 0.2)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private var canHit: Bool {
-        game.phase == .playerTurn && !game.isAnimating
-    }
-
-    private var canStand: Bool {
-        game.phase == .playerTurn && !game.isAnimating
-    }
-
-    private var dealerCardFaces: [PlayingCardView.Face] {
-        guard game.dealerCards.count >= 2 else {
-            return game.dealerCards.map { PlayingCardView.Face.faceUp($0) }
-        }
-        if game.hideDealerHoleCard {
-            return game.dealerCards.enumerated().map { index, card in
-                index == 1 ? .faceDown : .faceUp(card)
-            }
-        }
-        return game.dealerCards.map { PlayingCardView.Face.faceUp($0) }
-    }
-
-    private var playerPointsLabel: String {
-        game.playerCards.isEmpty ? "—" : "\(game.playerBestValue)"
-    }
-
-    private func visibleDealerValueText() -> String {
-        if game.dealerCards.isEmpty { return "—" }
-        return "\(game.dealerBestValue)"
-    }
-
-    private func dealerUpcardValueText() -> String {
-        guard let first = game.dealerCards.first else { return "—" }
-        return "\(Hand(cards: [first]).bestValue)"
-    }
-
-    private var statusColor: Color {
-        if game.outcomeMessage.contains("平局") {
-            return .orange
-        }
-        if game.outcomeMessage.contains("赢") {
-            return .green
-        }
-        if game.outcomeMessage.contains("输") || game.outcomeMessage.contains("爆牌") {
-            return .red
-        }
-        return .secondary
-    }
-
-    private var statusIcon: String {
-        if game.outcomeMessage.contains("平局") {
-            return "equal.circle.fill"
-        }
-        if game.outcomeMessage.contains("赢") {
-            return "checkmark.circle.fill"
-        }
-        if game.outcomeMessage.contains("输") || game.outcomeMessage.contains("爆牌") {
-            return "xmark.circle.fill"
-        }
-        return "hourglass.circle.fill"
-    }
-
-    private var cardGridColumns: [GridItem] {
-        [GridItem(.adaptive(minimum: 58, maximum: 58), spacing: 8, alignment: .leading)]
-    }
-
-    private func sectionCard<Content: View>(@ViewBuilder content: () -> Content) -> some View {
-        content()
-            .padding(.horizontal, 14)
-            .padding(.vertical, 11)
-            .background(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(.thinMaterial)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
-            )
+    /// 放弃整局：退未结算注、清空会话筹码、返回欢迎页（不计入历史；与杀进程恢复相对）。
+    private func abandonSessionToWelcome() {
+        showBetSheet = false
+        showRoundEndSheet = false
+        chipBank.refundActiveBet()
+        chipBank.acknowledgeRestoreHint()
+        chipBank.abandonSession()
+        onEndSession()
     }
 }
 
@@ -766,7 +403,7 @@ private struct AbandonConfirmModifier: ViewModifier {
                 }
                 Button("取消", role: .cancel) {}
             } message: {
-                Text("当前进度不会记入历史，双方筹码将重置。")
+                Text(ChipRules.abandonSessionConfirmDetail)
             }
     }
 }
