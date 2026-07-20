@@ -17,6 +17,8 @@ final class ChipBank: ObservableObject {
     @Published private(set) var lastSettlement: SettlementResult?
     /// 启动时因杀进程等退回了未结算注码；供 UI 提示一次（与主动「退出清空」相对）。
     @Published private(set) var didRestoreAfterInterrupt: Bool = false
+    /// 当前 / 刚结束的一局注码是否为全下（开局梭哈或对局中追加至全部余额）。
+    private(set) var activeBetWasAllIn: Bool = false
 
     private let defaults: UserDefaults
     private let storageKey: String
@@ -104,6 +106,7 @@ final class ChipBank: ObservableObject {
         guard activeBet == 0 else { return false }
         guard !isSessionOver else { return false }
         guard amount >= ChipRules.minimumBet, amount <= balance else { return false }
+        activeBetWasAllIn = (amount == balance)
         balance -= amount
         activeBet = amount
         lastSettlement = nil
@@ -119,6 +122,7 @@ final class ChipBank: ObservableObject {
         let amount = balance
         balance = 0
         activeBet += amount
+        activeBetWasAllIn = true
         persist()
         return amount
     }
@@ -146,6 +150,7 @@ final class ChipBank: ObservableObject {
         guard activeBet > 0 else { return }
         balance += activeBet
         activeBet = 0
+        activeBetWasAllIn = false
         lastSettlement = nil
         persist()
     }
@@ -155,11 +160,12 @@ final class ChipBank: ObservableObject {
         balance = ChipRules.startingBalance
         dealerBank = ChipRules.dealerStartingBank
         activeBet = 0
+        activeBetWasAllIn = false
         lastSettlement = nil
         persist()
     }
 
-    /// 结束会话返回主页：清空筹码状态（不写入历史；历史统计尚未实现）。
+    /// 结束会话返回主页：清空筹码状态。
     func abandonSession() {
         resetSession()
     }

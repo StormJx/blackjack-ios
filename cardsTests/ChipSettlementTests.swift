@@ -157,20 +157,44 @@ struct ChipSettlementTests {
         #expect(result.wasPartialPayout)
     }
 
-    // MARK: - C7 下注「余下全部」
+    // MARK: - 三档单选 / 全下解锁
 
-    @Test func remainingDraftAddCoversBalanceBetweenChipTiers() {
-        // 余额 150：无法用 +200，余下全部应一次下满。
-        #expect(ChipRules.remainingDraftAddAmount(draftBet: 0, balance: 150) == 150)
-        // 已加 100、剩 50 零头。
-        #expect(ChipRules.remainingDraftAddAmount(draftBet: 100, balance: 150) == 50)
-        #expect(ChipRules.remainingDraftAddAmount(draftBet: 150, balance: 150) == 0)
-        // 低于最小注：不可用。
-        #expect(ChipRules.remainingDraftAddAmount(draftBet: 0, balance: 50) == 0)
-        // 恰好一档时不显示「余下全部」，改用 +100 / +200 / +500。
-        #expect(ChipRules.remainingDraftAddAmount(draftBet: 0, balance: 100) == 0)
-        #expect(ChipRules.remainingDraftAddAmount(draftBet: 0, balance: 200) == 0)
-        #expect(ChipRules.remainingDraftAddAmount(draftBet: 100, balance: 300) == 0)
+    @Test func canSelectBetChipIsSingleTierOnly() {
+        #expect(ChipRules.canSelectBetChip(100, balance: 1000))
+        #expect(ChipRules.canSelectBetChip(200, balance: 1000))
+        #expect(ChipRules.canSelectBetChip(500, balance: 1000))
+        #expect(ChipRules.canSelectBetChip(300, balance: 1000) == false)
+        #expect(ChipRules.canSelectBetChip(200, balance: 150) == false)
+        #expect(ChipRules.canSelectBetChip(100, balance: 150))
+    }
+
+    @Test func preDealAllInRequiresUnlockAndNoChipSelection() {
+        #expect(ChipRules.canPreDealAllIn(balance: ChipRules.minimumBet))
+        #expect(ChipRules.canPreDealAllIn(balance: ChipRules.minimumBet - 1) == false)
+
+        // 未满 5 局：不可全下
+        #expect(ChipRules.isPreDealAllInEnabled(
+            balance: 1000,
+            sessionRoundsCompleted: 4,
+            draftBet: 0
+        ) == false)
+        #expect(ChipRules.preDealAllInLockHint(sessionRoundsCompleted: 4) == "再玩 1 局后解锁全下")
+
+        // 满 5 局且未选档：可全下
+        #expect(ChipRules.isPreDealAllInEnabled(
+            balance: 1000,
+            sessionRoundsCompleted: 5,
+            draftBet: 0
+        ))
+        #expect(ChipRules.preDealAllInLockHint(sessionRoundsCompleted: 5) == nil)
+
+        // 已选筹码档：全下灰显
+        #expect(ChipRules.isPreDealAllInEnabled(
+            balance: 1000,
+            sessionRoundsCompleted: 5,
+            draftBet: 200
+        ) == false)
+        #expect(ChipRules.midHandAllInEnabled == false)
     }
 
     // MARK: - 开局全下 / 对局中全下（道具预留 API）
@@ -183,7 +207,7 @@ struct ChipSettlementTests {
     }
 
     @MainActor
-    @Test func preDealAllInPlacesEntireBalance() {
+    @Test func placeBetMarksAllInWhenEntireBalance() {
         let defaults = Self.makeEphemeralDefaults()
         let bank = ChipBank(defaults: defaults)
         let stake = bank.balance
@@ -191,6 +215,15 @@ struct ChipSettlementTests {
         #expect(bank.placeBet(stake))
         #expect(bank.balance == 0)
         #expect(bank.activeBet == stake)
+        #expect(bank.activeBetWasAllIn)
+    }
+
+    @MainActor
+    @Test func placeBetDoesNotMarkAllInForPartialStake() {
+        let defaults = Self.makeEphemeralDefaults()
+        let bank = ChipBank(defaults: defaults)
+        #expect(bank.placeBet(100))
+        #expect(bank.activeBetWasAllIn == false)
     }
 
     @MainActor
@@ -381,15 +414,16 @@ struct ChipSettlementTests {
     }
 
     @MainActor
-    @Test func placeBetAcceptsRemainingBalanceBetweenChipTiers() {
+    @Test func placeBetAcceptsAllInOddBalance() {
+        // UI 仅三档单选；全下仍可通过 placeBet(全部余额) 下非整档注码。
         let defaults = Self.makeEphemeralDefaults()
         defaults.set(150, forKey: ChipRules.balanceStorageKey)
         defaults.set(ChipRules.dealerStartingBank, forKey: ChipRules.dealerBankStorageKey)
         defaults.set(0, forKey: ChipRules.activeBetStorageKey)
         let bank = ChipBank(defaults: defaults)
-        let draft = ChipRules.remainingDraftAddAmount(draftBet: 0, balance: bank.balance)
-        #expect(draft == 150)
-        #expect(bank.placeBet(draft))
+        #expect(ChipRules.canSelectBetChip(100, balance: 150))
+        #expect(ChipRules.canSelectBetChip(200, balance: 150) == false)
+        #expect(bank.placeBet(150))
         #expect(bank.balance == 0)
         #expect(bank.activeBet == 150)
     }

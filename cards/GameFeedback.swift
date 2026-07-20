@@ -20,7 +20,7 @@ enum GameSound: String, CaseIterable {
 final class GameFeedback {
     static let shared = GameFeedback()
 
-    /// 后续可接设置页；默认开启
+    /// 由 AppSettings / 设置页同步；默认开启
     var soundEnabled = true
     var hapticsEnabled = true
 
@@ -132,6 +132,43 @@ final class GameFeedback {
         } else {
             play(.lose)
             notifyError()
+        }
+    }
+
+    // MARK: - 筹码映射（E4：复用既有基名，不新增音效文件名）
+
+    /// 确认下注落注。
+    func betPlaced() {
+        play(.deal)
+        mediumImpact()
+    }
+
+    /// 局末玩家净赢筹码。
+    func chipsPaid() {
+        play(.win)
+        notifySuccess()
+    }
+
+    /// 局末玩家净亏筹码。
+    func chipsLost() {
+        play(.lose)
+        notifyError()
+    }
+
+    /// 平局退注（筹码无净变化）。
+    func chipsPushed() {
+        play(.push)
+        notifyWarning()
+    }
+
+    /// 按结算净变化映射筹码反馈（快速模式勿调用）。
+    func chipsSettled(netChange: Int) {
+        if netChange > 0 {
+            chipsPaid()
+        } else if netChange < 0 {
+            chipsLost()
+        } else {
+            chipsPushed()
         }
     }
 }

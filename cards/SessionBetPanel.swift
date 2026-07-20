@@ -2,7 +2,7 @@
 //  SessionBetPanel.swift
 //  cards
 //
-//  D10：开局前下注子视图（含发牌前全下）。
+//  开局前下注：三档单选 + 条件解锁的全下。
 //
 
 import SwiftUI
@@ -12,20 +12,38 @@ struct SessionBetPanel: View {
     @Binding var draftBet: Int
     let showRestoreHint: Bool
     let canConfirm: Bool
-    /// 一副牌残局等：全下按钮用强调文案「强制全下」。
+    /// 本会话已完成局数（挑战模式全下解锁用）。
+    let sessionRoundsCompleted: Int
+    /// 一副牌残局等：全下按钮用强调文案「强制全下」（仍须已解锁）。
     let emphasizeForcedAllIn: Bool
     let onClear: () -> Void
-    let onAddChip: (Int) -> Void
-    let onAddRemaining: () -> Void
+    let onSelectChip: (Int) -> Void
     let onAllIn: () -> Void
     let onConfirm: () -> Void
 
-    private var remainingAdd: Int {
-        ChipRules.remainingDraftAddAmount(draftBet: draftBet, balance: balance)
+    private var allInUnlocked: Bool {
+        sessionRoundsCompleted >= ChipRules.preDealAllInUnlockCompletedRounds
     }
 
     private var canAllIn: Bool {
-        ChipRules.canPreDealAllIn(balance: balance) && draftBet < balance
+        ChipRules.isPreDealAllInEnabled(
+            balance: balance,
+            sessionRoundsCompleted: sessionRoundsCompleted,
+            draftBet: draftBet
+        )
+    }
+
+    private var allInDisabledReason: String? {
+        if !ChipRules.canPreDealAllIn(balance: balance) {
+            return nil
+        }
+        if let hint = ChipRules.preDealAllInLockHint(sessionRoundsCompleted: sessionRoundsCompleted) {
+            return hint
+        }
+        if draftBet > 0 {
+            return "已选筹码时全下不可用，可先清空"
+        }
+        return nil
     }
 
     var body: some View {
@@ -34,11 +52,14 @@ struct SessionBetPanel: View {
                 Text("下注")
                     .font(.title2.weight(.semibold))
                 Text(draftBet == 0
-                     ? "余额 \(balance)"
+                     ? "余额 \(balance) · 请选一档"
                      : "余额 \(balance) · 注 \(draftBet)")
                     .font(.headline)
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
+                Text("三档单选，选好后确认发牌")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
                 if showRestoreHint {
                     Text(ChipRules.restoreAfterInterruptHint)
                         .font(.caption)
@@ -51,15 +72,20 @@ struct SessionBetPanel: View {
 
             HStack(spacing: 10) {
                 ForEach(ChipRules.betChipValues, id: \.self) { value in
+                    let selected = draftBet == value
+                    let enabled = ChipRules.canSelectBetChip(value, balance: balance)
                     Button {
                         GameFeedback.shared.buttonTap()
-                        onAddChip(value)
+                        onSelectChip(value)
                     } label: {
-                        Text("+\(value)")
+                        Text("\(value)")
+                            .font(.body.weight(selected ? .bold : .semibold))
                             .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.bordered)
-                    .disabled(!(value > 0 && draftBet + value <= balance))
+                    .buttonStyle(.borderedProminent)
+                    .tint(selected ? .green : .secondary.opacity(0.35))
+                    .disabled(!enabled)
+                    .opacity(enabled ? 1 : 0.45)
                 }
             }
 
@@ -72,31 +98,29 @@ struct SessionBetPanel: View {
                 .disabled(draftBet == 0)
 
                 Spacer(minLength: 0)
+            }
 
-                // 仅当剩余不是现有筹码档（零头）时显示，避免与 +100/+200/+500 重复。
-                if remainingAdd > 0 {
-                    Button {
-                        GameFeedback.shared.buttonTap()
-                        onAddRemaining()
-                    } label: {
-                        Text("余下全部 +\(remainingAdd)")
-                            .font(.subheadline.weight(.semibold))
-                    }
+            VStack(spacing: 6) {
+                Button {
+                    GameFeedback.shared.buttonTap()
+                    onAllIn()
+                } label: {
+                    Text(emphasizeForcedAllIn && allInUnlocked ? "强制全下" : "全下")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .tint(emphasizeForcedAllIn && canAllIn ? .orange : .red.opacity(0.85))
+                .disabled(!canAllIn)
+                .opacity(canAllIn ? 1 : 0.45)
+
+                if let reason = allInDisabledReason {
+                    Text(reason)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
                 }
             }
-
-            Button {
-                GameFeedback.shared.buttonTap()
-                onAllIn()
-            } label: {
-                Text(emphasizeForcedAllIn ? "强制全下" : "全下")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .tint(emphasizeForcedAllIn ? .orange : .red.opacity(0.85))
-            .disabled(!canAllIn)
-            .opacity(canAllIn ? 1 : 0.55)
 
             Spacer(minLength: 8)
 

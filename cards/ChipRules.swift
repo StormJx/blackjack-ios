@@ -18,20 +18,41 @@ enum ChipRules {
     /// 最小下注（相对起始 1000，小面额节奏过慢）。
     static let minimumBet = 100
 
-    /// 下注页筹码面额：从 0 累加；单次累加后总注不得超过余额。
+    /// 下注页筹码面额：三档单选（点选即覆盖，不可累加）。
     static let betChipValues = [100, 200, 500]
 
-    /// 下注页「余下全部」可追加进草稿的金额；0 表示不必显示 / 不可用。
-    /// 仅在剩余额不是现有筹码档（100/200/500）时出现，避免与档位按钮重复。
-    static func remainingDraftAddAmount(draftBet: Int, balance: Int) -> Int {
-        guard draftBet >= 0, balance >= minimumBet else { return 0 }
-        let remaining = balance - draftBet
-        guard remaining > 0 else { return 0 }
-        let newDraft = draftBet + remaining
-        guard newDraft >= minimumBet, newDraft <= balance else { return 0 }
-        // 恰好一档时用 +100 / +200 / +500 即可。
-        if betChipValues.contains(remaining) { return 0 }
-        return remaining
+    /// 挑战模式：本会话完成至少该局数后，开局下注页才解锁「全下」。
+    /// （快速练习无筹码下注，不适用。）
+    static let preDealAllInUnlockCompletedRounds = 5
+
+    /// 是否可选中该筹码档作为本局唯一注码。
+    static func canSelectBetChip(_ value: Int, balance: Int) -> Bool {
+        betChipValues.contains(value) && value >= minimumBet && value <= balance
+    }
+
+    /// 开局下注页是否满足「全下」基础条件（余额 ≥ 最小注）。
+    static func canPreDealAllIn(balance: Int) -> Bool {
+        balance >= minimumBet
+    }
+
+    /// 挑战模式开局全下是否可用：局数解锁 + 尚未点选筹码档（避免与红色全下误触）。
+    /// - Note: `draftBet == 0` 表示未选档；已选档时全下灰显，需先「清空」再全下。
+    static func isPreDealAllInEnabled(
+        balance: Int,
+        sessionRoundsCompleted: Int,
+        draftBet: Int
+    ) -> Bool {
+        canPreDealAllIn(balance: balance)
+            && sessionRoundsCompleted >= preDealAllInUnlockCompletedRounds
+            && draftBet == 0
+    }
+
+    /// 全下未解锁时的提示文案。
+    static func preDealAllInLockHint(sessionRoundsCompleted: Int) -> String? {
+        let need = preDealAllInUnlockCompletedRounds
+        guard sessionRoundsCompleted < need else { return nil }
+        let left = need - sessionRoundsCompleted
+        return "再玩 \(left) 局后解锁全下"
     }
 
     /// 破产回主页后欢迎页短提示。
@@ -45,11 +66,6 @@ enum ChipRules {
     /// - Note: 开启后接回 `ChipBank.goAllIn` + 牌桌「全下」键（见 `GameTableView`）。
     static let midHandAllInEnabled = false
 
-    /// 开局下注页是否可「全下」（余额 ≥ 最小注）。
-    static func canPreDealAllIn(balance: Int) -> Bool {
-        balance >= minimumBet
-    }
-
     /// 杀进程恢复后下注页提示（未结算注已退回，双方进度保留）。
     static let restoreAfterInterruptHint =
         "上次对局未完成，未结算注码已退回；双方筹码进度已保留。"
@@ -60,7 +76,7 @@ enum ChipRules {
 
     /// 欢迎页规则说明（短文案，适配小屏）。
     static var welcomeRulesSummary: String {
-        "挑战庄家 \(dealerStartingBank)；打光或破产即结束。黑杰克见牌结算。"
+        "挑战庄家 \(dealerStartingBank)；注码三档单选；全下需本会话打满 \(preDealAllInUnlockCompletedRounds) 局。黑杰克见牌结算。"
     }
 
     /// 一副牌残局：剩余张数 ≤ 该值且本局不重洗时，开局「全下」以强调样式展示（强制全下）。

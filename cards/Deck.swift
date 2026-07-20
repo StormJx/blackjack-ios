@@ -9,6 +9,8 @@ import Foundation
 
 struct Deck: Sendable {
     let numberOfDecks: Int
+    /// E2：关切牌时，只要已发过牌，下一局开始前必整副重洗（无渗透）。
+    var cutCardEnabled: Bool
     private(set) var cards: [Card]
     private(set) var totalCardCount: Int
     /// 本副累计已发张数（含当前局）。
@@ -24,9 +26,11 @@ struct Deck: Sendable {
     static let cutPenetrationRange: ClosedRange<Double> = 0.50...0.75
 
     /// - Parameter numberOfDecks: 完整 52 张牌的副数；`1` 为一副，多副时为 N 副合并成一整副牌堆。
-    init(numberOfDecks: Int = 1) {
+    /// - Parameter cutCardEnabled: 是否启用切牌渗透；`false` 时每局打完后下一局必重洗。
+    init(numberOfDecks: Int = 1, cutCardEnabled: Bool = true) {
         precondition(numberOfDecks >= 1, "numberOfDecks must be >= 1")
         self.numberOfDecks = numberOfDecks
+        self.cutCardEnabled = cutCardEnabled
         let built = Self.buildCards(numberOfDecks: numberOfDecks)
         self.cards = built
         self.totalCardCount = built.count
@@ -36,12 +40,16 @@ struct Deck: Sendable {
     var remainingCount: Int { cards.count }
 
     /// 下一局开始前是否应整副重洗。
+    /// - 切牌关闭：已发过任意牌（或不足开局四张）→ 重洗。
     /// - 剩余不足以发开局四张 → 必须重洗。
     /// - 已达切牌点且剩余 ≥ 7 → 局间重洗。
     /// - 已达切牌点但剩余 4…6 张 → 不重洗，再开一局打完尾牌后分胜负。
     var needsReshuffleBeforeNextRound: Bool {
         if remainingCount < Self.minimumCardsForRound {
             return true
+        }
+        if !cutCardEnabled {
+            return remainingCount < totalCardCount
         }
         if dealtCount >= cutPosition {
             return remainingCount >= Self.playOutThresholdWhenPastCut

@@ -2,29 +2,50 @@
 //  ContentView.swift
 //  cards
 //
+//  E1–E4：欢迎双入口、设置/战绩、挑战与快速会话编排。
+//
 
 import SwiftUI
 
+/// 进行中的对局会话（牌副 × 玩法）。
+private struct ActiveSession: Equatable {
+    let practiceMode: PracticeMode
+    let playStyle: PlayStyle
+}
+
 struct ContentView: View {
-    @State private var session: PracticeMode?
+    @EnvironmentObject private var appSettings: AppSettings
+    @EnvironmentObject private var statsStore: StatsStore
+
+    @State private var session: ActiveSession?
     @State private var selectedMode: PracticeMode = .singleDeck
+    @State private var showSettings = false
+    @State private var showStats = false
+    @State private var showAchievements = false
     /// 破产回主页后的短暂提示；开始新局或超时后清除。
     @State private var welcomeNotice: String?
     @State private var welcomeNoticeClearTask: Task<Void, Never>?
+    @State private var didApplyDefaultMode = false
 
     var body: some View {
         NavigationStack {
             ZStack {
                 TableBackgroundView()
-                if let mode = session {
-                    GameSessionView(practiceMode: mode, onEndSession: { showClearedHint in
-                        withAnimation(.easeInOut(duration: 0.28)) {
-                            session = nil
+                if let active = session {
+                    GameSessionView(
+                        practiceMode: active.practiceMode,
+                        playStyle: active.playStyle,
+                        cutCardEnabled: appSettings.cutCardEnabled,
+                        statsStore: statsStore,
+                        onEndSession: { showClearedHint in
+                            withAnimation(.easeInOut(duration: 0.28)) {
+                                session = nil
+                            }
+                            if showClearedHint {
+                                presentWelcomeNotice(ChipRules.sessionClearedReturnHomeHint)
+                            }
                         }
-                        if showClearedHint {
-                            presentWelcomeNotice(ChipRules.sessionClearedReturnHomeHint)
-                        }
-                    })
+                    )
                     .transition(.asymmetric(
                         insertion: .opacity.combined(with: .scale(scale: 0.98)),
                         removal: .opacity
@@ -39,11 +60,67 @@ struct ContentView: View {
             }
             .animation(.easeInOut(duration: 0.28), value: session != nil)
             .toolbar(.hidden, for: .navigationBar)
+            .sheet(isPresented: $showSettings) {
+                SettingsView(settings: appSettings)
+                    .presentationDetents([.medium, .large])
+            }
+            .sheet(isPresented: $showStats) {
+                StatsView(stats: statsStore)
+                    .presentationDetents([.medium, .large])
+            }
+            .sheet(isPresented: $showAchievements) {
+                AchievementsView(stats: statsStore)
+                    .presentationDetents([.medium, .large])
+            }
+            .onAppear {
+                guard !didApplyDefaultMode else { return }
+                didApplyDefaultMode = true
+                selectedMode = appSettings.defaultPracticeMode
+            }
+            .onChange(of: appSettings.defaultPracticeMode) { _, newMode in
+                if session == nil {
+                    selectedMode = newMode
+                }
+            }
         }
     }
 
     private var welcomeView: some View {
         VStack {
+            HStack {
+                Button {
+                    GameFeedback.shared.buttonTap()
+                    showAchievements = true
+                } label: {
+                    Label("成就", systemImage: "checkmark.seal.fill")
+                        .font(.subheadline.weight(.semibold))
+                }
+                .buttonStyle(.bordered)
+
+                Button {
+                    GameFeedback.shared.buttonTap()
+                    showStats = true
+                } label: {
+                    Label("战绩", systemImage: "chart.bar.fill")
+                        .font(.subheadline.weight(.semibold))
+                }
+                .buttonStyle(.bordered)
+
+                Spacer(minLength: 0)
+                Button {
+                    GameFeedback.shared.buttonTap()
+                    showSettings = true
+                } label: {
+                    Image(systemName: "gearshape.fill")
+                        .font(.body.weight(.semibold))
+                        .padding(8)
+                }
+                .buttonStyle(.bordered)
+                .accessibilityLabel("设置")
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 12)
+
             Spacer(minLength: 0)
             VStack(spacing: 16) {
                 Text("二十一点")
@@ -51,11 +128,6 @@ struct ContentView: View {
                 Text("练习模式")
                     .font(.headline)
                     .foregroundStyle(.secondary)
-                Text(ChipRules.welcomeRulesSummary)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 8)
 
                 if let welcomeNotice {
                     Text(welcomeNotice)
@@ -79,25 +151,42 @@ struct ContentView: View {
                 }
                 .padding(.vertical, 4)
 
-                HStack(spacing: 8) {
-                    welcomeTag(selectedMode.shortLabel)
-                    welcomeTag("你 \(ChipRules.startingBalance)")
-                    welcomeTag("庄家 \(ChipRules.dealerStartingBank)")
-                }
-                .padding(.top, 2)
+                // 挑战为主、快速为次（体验优化 1）
+                VStack(spacing: 10) {
+                    Text(PlayStyle.challenge.welcomeSubtitle)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 4)
 
-                Button("开始游戏") {
-                    GameFeedback.shared.buttonTap()
-                    clearWelcomeNotice()
-                    withAnimation(.easeInOut(duration: 0.28)) {
-                        session = selectedMode
+                    HStack(spacing: 8) {
+                        welcomeTag(selectedMode.shortLabel)
+                        welcomeTag("你 \(ChipRules.startingBalance)")
+                        welcomeTag("庄家 \(ChipRules.dealerStartingBank)")
                     }
-                    // GameSessionView 会在 onAppear 中开局；见 GameSessionView
+
+                    Button(PlayStyle.challenge.welcomeButtonTitle) {
+                        startSession(style: .challenge)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    .tint(.green)
+                    .frame(maxWidth: .infinity)
+
+                    Divider().padding(.vertical, 4)
+
+                    Text(PlayStyle.fast.welcomeSubtitle)
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                        .multilineTextAlignment(.center)
+
+                    Button(PlayStyle.fast.welcomeButtonTitle) {
+                        startSession(style: .fast)
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .tint(.green)
-                .frame(maxWidth: .infinity)
             }
             .padding(24)
             .frame(maxWidth: 420)
@@ -110,6 +199,14 @@ struct ContentView: View {
             Spacer(minLength: 0)
         }
         .animation(.easeInOut(duration: 0.22), value: welcomeNotice)
+    }
+
+    private func startSession(style: PlayStyle) {
+        GameFeedback.shared.buttonTap()
+        clearWelcomeNotice()
+        withAnimation(.easeInOut(duration: 0.28)) {
+            session = ActiveSession(practiceMode: selectedMode, playStyle: style)
+        }
     }
 
     private func presentWelcomeNotice(_ text: String) {
@@ -147,27 +244,54 @@ struct ContentView: View {
     }
 }
 
-// MARK: - 对局会话（按 PracticeMode 绑定 Game，避免 StateObject 与模式不一致）
+// MARK: - 对局会话
 
 private struct GameSessionView: View {
     @StateObject private var game: BlackjackGame
-    @StateObject private var chipBank = ChipBank()
+    @StateObject private var chipBank: ChipBank
     let practiceMode: PracticeMode
+    let playStyle: PlayStyle
+    @ObservedObject var statsStore: StatsStore
     /// `true`：破产「返回主页」后提示进度已清空；主动退出叉号则为 `false`。
     let onEndSession: (_ showClearedHint: Bool) -> Void
-    @State private var didPresentInitialBet = false
+
+    @State private var didPresentInitialFlow = false
     @State private var showBetSheet = false
     @State private var showRoundEndSheet = false
     @State private var showAbandonConfirm = false
-    /// 全下已提交、stand 动画尚未把 isAnimating 置 true 时，锁住底部键防连点。
     @State private var controlsLockedAfterAllIn = false
-    /// 草稿注码：从 0 累加筹码；确认时须 ≥ 最小下注。
     @State private var draftBet = 0
+    /// 本会话已完成的挑战局数；满 5 局解锁开局全下。
+    @State private var sessionRoundsCompleted = 0
+    @State private var fastStats = FastSessionStats()
+    @State private var chipBalancePulse = false
+    @State private var achievementToast: String?
+    @State private var achievementToastTask: Task<Void, Never>?
 
-    init(practiceMode: PracticeMode, onEndSession: @escaping (_ showClearedHint: Bool) -> Void) {
+    init(
+        practiceMode: PracticeMode,
+        playStyle: PlayStyle,
+        cutCardEnabled: Bool,
+        statsStore: StatsStore,
+        onEndSession: @escaping (_ showClearedHint: Bool) -> Void
+    ) {
         self.practiceMode = practiceMode
+        self.playStyle = playStyle
+        self.statsStore = statsStore
         self.onEndSession = onEndSession
-        _game = StateObject(wrappedValue: BlackjackGame(practiceMode: practiceMode))
+        _game = StateObject(wrappedValue: BlackjackGame(
+            practiceMode: practiceMode,
+            cutCardEnabled: cutCardEnabled
+        ))
+        if playStyle == .fast {
+            // 快速模式使用独立 suite，避免读写挑战模式 chipBank.* 键。
+            let suiteName = "cards.chipBank.fastSession"
+            let suite = UserDefaults(suiteName: suiteName) ?? .standard
+            suite.removePersistentDomain(forName: suiteName)
+            _chipBank = StateObject(wrappedValue: ChipBank(defaults: suite))
+        } else {
+            _chipBank = StateObject(wrappedValue: ChipBank())
+        }
     }
 
     var body: some View {
@@ -187,12 +311,11 @@ private struct GameSessionView: View {
             }
 
             if game.isShowingShuffleScreen {
-                ShuffleScreenOverlay()
+                ShuffleScreenOverlay(cutCardEnabled: game.cutCardEnabled)
                     .transition(.opacity.combined(with: .scale(scale: 0.98)))
                     .zIndex(4)
             }
 
-            // 全会话唯一退出入口：始终在界面左上角；下注/结果面板不再放叉号。
             VStack {
                 HStack {
                     exitToolbarButton
@@ -209,6 +332,7 @@ private struct GameSessionView: View {
         .animation(.easeInOut(duration: 0.28), value: showRoundEndSheet)
         .modifier(AbandonConfirmModifier(
             isPresented: $showAbandonConfirm,
+            playStyle: playStyle,
             onConfirm: abandonSessionToWelcome
         ))
         .onChange(of: game.phase) { _, newPhase in
@@ -216,26 +340,33 @@ private struct GameSessionView: View {
                 controlsLockedAfterAllIn = false
             }
             if newPhase == .finished {
-                settleCurrentRoundIfNeeded()
+                handleRoundFinished()
                 showRoundEndSheet = true
             } else {
                 showRoundEndSheet = false
             }
         }
         .onAppear {
-            guard !didPresentInitialBet else { return }
-            didPresentInitialBet = true
+            guard !didPresentInitialFlow else { return }
+            didPresentInitialFlow = true
+            beginInitialFlow()
+        }
+    }
+
+    private func beginInitialFlow() {
+        switch playStyle {
+        case .challenge:
             if chipBank.isSessionOver {
-                // 杀进程后若会话已因破产结束，直接进入最终结果，避免再打开下注页。
                 showRoundEndSheet = true
             } else {
                 prepareBetDraft()
                 showBetSheet = true
             }
+        case .fast:
+            Task { await game.startNewRound() }
         }
     }
 
-    /// 底部面板：留出顶部给牌桌标题与唯一退出叉号。
     private func sessionPanelOverlay<Content: View>(
         @ViewBuilder content: () -> Content
     ) -> some View {
@@ -264,10 +395,11 @@ private struct GameSessionView: View {
             draftBet: $draftBet,
             showRestoreHint: chipBank.didRestoreAfterInterrupt,
             canConfirm: canConfirmBet,
-            emphasizeForcedAllIn: game.isForcedAllInAvailable,
+            sessionRoundsCompleted: sessionRoundsCompleted,
+            emphasizeForcedAllIn: game.isForcedAllInAvailable
+                && sessionRoundsCompleted >= ChipRules.preDealAllInUnlockCompletedRounds,
             onClear: clearDraftBet,
-            onAddChip: addChip,
-            onAddRemaining: addRemainingBalance,
+            onSelectChip: selectChip,
             onAllIn: applyPreDealAllIn,
             onConfirm: confirmBetAndDeal
         )
@@ -275,20 +407,19 @@ private struct GameSessionView: View {
 
     private var roundEndPanelContent: some View {
         SessionRoundEndPanel(
-            isSessionOver: chipBank.isSessionOver,
-            sessionEndReason: chipBank.sessionEndReason,
+            playStyle: playStyle,
+            isSessionOver: playStyle == .challenge && chipBank.isSessionOver,
+            sessionEndReason: playStyle == .challenge ? chipBank.sessionEndReason : nil,
             outcomeMessage: game.outcomeMessage,
             outcome: game.lastOutcome,
-            settlement: chipBank.lastSettlement,
+            settlement: playStyle == .challenge ? chipBank.lastSettlement : nil,
             balance: chipBank.balance,
             dealerBank: chipBank.dealerBank,
             shoeStatusLine: game.shoeStatusLine,
+            fastStats: playStyle == .fast ? fastStats : nil,
+            achievementToast: achievementToast,
             onReturnHome: returnToWelcomeAfterSessionEnd,
-            onContinue: {
-                showRoundEndSheet = false
-                prepareBetDraft()
-                showBetSheet = true
-            }
+            onContinue: continueAfterRound
         )
     }
 
@@ -296,20 +427,21 @@ private struct GameSessionView: View {
         GameTableView(
             game: game,
             chipBank: chipBank,
+            playStyle: playStyle,
             showBetPanel: showBetSheet,
             showRoundEndPanel: showRoundEndSheet,
             canHit: canHit,
             canStand: canStand,
-            showsMidHandAllIn: ChipRules.midHandAllInEnabled,
+            showsMidHandAllIn: playStyle == .challenge && ChipRules.midHandAllInEnabled,
             canMidHandAllIn: canMidHandAllIn,
             emphasizeForcedAllIn: emphasizeForcedAllIn,
+            chipBalancePulse: chipBalancePulse,
             onHit: { Task { await game.hit() } },
             onStand: { Task { await game.stand() } },
             onAllIn: performMidHandAllIn
         )
     }
 
-    /// 全会话唯一退出入口（牌桌左上角；先确认，防误触）。
     private var exitToolbarButton: some View {
         Button {
             GameFeedback.shared.buttonTap()
@@ -345,9 +477,9 @@ private struct GameSessionView: View {
         game.phase == .playerTurn && !game.isAnimating && !controlsLockedAfterAllIn
     }
 
-    /// 道具预留：见牌后再全下（默认 `midHandAllInEnabled == false` 时 UI 不展示）。
     private var canMidHandAllIn: Bool {
-        ChipRules.midHandAllInEnabled
+        playStyle == .challenge
+            && ChipRules.midHandAllInEnabled
             && game.phase == .playerTurn
             && !game.isAnimating
             && !controlsLockedAfterAllIn
@@ -355,12 +487,10 @@ private struct GameSessionView: View {
             && chipBank.balance > 0
     }
 
-    /// 道具预留：一副牌残局时对局中全下的强调样式。
     private var emphasizeForcedAllIn: Bool {
         canMidHandAllIn && game.isForcedAllInAvailable
     }
 
-    /// 每局重新从 0 累加，避免「草稿已含旧注 + 再点 200」误判为余额不足。
     private func prepareBetDraft() {
         draftBet = 0
     }
@@ -369,53 +499,124 @@ private struct GameSessionView: View {
         draftBet = 0
     }
 
-    private func addChip(_ value: Int) {
-        guard value > 0, draftBet + value <= chipBank.balance else { return }
-        draftBet += value
+    /// 三档单选：点选即覆盖为该档注码。
+    private func selectChip(_ value: Int) {
+        guard ChipRules.canSelectBetChip(value, balance: chipBank.balance) else { return }
+        draftBet = value
     }
 
-    private func addRemainingBalance() {
-        let amount = ChipRules.remainingDraftAddAmount(draftBet: draftBet, balance: chipBank.balance)
-        guard amount > 0 else { return }
-        draftBet += amount
-    }
-
-    /// 开局全下：草稿注码设为全部余额，再由「确认并发牌」落注。
+    /// 开局全下：须已解锁且当前未选筹码档。
     private func applyPreDealAllIn() {
-        guard ChipRules.canPreDealAllIn(balance: chipBank.balance) else { return }
+        guard ChipRules.isPreDealAllInEnabled(
+            balance: chipBank.balance,
+            sessionRoundsCompleted: sessionRoundsCompleted,
+            draftBet: draftBet
+        ) else { return }
         draftBet = chipBank.balance
     }
 
-    /// 道具预留：见牌后全下并自动停牌（`ChipBank.goAllIn`）。
     private func performMidHandAllIn() {
         guard canMidHandAllIn else { return }
-        // 先于 goAllIn / stand 上锁，避免 isAnimating 尚未置位时要牌/停牌仍可点。
         controlsLockedAfterAllIn = true
         guard chipBank.goAllIn() != nil else {
             controlsLockedAfterAllIn = false
             return
         }
-        // 全下后本局注码已定，自动停牌进入庄家回合。
         Task { await game.stand() }
     }
 
     private func confirmBetAndDeal() {
         guard chipBank.placeBet(draftBet) else { return }
         chipBank.acknowledgeRestoreHint()
+        GameFeedback.shared.betPlaced()
+        pulseChipBalance()
         showBetSheet = false
         Task { await game.startNewRound() }
     }
 
-    private func settleCurrentRoundIfNeeded() {
+    private func pulseChipBalance() {
+        chipBalancePulse = true
+        Task {
+            try? await Task.sleep(nanoseconds: 420_000_000)
+            await MainActor.run { chipBalancePulse = false }
+        }
+    }
+
+    private func handleRoundFinished() {
+        if playStyle == .challenge {
+            settleCurrentRoundIfNeeded()
+        }
         if let outcome = game.lastOutcome {
-            _ = chipBank.settle(outcome: outcome)
-        } else if chipBank.activeBet > 0 {
-            // 发牌异常等未产生胜负时退注，避免重复扣款。
+            if playStyle == .fast {
+                fastStats.record(outcome)
+            }
+            if playStyle == .challenge {
+                sessionRoundsCompleted += 1
+            }
+            if let snapshot = game.makeRoundSnapshot(
+                wasAllInBet: playStyle == .challenge && chipBank.activeBetWasAllIn
+            ) {
+                let scope: AchievementScope = playStyle == .challenge ? .challenge : .practice
+                let newly = statsStore.recordRound(snapshot: snapshot, scope: scope)
+                var toastTitles = newly.map(\.title)
+                if playStyle == .challenge, chipBank.sessionEndReason == .dealerBroke {
+                    let beforePending = statsStore.pendingUnlockTitles
+                    statsStore.recordDealerBankCleared()
+                    let afterPending = statsStore.pendingUnlockTitles
+                    let extra = afterPending.dropFirst(beforePending.count)
+                    toastTitles.append(contentsOf: extra)
+                }
+                if !toastTitles.isEmpty {
+                    presentAchievementToast(toastTitles.joined(separator: " · "))
+                }
+            } else if playStyle == .challenge, chipBank.sessionEndReason == .dealerBroke {
+                statsStore.recordDealerBankCleared()
+            }
+        } else if playStyle == .challenge, chipBank.activeBet > 0 {
             chipBank.refundActiveBet()
         }
     }
 
-    /// 破产会话结束：清空筹码并回欢迎页；新一局须从主页再次「开始游戏」。
+    private func settleCurrentRoundIfNeeded() {
+        if let outcome = game.lastOutcome {
+            if let result = chipBank.settle(outcome: outcome) {
+                statsStore.recordChipSettlement(netChange: result.netChange)
+                // 胜负音效已由 finishRound 播放；此处仅余额脉冲，避免双播。
+                pulseChipBalance()
+            }
+        } else if chipBank.activeBet > 0 {
+            chipBank.refundActiveBet()
+        }
+    }
+
+    private func continueAfterRound() {
+        showRoundEndSheet = false
+        achievementToast = nil
+        switch playStyle {
+        case .challenge:
+            prepareBetDraft()
+            showBetSheet = true
+        case .fast:
+            Task { await game.startNewRound() }
+        }
+    }
+
+    private func presentAchievementToast(_ text: String) {
+        achievementToastTask?.cancel()
+        withAnimation(.easeInOut(duration: 0.2)) {
+            achievementToast = "成就解锁：\(text)"
+        }
+        achievementToastTask = Task {
+            try? await Task.sleep(nanoseconds: 2_800_000_000)
+            guard !Task.isCancelled else { return }
+            await MainActor.run {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    achievementToast = nil
+                }
+            }
+        }
+    }
+
     private func returnToWelcomeAfterSessionEnd() {
         showBetSheet = false
         showRoundEndSheet = false
@@ -424,21 +625,23 @@ private struct GameSessionView: View {
         onEndSession(true)
     }
 
-    /// 放弃整局：退未结算注、清空会话筹码、返回欢迎页（不计入历史；与杀进程恢复相对）。
     private func abandonSessionToWelcome() {
         showBetSheet = false
         showRoundEndSheet = false
-        chipBank.refundActiveBet()
-        chipBank.acknowledgeRestoreHint()
-        chipBank.abandonSession()
+        if playStyle == .challenge {
+            chipBank.refundActiveBet()
+            chipBank.acknowledgeRestoreHint()
+            chipBank.abandonSession()
+        }
         onEndSession(false)
     }
 }
 
-// MARK: - 退出确认（牌桌与 sheet 共用，避免 sheet 盖住时无法弹确认）
+// MARK: - 退出确认
 
 private struct AbandonConfirmModifier: ViewModifier {
     @Binding var isPresented: Bool
+    let playStyle: PlayStyle
     let onConfirm: () -> Void
 
     func body(content: Content) -> some View {
@@ -448,12 +651,12 @@ private struct AbandonConfirmModifier: ViewModifier {
                 isPresented: $isPresented,
                 titleVisibility: .visible
             ) {
-                Button("退出并清空筹码", role: .destructive) {
+                Button(playStyle.abandonConfirmButtonTitle, role: .destructive) {
                     onConfirm()
                 }
                 Button("取消", role: .cancel) {}
             } message: {
-                Text(ChipRules.abandonSessionConfirmDetail)
+                Text(playStyle.abandonConfirmDetail)
             }
     }
 }
@@ -461,6 +664,7 @@ private struct AbandonConfirmModifier: ViewModifier {
 // MARK: - 局间洗牌全屏页
 
 private struct ShuffleScreenOverlay: View {
+    let cutCardEnabled: Bool
     @State private var pulse = false
     @State private var fan = false
 
@@ -507,7 +711,9 @@ private struct ShuffleScreenOverlay: View {
                     Text("洗牌中…")
                         .font(.title2.weight(.semibold))
                         .foregroundStyle(.white)
-                    Text("切牌点已过，正在重新整理牌堆")
+                    Text(cutCardEnabled
+                         ? "切牌点已过，正在重新整理牌堆"
+                         : "本局已结束，正在重新整理牌堆")
                         .font(.subheadline)
                         .foregroundStyle(.white.opacity(0.78))
                 }
@@ -528,7 +734,7 @@ private struct ShuffleScreenOverlay: View {
     }
 }
 
-// MARK: - 牌桌背景（中性冷灰渐变 + 柔光）
+// MARK: - 牌桌背景
 
 private struct TableBackgroundView: View {
     var body: some View {
@@ -565,4 +771,6 @@ private struct TableBackgroundView: View {
 
 #Preview {
     ContentView()
+        .environmentObject(AppSettings())
+        .environmentObject(StatsStore())
 }

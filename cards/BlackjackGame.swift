@@ -43,16 +43,49 @@ final class BlackjackGame: ObservableObject {
 
     /// 当前练习变体（一副 / 两副 / 六副）；整局生命周期内不变。
     let practiceMode: PracticeMode
+    /// E2：本会话是否启用切牌（来自设置；会话内不变）。
+    let cutCardEnabled: Bool
+
+    /// 成就：本局曾在 >17 / >18 / >19 点要牌且该次未爆；以及 20→21。
+    private var hitSurvivedFromOver17 = false
+    private var hitSurvivedFromOver18 = false
+    private var hitSurvivedFromOver19 = false
+    private var hitFrom20To21 = false
 
     private var deck: Deck
 
-    init(practiceMode: PracticeMode = .singleDeck) {
+    init(practiceMode: PracticeMode = .singleDeck, cutCardEnabled: Bool = true) {
         self.practiceMode = practiceMode
-        var initialDeck = Deck(numberOfDecks: practiceMode.numberOfDecks)
+        self.cutCardEnabled = cutCardEnabled
+        var initialDeck = Deck(
+            numberOfDecks: practiceMode.numberOfDecks,
+            cutCardEnabled: cutCardEnabled
+        )
         initialDeck.shuffleAndCut()
         self.deck = initialDeck
         self.remainingCardCount = initialDeck.remainingCount
         self.totalCardCount = initialDeck.totalCardCount
+    }
+
+    /// 成就判定用快照（仅在 `phase == .finished` 且有 `lastOutcome` 时有意义）。
+    func makeRoundSnapshot(wasAllInBet: Bool = false) -> RoundSnapshot? {
+        guard let outcome = lastOutcome else { return nil }
+        let playerHand = Hand(cards: playerCards)
+        let dealerHand = Hand(cards: dealerCards)
+        return RoundSnapshot(
+            outcome: outcome,
+            playerCardCount: playerCards.count,
+            playerBest: playerHand.bestValue,
+            dealerBest: dealerHand.bestValue,
+            playerBusted: playerHand.isBusted,
+            dealerBusted: dealerHand.isBusted,
+            playerNaturalBlackjack: playerHand.isNaturalBlackjack,
+            hitSurvivedFromOver17: hitSurvivedFromOver17,
+            hitSurvivedFromOver18: hitSurvivedFromOver18,
+            hitSurvivedFromOver19: hitSurvivedFromOver19,
+            hitFrom20To21: hitFrom20To21,
+            wasAllInBet: wasAllInBet
+        )
     }
 
     private let delayInitialDeal: UInt64 = 165_000_000
@@ -123,6 +156,10 @@ final class BlackjackGame: ObservableObject {
         lastOutcome = nil
         playerCards = []
         dealerCards = []
+        hitSurvivedFromOver17 = false
+        hitSurvivedFromOver18 = false
+        hitSurvivedFromOver19 = false
+        hitFrom20To21 = false
 
         if hadCards {
             withAnimation(.spring(response: 0.48, dampingFraction: 0.82)) {
@@ -197,6 +234,8 @@ final class BlackjackGame: ObservableObject {
 
         try? await Task.sleep(nanoseconds: delayAfterHit)
 
+        let beforeBest = Hand(cards: playerCards).bestValue
+
         guard let card = deck.draw() else {
             // 尾牌已尽：不再报错，按现有手牌进入庄家回合并结算。
             publishDeckCounts()
@@ -222,6 +261,15 @@ final class BlackjackGame: ObservableObject {
             isAnimating = false
             return
         }
+
+        // 成就：高点要牌未爆（本局内累计；最终是否解锁看是否获胜）。
+        if beforeBest > 17 { hitSurvivedFromOver17 = true }
+        if beforeBest > 18 { hitSurvivedFromOver18 = true }
+        if beforeBest > 19 { hitSurvivedFromOver19 = true }
+        if beforeBest == 20 && hand.bestValue == 21 {
+            hitFrom20To21 = true
+        }
+
         if hand.bestValue == 21 {
             await playDealerTurnAsync()
             return

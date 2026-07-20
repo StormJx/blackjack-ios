@@ -2,7 +2,7 @@
 //  GameTableView.swift
 //  cards
 //
-//  D10：牌桌子视图（标题 / 手牌区 / 弱结果条 / 操作键）。
+//  D10 / E1 / E4：牌桌子视图（标题 / 手牌区 / 弱结果条 / 操作键）。
 //
 
 import SwiftUI
@@ -10,6 +10,7 @@ import SwiftUI
 struct GameTableView: View {
     @ObservedObject var game: BlackjackGame
     @ObservedObject var chipBank: ChipBank
+    let playStyle: PlayStyle
     let showBetPanel: Bool
     let showRoundEndPanel: Bool
     let canHit: Bool
@@ -18,6 +19,8 @@ struct GameTableView: View {
     let showsMidHandAllIn: Bool
     let canMidHandAllIn: Bool
     let emphasizeForcedAllIn: Bool
+    /// E4：确认下注后短暂放大余额行。
+    let chipBalancePulse: Bool
     let onHit: () -> Void
     let onStand: () -> Void
     let onAllIn: () -> Void
@@ -28,7 +31,7 @@ struct GameTableView: View {
                 VStack(spacing: 16) {
                     tableTitle
                     if game.phase == .idle && game.playerCards.isEmpty && !showBetPanel {
-                        Text("确认下注后发牌；使用「要牌」「停牌」进行游戏。")
+                        Text(idleHint)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
@@ -66,6 +69,15 @@ struct GameTableView: View {
         .padding(.vertical, 12)
     }
 
+    private var idleHint: String {
+        switch playStyle {
+        case .challenge:
+            return "确认下注后发牌；使用「要牌」「停牌」进行游戏。"
+        case .fast:
+            return "发牌后使用「要牌」「停牌」进行游戏。"
+        }
+    }
+
     private var tableTitle: some View {
         HStack(alignment: .center, spacing: 10) {
             // 占位与会话级退出按钮同宽，避免标题左移；真正的叉号在外层 overlay。
@@ -80,32 +92,43 @@ struct GameTableView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .monospacedDigit()
-                HStack(spacing: 8) {
-                    Text("你 \(chipBank.balance)")
-                        .font(.caption.weight(.semibold))
-                        .monospacedDigit()
-                    Text("庄家 \(chipBank.dealerBank)")
-                        .font(.caption.weight(.semibold))
-                        .monospacedDigit()
-                    if chipBank.activeBet > 0 {
-                        Text("注 \(chipBank.activeBet)")
-                            .font(.caption)
+                if playStyle.showsChips {
+                    HStack(spacing: 8) {
+                        Text("你 \(chipBank.balance)")
+                            .font(.caption.weight(.semibold))
                             .monospacedDigit()
-                            .foregroundStyle(.tertiary)
+                        Text("庄家 \(chipBank.dealerBank)")
+                            .font(.caption.weight(.semibold))
+                            .monospacedDigit()
+                        if chipBank.activeBet > 0 {
+                            Text("注 \(chipBank.activeBet)")
+                                .font(.caption)
+                                .monospacedDigit()
+                                .foregroundStyle(.tertiary)
+                        }
                     }
+                    .foregroundStyle(.secondary)
+                    .scaleEffect(chipBalancePulse ? 1.08 : 1)
+                    .animation(.spring(response: 0.36, dampingFraction: 0.7), value: chipBalancePulse)
                 }
-                .foregroundStyle(.secondary)
             }
             Spacer(minLength: 0)
-            Text(game.practiceMode.shortLabel)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 6)
-                .background(
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(Color.primary.opacity(0.08))
-                )
+            VStack(alignment: .trailing, spacing: 4) {
+                Text(game.practiceMode.shortLabel)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(
+                        RoundedRectangle(cornerRadius: 20, style: .continuous)
+                            .fill(Color.primary.opacity(0.08))
+                    )
+                if playStyle == .fast {
+                    Text("快速")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.tertiary)
+                }
+            }
         }
         .padding(.horizontal, 2)
     }
