@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// 快速练习会话内统计；不跨会话持久化。
+/// 娱乐模式会话内统计；不跨会话持久化。
 struct FastSessionStats: Equatable, Sendable {
     var wins: Int = 0
     var losses: Int = 0

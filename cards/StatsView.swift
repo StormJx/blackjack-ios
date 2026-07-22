@@ -15,7 +15,7 @@ struct StatsView: View {
             Group {
                 if stats.hasAnyHistory {
                     List {
-                        Section("挑战模式") {
+                        Section("闯关模式") {
                             Text(stats.recordSummaryLine(for: .challenge))
                                 .font(.subheadline.weight(.semibold))
                                 .monospacedDigit()
@@ -24,11 +24,11 @@ struct StatsView: View {
                                 .foregroundStyle(.secondary)
                                 .monospacedDigit()
                         }
-                        Section("快速练习") {
+                        Section("娱乐模式") {
                             Text(stats.recordSummaryLine(for: .practice))
                                 .font(.subheadline.weight(.semibold))
                                 .monospacedDigit()
-                            Text("练习胜负不计入挑战成就。")
+                            Text("娱乐胜负不计入闯关成就。")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -37,7 +37,7 @@ struct StatsView: View {
                     ContentUnavailableView(
                         "尚无战绩",
                         systemImage: "chart.bar",
-                        description: Text("完成几局挑战或快速练习后，这里会显示累计战绩。")
+                        description: Text("完成几局挑战或娱乐模式后，这里会显示累计战绩。")
                     )
                 }
             }

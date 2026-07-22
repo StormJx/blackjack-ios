@@ -35,7 +35,7 @@ struct SessionRoundEndPanel: View {
             VStack(spacing: 12) {
                 Text(titleText)
                     .font(.title2.weight(.semibold))
-                if playStyle == .challenge, let reason = sessionEndReason {
+                if let reason = sessionEndReason, isSessionOver {
                     Text(reason.title)
                         .font(.title3.weight(.bold))
                         .foregroundStyle(reason == .dealerBroke ? .green : .red)
@@ -63,7 +63,7 @@ struct SessionRoundEndPanel: View {
             .padding(.top, 8)
 
             VStack(spacing: 8) {
-                if playStyle == .challenge {
+                if playStyle.showsChips {
                     challengeSettlementBlock
                 } else if let fastStats {
                     Text(fastStats.summaryLine)
@@ -83,7 +83,7 @@ struct SessionRoundEndPanel: View {
 
             Spacer(minLength: 24)
 
-            if playStyle == .challenge && isSessionOver {
+            if playStyle.showsChips && isSessionOver {
                 Button {
                     GameFeedback.shared.buttonTap()
                     onReturnHome()
@@ -119,7 +119,7 @@ struct SessionRoundEndPanel: View {
     }
 
     private var titleText: String {
-        if playStyle == .challenge && isSessionOver {
+        if isSessionOver {
             return "本局游戏结束"
         }
         return "本局结束"

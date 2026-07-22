@@ -194,16 +194,14 @@ struct ChipSettlementTests {
             sessionRoundsCompleted: 5,
             draftBet: 200
         ) == false)
-        #expect(ChipRules.midHandAllInEnabled == false)
     }
 
-    // MARK: - 开局全下 / 对局中全下（道具预留 API）
+    // MARK: - 开局全下 / 对局中全下（道具门控见 PropStore）
 
     @Test func canPreDealAllInRequiresMinimumBalance() {
         #expect(ChipRules.canPreDealAllIn(balance: ChipRules.minimumBet))
         #expect(ChipRules.canPreDealAllIn(balance: ChipRules.startingBalance))
         #expect(ChipRules.canPreDealAllIn(balance: ChipRules.minimumBet - 1) == false)
-        #expect(ChipRules.midHandAllInEnabled == false)
     }
 
     @MainActor
@@ -392,7 +390,11 @@ struct ChipSettlementTests {
         bank.abandonSession()
         #expect(bank.balance == ChipRules.startingBalance)
         #expect(bank.dealerBank == ChipRules.dealerStartingBank)
-        #expect(defaults.integer(forKey: ChipRules.balanceStorageKey) == ChipRules.startingBalance)
+        // 退出清空持久化键，下次按关卡/默认起始重建。
+        #expect(defaults.object(forKey: ChipRules.balanceStorageKey) == nil)
+        let reloaded = ChipBank(defaults: defaults)
+        #expect(reloaded.balance == ChipRules.startingBalance)
+        #expect(reloaded.dealerBank == ChipRules.dealerStartingBank)
     }
 
     @MainActor

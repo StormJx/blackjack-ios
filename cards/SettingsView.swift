@@ -56,7 +56,7 @@ struct SettingsView: View {
                 Section("反馈") {
                     Toggle("音效", isOn: $settings.soundEnabled)
                     Toggle("触觉", isOn: $settings.hapticsEnabled)
-                    Text("音效文件放入 Sounds/ 后自动播放；缺文件时静默跳过。")
+                    Text("音效来自 Sounds/ 六基名文件；关闭开关后不播放；缺文件时静默跳过。")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

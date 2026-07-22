@@ -60,7 +60,7 @@ final class GameFeedback {
         } catch {}
     }
 
-    private static func bundleURL(for baseName: String) -> URL? {
+    private nonisolated static func bundleURL(for baseName: String) -> URL? {
         let exts = ["mp3", "m4a", "wav", "caf"]
         for ext in exts {
             if let url = Bundle.main.url(forResource: baseName, withExtension: ext, subdirectory: "Sounds") {
@@ -71,6 +71,11 @@ final class GameFeedback {
             }
         }
         return nil
+    }
+
+    /// 供单测断言六基名是否打进 App Bundle（缺文件时返回 false，播放仍静默跳过）。
+    nonisolated static func isSoundBundled(_ sound: GameSound) -> Bool {
+        bundleURL(for: sound.rawValue) != nil
     }
 
     // MARK: - 触觉

@@ -15,12 +15,13 @@ struct GameTableView: View {
     let showRoundEndPanel: Bool
     let canHit: Bool
     let canStand: Bool
-    /// 道具预留：默认 `false`；为 true 时显示见牌后「全下」。
+    /// 娱乐模式 + 已解锁道具时为 true。
     let showsMidHandAllIn: Bool
     let canMidHandAllIn: Bool
     let emphasizeForcedAllIn: Bool
     /// E4：确认下注后短暂放大余额行。
     let chipBalancePulse: Bool
+    var cardBack: CardBackStyle = .classicNavy
     let onHit: () -> Void
     let onStand: () -> Void
     let onAllIn: () -> Void
@@ -70,12 +71,7 @@ struct GameTableView: View {
     }
 
     private var idleHint: String {
-        switch playStyle {
-        case .challenge:
-            return "确认下注后发牌；使用「要牌」「停牌」进行游戏。"
-        case .fast:
-            return "发牌后使用「要牌」「停牌」进行游戏。"
-        }
+        "确认下注后发牌；使用「要牌」「停牌」进行游戏。"
     }
 
     private var tableTitle: some View {
@@ -123,8 +119,12 @@ struct GameTableView: View {
                         RoundedRectangle(cornerRadius: 20, style: .continuous)
                             .fill(Color.primary.opacity(0.08))
                     )
-                if playStyle == .fast {
-                    Text("快速")
+                if playStyle == .entertainment {
+                    Text("娱乐")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.tertiary)
+                } else {
+                    Text("闯关")
                         .font(.caption2.weight(.semibold))
                         .foregroundStyle(.tertiary)
                 }
@@ -140,7 +140,7 @@ struct GameTableView: View {
                     .font(.title3.weight(.semibold))
                 LazyVGrid(columns: cardGridColumns, alignment: .leading, spacing: 8) {
                     ForEach(0..<dealerCardFaces.count, id: \.self) { i in
-                        PlayingCardView(face: dealerCardFaces[i])
+                        PlayingCardView(face: dealerCardFaces[i], cardBack: cardBack)
                             .id("\(game.roundToken)-d-\(i)")
                             .cardDealEntrance()
                     }
@@ -240,7 +240,7 @@ struct GameTableView: View {
             .opacity(canStand ? 1 : 0.55)
             .saturation(canStand ? 1 : 0.2)
 
-            // 默认隐藏；道具「见牌后再全下」开启后显示（逻辑见 ChipBank.goAllIn）。
+            // 持有道具「见牌后再全下」时显示（逻辑见 ChipBank.goAllIn / PropStore）。
             if showsMidHandAllIn {
                 Button(emphasizeForcedAllIn ? "强制全下" : "全下") {
                     GameFeedback.shared.buttonTap()

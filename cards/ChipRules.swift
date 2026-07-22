@@ -9,10 +9,10 @@ import Foundation
 
 /// 桌面经济规则（纯常量，无状态）。
 enum ChipRules {
-    /// 玩家起始筹码 / 会话重置目标。
+    /// 玩家起始筹码 / 会话重置目标（闯关第 1 关 / 娱乐默认）。
     static let startingBalance = 1000
 
-    /// 庄家筹码池起始（庄家不另下注；玩家赢则从此池派彩）。
+    /// 庄家筹码池起始（闯关第 1 关 / 娱乐默认）。
     static let dealerStartingBank = 2000
 
     /// 最小下注（相对起始 1000，小面额节奏过慢）。
@@ -21,8 +21,7 @@ enum ChipRules {
     /// 下注页筹码面额：三档单选（点选即覆盖，不可累加）。
     static let betChipValues = [100, 200, 500]
 
-    /// 挑战模式：本会话完成至少该局数后，开局下注页才解锁「全下」。
-    /// （快速练习无筹码下注，不适用。）
+    /// 有筹码模式：本会话完成至少该局数后，开局下注页才解锁「全下」。
     static let preDealAllInUnlockCompletedRounds = 5
 
     /// 是否可选中该筹码档作为本局唯一注码。
@@ -59,12 +58,8 @@ enum ChipRules {
     static let sessionClearedReturnHomeHint = "进度已清空，可重新开始。"
 
     /// 产品锁定：天然黑杰克开局见牌即结算，不进入玩家回合。
-    /// 默认全下在发牌前完成，故天然 BJ 仍可吃到开局全下；见牌后再全下见道具规划。
+    /// 默认全下在发牌前完成，故天然 BJ 仍可吃到开局全下；对局中见牌后再全下由 `PropStore.owns(.midHandAllIn)` 门控。
     static let naturalBlackjackResolvesBeforePlayerTurn = true
-
-    /// 默认练习：全下仅在开局下注页。对局中见牌后再全下留给道具（默认关闭）。
-    /// - Note: 开启后接回 `ChipBank.goAllIn` + 牌桌「全下」键（见 `GameTableView`）。
-    static let midHandAllInEnabled = false
 
     /// 杀进程恢复后下注页提示（未结算注已退回，双方进度保留）。
     static let restoreAfterInterruptHint =
@@ -74,10 +69,13 @@ enum ChipRules {
     static let abandonSessionConfirmDetail =
         "将清空双方筹码并返回主页（与杀进程后自动恢复进度不同）。当前进度不记入历史。"
 
-    /// 欢迎页规则说明（短文案，适配小屏）。
-    static var welcomeRulesSummary: String {
-        "挑战庄家 \(dealerStartingBank)；注码三档单选；全下需本会话打满 \(preDealAllInUnlockCompletedRounds) 局。黑杰克见牌结算。"
+    /// 闯关欢迎页规则说明。
+    static var challengeWelcomeSummary: String {
+        "闯关挑战：打穿庄家或累计赢码可解锁更高关卡。注码三档单选；开局全下需本会话打满 \(preDealAllInUnlockCompletedRounds) 局。玩法道具仅娱乐模式可用。"
     }
+
+    /// 兼容旧调用。
+    static var welcomeRulesSummary: String { challengeWelcomeSummary }
 
     /// 一副牌残局：剩余张数 ≤ 该值且本局不重洗时，开局「全下」以强调样式展示（强制全下）。
     /// 道具启用对局中全下时，同条件也可用于见牌后强调。
@@ -156,7 +154,7 @@ enum SessionEndReason: Equatable, Sendable {
         case .playerBroke:
             return "余额不足以继续下注，本局游戏结束。请返回主页后再开启新的一局。"
         case .dealerBroke:
-            return "庄家筹码已全部赔出，本局游戏结束。请返回主页后再开启新的一局。"
+            return "庄家筹码已全部赔出。若满足条件将解锁更高闯关关卡；请返回主页后再开启新一局。"
         }
     }
 }

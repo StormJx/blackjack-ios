@@ -214,7 +214,7 @@ final class BlackjackGame: ObservableObject {
 
         let playerHand = Hand(cards: playerCards)
         // 天然黑杰克见牌即结算，不进入玩家回合。默认全下在发牌前，故仍可吃到开局全下。
-        // 见牌后再全下留给道具（`ChipRules.midHandAllInEnabled`）。
+        // 见牌后再全下由道具 `PropStore.owns(.midHandAllIn)` 门控。
         if playerHand.isNaturalBlackjack {
             resolvePlayerNaturalBlackjack()
             isAnimating = false

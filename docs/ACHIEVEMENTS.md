@@ -1,19 +1,30 @@
 # 成就目录（维护手册）
 
 > 实现源码：`cards/Achievement.swift`  
-> 持久化：`cards/StatsStore.swift`（挑战 / 练习分轨）  
-> UI：`cards/AchievementsView.swift`（「挑战」「练习」页签）  
+> 持久化：`cards/StatsStore.swift`（闯关 / 娱乐分轨）  
+> UI：`cards/AchievementsView.swift`（「闯关」「娱乐」页签）  
+> 道具与卡背：`docs/COSMETICS_AND_PROPS.md`  
 > **修改成就时请同步更新本文件与 `AchievementID`。**
 
 ## 设计原则
 
-1. **模式隔离**：快速练习（`PlayStyle.fast` → `AchievementScope.practice`）的对局**不会**解锁挑战成就；挑战庄家同理不会解锁练习成就。
+1. **模式隔离**：娱乐模式（`PlayStyle.entertainment` → `AchievementScope.practice`）的对局**不会**解锁闯关成就；闯关同理不会解锁娱乐成就。
 2. **展示**：欢迎页「成就」入口 → 分栏查看已解锁 / 未解锁与进度条。
-3. **后续扩展**：累计类成就可作为道具解锁条件（本文件仅记录成就本身，道具系统另案）。
+3. **道具兑换**：闯关成就 `dealerClear1` → 永久解锁 `midHandAllIn`；**仅娱乐模式可用**（闯关禁用玩法道具）。详见 `docs/COSMETICS_AND_PROPS.md`。
 
 ---
 
-## 挑战模式（`AchievementScope.challenge`）
+## 道具
+
+| PropID | 标题 | 解锁条件 | 可用模式 |
+|--------|------|----------|----------|
+| `midHandAllIn` | 见牌后再全下 | 成就 `dealerClear1` | **仅娱乐** |
+
+规划中：`peekHole` / `dealerSoft17Hit` / `redrawOne`（见 COSMETICS_AND_PROPS.md）。
+
+---
+
+## 闯关模式（`AchievementScope.challenge`）
 
 ### 技巧 · 一次性
 
@@ -78,7 +89,7 @@
 | `naturalBJ15` | 黑杰克收藏·十五 | 15 |
 | `naturalBJ30` | 黑杰克收藏·三十 | 30 |
 
-### 筹码 / 通关（仅挑战经济）
+### 筹码 / 通关（仅闯关经济）
 
 | ID | 标题 | 目标 |
 |----|------|------|
@@ -100,7 +111,7 @@
 
 ---
 
-## 快速练习（`AchievementScope.practice`）
+## 娱乐模式（`AchievementScope.practice`）
 
 | ID | 标题 | 条件 |
 |----|------|------|
@@ -123,8 +134,8 @@
 
 | 数量 | 范围 |
 |------|------|
-| 挑战 | 36 项 |
-| 练习 | 12 项 |
+| 闯关 | 36 项 |
+| 娱乐 | 12 项 |
 | **合计** | **48**（以 `AchievementID.allCases.count` 为准） |
 
 ## 变更记录
@@ -134,3 +145,5 @@
 | 2026-07-20 | 初版：E3 原 8 项 + 险中求胜 |
 | 2026-07-20 | 分轨挑战/练习；扩建连胜/平局/胜场/稳健/BJ/筹码阶梯；独立成就页 |
 | 2026-07-20 | 下注三档单选；挑战全下需本会话 5 局解锁；全下获胜阶梯 5/15/30 |
+| 2026-07-22 | v1.9：成就 `dealerClear1` → 永久道具「见牌后再全下」 |
+| 2026-07-22 | 道具仅娱乐可用；练习→娱乐；闯关进阶；见 COSMETICS_AND_PROPS.md |

@@ -16,8 +16,8 @@ enum AchievementScope: String, CaseIterable, Identifiable, Sendable {
 
     var tabTitle: String {
         switch self {
-        case .challenge: return "挑战"
-        case .practice: return "练习"
+        case .challenge: return "闯关"
+        case .practice: return "娱乐"
         }
     }
 }
@@ -280,18 +280,18 @@ enum AchievementID: String, CaseIterable, Identifiable, Sendable {
         case .allInWin5: return "挑战中全下获胜累计 5 次"
         case .allInWin15: return "挑战中全下获胜累计 15 次"
         case .allInWin30: return "挑战中全下获胜累计 30 次"
-        case .practiceWinStreak5: return "快速练习连续获胜 5 局"
-        case .practiceWinStreak10: return "快速练习连续获胜 10 局"
-        case .practiceWins20: return "快速练习累计获胜 20 局"
-        case .practiceWins50: return "快速练习累计获胜 50 局"
-        case .practiceWins100: return "快速练习累计获胜 100 局"
-        case .practicePush10: return "快速练习累计平局 10 次"
-        case .practicePush20: return "快速练习累计平局 20 次"
-        case .practicePush50: return "快速练习累计平局 50 次"
-        case .practiceNoBust10: return "快速练习连续 10 局未爆牌"
-        case .practiceNoBust20: return "快速练习连续 20 局未爆牌"
-        case .practiceFiveCard: return "快速练习单局 5 张未爆"
-        case .practiceNaturalBJ: return "快速练习开局天然黑杰克"
+        case .practiceWinStreak5: return "娱乐模式连续获胜 5 局"
+        case .practiceWinStreak10: return "娱乐模式连续获胜 10 局"
+        case .practiceWins20: return "娱乐模式累计获胜 20 局"
+        case .practiceWins50: return "娱乐模式累计获胜 50 局"
+        case .practiceWins100: return "娱乐模式累计获胜 100 局"
+        case .practicePush10: return "娱乐模式累计平局 10 次"
+        case .practicePush20: return "娱乐模式累计平局 20 次"
+        case .practicePush50: return "娱乐模式累计平局 50 次"
+        case .practiceNoBust10: return "娱乐模式连续 10 局未爆牌"
+        case .practiceNoBust20: return "娱乐模式连续 20 局未爆牌"
+        case .practiceFiveCard: return "娱乐模式单局 5 张未爆"
+        case .practiceNaturalBJ: return "娱乐模式开局天然黑杰克"
         }
     }
 

@@ -24,33 +24,46 @@ final class ChipBank: ObservableObject {
     private let storageKey: String
     private let dealerBankKey: String
     private let activeBetKey: String
+    /// 本会话重置目标（闯关按关卡；娱乐用默认桌限）。
+    private let sessionStartingBalance: Int
+    private let sessionDealerStartingBank: Int
 
     init(
         defaults: UserDefaults = .standard,
         storageKey: String = ChipRules.balanceStorageKey,
         dealerBankKey: String = ChipRules.dealerBankStorageKey,
-        activeBetKey: String = ChipRules.activeBetStorageKey
+        activeBetKey: String = ChipRules.activeBetStorageKey,
+        startingBalance: Int = ChipRules.startingBalance,
+        dealerStartingBank: Int = ChipRules.dealerStartingBank,
+        forceFreshSession: Bool = false
     ) {
         self.defaults = defaults
         self.storageKey = storageKey
         self.dealerBankKey = dealerBankKey
         self.activeBetKey = activeBetKey
+        self.sessionStartingBalance = startingBalance
+        self.sessionDealerStartingBank = dealerStartingBank
+
+        if forceFreshSession {
+            defaults.removeObject(forKey: storageKey)
+            defaults.removeObject(forKey: dealerBankKey)
+            defaults.removeObject(forKey: activeBetKey)
+        }
 
         var loadedBalance: Int
         if defaults.object(forKey: storageKey) != nil {
             loadedBalance = max(0, defaults.integer(forKey: storageKey))
         } else {
-            loadedBalance = ChipRules.startingBalance
+            loadedBalance = startingBalance
         }
 
         var loadedDealer: Int
         if defaults.object(forKey: dealerBankKey) != nil {
             loadedDealer = max(0, defaults.integer(forKey: dealerBankKey))
         } else {
-            loadedDealer = ChipRules.dealerStartingBank
+            loadedDealer = dealerStartingBank
         }
 
-        // 进行中的注码若未结算就杀进程 / 异常退出：退回注码并保留双方进度（非主动退出清空）。
         let hadActiveBetRecord = defaults.object(forKey: activeBetKey) != nil
         let orphanBet = max(0, defaults.integer(forKey: activeBetKey))
         var restoredInterrupt = false
@@ -60,9 +73,8 @@ final class ChipBank: ObservableObject {
         } else if !hadActiveBetRecord
             && defaults.object(forKey: dealerBankKey) == nil
             && loadedBalance < ChipRules.minimumBet {
-            // 旧版只持久化扣款后余额、未记录 activeBet / 庄家池：未完成对局会被误判为破产。
-            loadedBalance = ChipRules.startingBalance
-            loadedDealer = ChipRules.dealerStartingBank
+            loadedBalance = startingBalance
+            loadedDealer = dealerStartingBank
         }
 
         self.balance = loadedBalance
@@ -72,22 +84,18 @@ final class ChipBank: ObservableObject {
         persist()
     }
 
-    /// UI 已展示恢复提示后清除，避免重复打扰。
     func acknowledgeRestoreHint() {
         didRestoreAfterInterrupt = false
     }
 
-    /// 玩家是否已无法继续最小下注（会话可能结束）。
     var isPlayerBroke: Bool {
         balance < ChipRules.minimumBet && activeBet == 0
     }
 
-    /// 庄家池是否已掏空。
     var isDealerBroke: Bool {
         dealerBank <= 0 && activeBet == 0
     }
 
-    /// 任一方破产则本局游戏（会话）结束。庄家优先于玩家（同时为 0 时视作打穿庄家）。
     var sessionEndReason: SessionEndReason? {
         guard activeBet == 0 else { return nil }
         if isDealerBroke { return .dealerBroke }
@@ -97,10 +105,8 @@ final class ChipBank: ObservableObject {
 
     var isSessionOver: Bool { sessionEndReason != nil }
 
-    /// 当前可用于加注的上限（未确认前的草稿下注由 UI 持有）。
     var availableBalance: Int { balance }
 
-    /// 确认下注：从余额扣出；成功返回 true。
     @discardableResult
     func placeBet(_ amount: Int) -> Bool {
         guard activeBet == 0 else { return false }
@@ -114,8 +120,7 @@ final class ChipBank: ObservableObject {
         return true
     }
 
-    /// 对局中 All In（道具预留）：见牌后将剩余余额全部追加进本局注码；返回追加额，失败为 nil。
-    /// 默认练习关闭（`ChipRules.midHandAllInEnabled == false`）；开局全下请用 `placeBet(balance)`。
+    /// 对局中 All In；门控：娱乐模式 + 道具。开局全下请用 `placeBet(balance)`。
     @discardableResult
     func goAllIn() -> Int? {
         guard activeBet > 0, balance > 0 else { return nil }
@@ -127,7 +132,6 @@ final class ChipBank: ObservableObject {
         return amount
     }
 
-    /// 局末结算：按胜负派彩 / 退注 / 收注进庄家池；同一局不可重复结算。
     @discardableResult
     func settle(outcome: RoundOutcome) -> SettlementResult? {
         guard activeBet > 0 else { return nil }
@@ -145,7 +149,6 @@ final class ChipBank: ObservableObject {
         return result
     }
 
-    /// 发牌异常、返回模式选择、进程中断恢复：退回未结算的本局下注（不产生盈亏记录）。
     func refundActiveBet() {
         guard activeBet > 0 else { return }
         balance += activeBet
@@ -155,17 +158,18 @@ final class ChipBank: ObservableObject {
         persist()
     }
 
-    /// 清空本会话筹码至起始状态（破产回主页 / 主动退出共用）。
     func resetSession() {
-        balance = ChipRules.startingBalance
-        dealerBank = ChipRules.dealerStartingBank
+        balance = sessionStartingBalance
+        dealerBank = sessionDealerStartingBank
         activeBet = 0
         activeBetWasAllIn = false
         lastSettlement = nil
-        persist()
+        // 清除持久化，便于下次按新关卡起始筹码建会话；杀进程中途恢复仍依赖未 clear 的键。
+        defaults.removeObject(forKey: storageKey)
+        defaults.removeObject(forKey: dealerBankKey)
+        defaults.removeObject(forKey: activeBetKey)
     }
 
-    /// 结束会话返回主页：清空筹码状态。
     func abandonSession() {
         resetSession()
     }

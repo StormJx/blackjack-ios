@@ -337,6 +337,103 @@ struct E1E4FeatureTests {
         #expect(practiceCount >= 10)
     }
 
+    // MARK: - v1.9 Props (P1 + P9)
+
+    @Test @MainActor
+    func propStoreLockedUntilDealerClearAchievement() {
+        let suiteName = "cards.tests.props.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let props = PropStore(defaults: defaults)
+        #expect(props.owns(.midHandAllIn) == false)
+
+        let newly = props.syncFromAchievements([])
+        #expect(newly.isEmpty)
+        #expect(props.owns(.midHandAllIn) == false)
+
+        let granted = props.syncFromAchievements([.dealerClear1])
+        #expect(granted == [.midHandAllIn])
+        #expect(props.owns(.midHandAllIn))
+
+        // 幂等
+        #expect(props.syncFromAchievements([.dealerClear1]).isEmpty)
+        #expect(props.unlock(.midHandAllIn) == false)
+    }
+
+    @Test @MainActor
+    func propStoreMigratesFromExistingDealerClearAchievement() {
+        let suiteName = "cards.tests.props.migrate.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        defaults.set([AchievementID.dealerClear1.rawValue], forKey: "stats.unlockedAchievements")
+        let props = PropStore(defaults: defaults)
+        #expect(props.owns(.midHandAllIn))
+    }
+
+    @Test @MainActor
+    func propStorePersistsOwnership() {
+        let suiteName = "cards.tests.props.persist.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let props = PropStore(defaults: defaults)
+        #expect(props.unlock(.midHandAllIn))
+        let reloaded = PropStore(defaults: defaults)
+        #expect(reloaded.owns(.midHandAllIn))
+    }
+
+    @Test @MainActor
+    func recordDealerClearUnlocksMidHandProp() {
+        let suiteName = "cards.tests.props.dealerClear.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let stats = StatsStore(defaults: defaults)
+        let props = PropStore(defaults: defaults)
+        #expect(props.owns(.midHandAllIn) == false)
+
+        stats.recordDealerBankCleared()
+        #expect(stats.unlockedIDs.contains(.dealerClear1))
+        let newly = props.syncFromAchievements(stats.unlockedIDs)
+        #expect(newly == [.midHandAllIn])
+        #expect(props.owns(.midHandAllIn))
+    }
+
+    @Test @MainActor
+    func gameplayPropsOnlyInEntertainment() {
+        let suiteName = "cards.tests.props.mode.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let props = PropStore(defaults: defaults)
+        #expect(props.unlock(.midHandAllIn))
+        #expect(props.canUse(.midHandAllIn, in: .entertainment))
+        #expect(props.canUse(.midHandAllIn, in: .challenge) == false)
+    }
+
+    @Test func challengeStagesUnlockByClearsOrChipsWon() {
+        #expect(ChallengeRules.computedUnlockedLevel(dealerClears: 0, totalChipsWon: 0) == 1)
+        #expect(ChallengeRules.computedUnlockedLevel(dealerClears: 1, totalChipsWon: 0) == 2)
+        #expect(ChallengeRules.computedUnlockedLevel(dealerClears: 0, totalChipsWon: 2000) == 2)
+        #expect(ChallengeRules.computedUnlockedLevel(dealerClears: 2, totalChipsWon: 0) == 3)
+        #expect(ChallengeRules.computedUnlockedLevel(dealerClears: 5, totalChipsWon: 0) == 5)
+        #expect(ChallengeRules.computedUnlockedLevel(dealerClears: 0, totalChipsWon: 20_000) == 5)
+        #expect(ChallengeRules.stage(level: 3).dealerStart == 7000)
+    }
+
+    // MARK: - v1.9 Sounds (P2)
+
+    @Test func sixGameSoundsAreBundled() {
+        for sound in GameSound.allCases {
+            #expect(
+                GameFeedback.isSoundBundled(sound),
+                "Missing bundled sound: \(sound.rawValue) under Sounds/"
+            )
+        }
+    }
+
     // MARK: - Helpers
 
     private func emptyProgress() -> AchievementProgressInput {

@@ -16,6 +16,9 @@ private struct ActiveSession: Equatable {
 struct ContentView: View {
     @EnvironmentObject private var appSettings: AppSettings
     @EnvironmentObject private var statsStore: StatsStore
+    @EnvironmentObject private var propStore: PropStore
+    @EnvironmentObject private var challengeProgress: ChallengeProgress
+    @EnvironmentObject private var cosmeticsStore: CosmeticsStore
 
     @State private var session: ActiveSession?
     @State private var selectedMode: PracticeMode = .singleDeck
@@ -37,10 +40,17 @@ struct ContentView: View {
                         playStyle: active.playStyle,
                         cutCardEnabled: appSettings.cutCardEnabled,
                         statsStore: statsStore,
+                        propStore: propStore,
+                        challengeProgress: challengeProgress,
+                        cosmeticsStore: cosmeticsStore,
                         onEndSession: { showClearedHint in
                             withAnimation(.easeInOut(duration: 0.28)) {
                                 session = nil
                             }
+                            _ = challengeProgress.syncFromStats(
+                                dealerClears: statsStore.dealerBankClearCount,
+                                totalChipsWon: statsStore.totalChipsWon
+                            )
                             if showClearedHint {
                                 presentWelcomeNotice(ChipRules.sessionClearedReturnHomeHint)
                             }
@@ -69,13 +79,17 @@ struct ContentView: View {
                     .presentationDetents([.medium, .large])
             }
             .sheet(isPresented: $showAchievements) {
-                AchievementsView(stats: statsStore)
+                AchievementsView(stats: statsStore, props: propStore)
                     .presentationDetents([.medium, .large])
             }
             .onAppear {
                 guard !didApplyDefaultMode else { return }
                 didApplyDefaultMode = true
                 selectedMode = appSettings.defaultPracticeMode
+                _ = challengeProgress.syncFromStats(
+                    dealerClears: statsStore.dealerBankClearCount,
+                    totalChipsWon: statsStore.totalChipsWon
+                )
             }
             .onChange(of: appSettings.defaultPracticeMode) { _, newMode in
                 if session == nil {
@@ -125,7 +139,7 @@ struct ContentView: View {
             VStack(spacing: 16) {
                 Text("二十一点")
                     .font(.system(.largeTitle, design: .rounded).weight(.bold))
-                Text("练习模式")
+                Text("闯关 · 娱乐")
                     .font(.headline)
                     .foregroundStyle(.secondary)
 
@@ -151,7 +165,6 @@ struct ContentView: View {
                 }
                 .padding(.vertical, 4)
 
-                // 挑战为主、快速为次（体验优化 1）
                 VStack(spacing: 10) {
                     Text(PlayStyle.challenge.welcomeSubtitle)
                         .font(.subheadline)
@@ -159,10 +172,12 @@ struct ContentView: View {
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 4)
 
+                    let stage = challengeProgress.currentStage
                     HStack(spacing: 8) {
                         welcomeTag(selectedMode.shortLabel)
-                        welcomeTag("你 \(ChipRules.startingBalance)")
-                        welcomeTag("庄家 \(ChipRules.dealerStartingBank)")
+                        welcomeTag(stage.title)
+                        welcomeTag("你 \(stage.playerStart)")
+                        welcomeTag("庄家 \(stage.dealerStart)")
                     }
 
                     Button(PlayStyle.challenge.welcomeButtonTitle) {
@@ -175,13 +190,25 @@ struct ContentView: View {
 
                     Divider().padding(.vertical, 4)
 
-                    Text(PlayStyle.fast.welcomeSubtitle)
+                    Text(PlayStyle.entertainment.welcomeSubtitle)
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                         .multilineTextAlignment(.center)
 
-                    Button(PlayStyle.fast.welcomeButtonTitle) {
-                        startSession(style: .fast)
+                    if propStore.owns(.midHandAllIn) {
+                        Text("道具已解锁：可在娱乐模式使用「\(PropID.midHandAllIn.title)」")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.green)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    } else {
+                        Text("道具：闯关打穿庄家后解锁，仅娱乐模式可用")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+
+                    Button(PlayStyle.entertainment.welcomeButtonTitle) {
+                        startSession(style: .entertainment)
                     }
                     .buttonStyle(.bordered)
                     .controlSize(.large)
@@ -252,6 +279,9 @@ private struct GameSessionView: View {
     let practiceMode: PracticeMode
     let playStyle: PlayStyle
     @ObservedObject var statsStore: StatsStore
+    @ObservedObject var propStore: PropStore
+    @ObservedObject var challengeProgress: ChallengeProgress
+    @ObservedObject var cosmeticsStore: CosmeticsStore
     /// `true`：破产「返回主页」后提示进度已清空；主动退出叉号则为 `false`。
     let onEndSession: (_ showClearedHint: Bool) -> Void
 
@@ -261,9 +291,8 @@ private struct GameSessionView: View {
     @State private var showAbandonConfirm = false
     @State private var controlsLockedAfterAllIn = false
     @State private var draftBet = 0
-    /// 本会话已完成的挑战局数；满 5 局解锁开局全下。
+    /// 本会话已完成局数；满 5 局解锁开局全下。
     @State private var sessionRoundsCompleted = 0
-    @State private var fastStats = FastSessionStats()
     @State private var chipBalancePulse = false
     @State private var achievementToast: String?
     @State private var achievementToastTask: Task<Void, Never>?
@@ -273,24 +302,40 @@ private struct GameSessionView: View {
         playStyle: PlayStyle,
         cutCardEnabled: Bool,
         statsStore: StatsStore,
+        propStore: PropStore,
+        challengeProgress: ChallengeProgress,
+        cosmeticsStore: CosmeticsStore,
         onEndSession: @escaping (_ showClearedHint: Bool) -> Void
     ) {
         self.practiceMode = practiceMode
         self.playStyle = playStyle
         self.statsStore = statsStore
+        self.propStore = propStore
+        self.challengeProgress = challengeProgress
+        self.cosmeticsStore = cosmeticsStore
         self.onEndSession = onEndSession
         _game = StateObject(wrappedValue: BlackjackGame(
             practiceMode: practiceMode,
             cutCardEnabled: cutCardEnabled
         ))
-        if playStyle == .fast {
-            // 快速模式使用独立 suite，避免读写挑战模式 chipBank.* 键。
-            let suiteName = "cards.chipBank.fastSession"
+        switch playStyle {
+        case .challenge:
+            let stage = challengeProgress.currentStage
+            _chipBank = StateObject(wrappedValue: ChipBank(
+                startingBalance: stage.playerStart,
+                dealerStartingBank: stage.dealerStart
+            ))
+        case .entertainment:
+            let suiteName = "cards.chipBank.entertainment"
             let suite = UserDefaults(suiteName: suiteName) ?? .standard
-            suite.removePersistentDomain(forName: suiteName)
-            _chipBank = StateObject(wrappedValue: ChipBank(defaults: suite))
-        } else {
-            _chipBank = StateObject(wrappedValue: ChipBank())
+            _chipBank = StateObject(wrappedValue: ChipBank(
+                defaults: suite,
+                storageKey: "entertainment.balance",
+                dealerBankKey: "entertainment.dealerBank",
+                activeBetKey: "entertainment.activeBet",
+                startingBalance: ChipRules.startingBalance,
+                dealerStartingBank: ChipRules.dealerStartingBank
+            ))
         }
     }
 
@@ -354,16 +399,11 @@ private struct GameSessionView: View {
     }
 
     private func beginInitialFlow() {
-        switch playStyle {
-        case .challenge:
-            if chipBank.isSessionOver {
-                showRoundEndSheet = true
-            } else {
-                prepareBetDraft()
-                showBetSheet = true
-            }
-        case .fast:
-            Task { await game.startNewRound() }
+        if chipBank.isSessionOver {
+            showRoundEndSheet = true
+        } else {
+            prepareBetDraft()
+            showBetSheet = true
         }
     }
 
@@ -408,15 +448,15 @@ private struct GameSessionView: View {
     private var roundEndPanelContent: some View {
         SessionRoundEndPanel(
             playStyle: playStyle,
-            isSessionOver: playStyle == .challenge && chipBank.isSessionOver,
-            sessionEndReason: playStyle == .challenge ? chipBank.sessionEndReason : nil,
+            isSessionOver: chipBank.isSessionOver,
+            sessionEndReason: chipBank.sessionEndReason,
             outcomeMessage: game.outcomeMessage,
             outcome: game.lastOutcome,
-            settlement: playStyle == .challenge ? chipBank.lastSettlement : nil,
+            settlement: chipBank.lastSettlement,
             balance: chipBank.balance,
             dealerBank: chipBank.dealerBank,
             shoeStatusLine: game.shoeStatusLine,
-            fastStats: playStyle == .fast ? fastStats : nil,
+            fastStats: nil,
             achievementToast: achievementToast,
             onReturnHome: returnToWelcomeAfterSessionEnd,
             onContinue: continueAfterRound
@@ -432,10 +472,11 @@ private struct GameSessionView: View {
             showRoundEndPanel: showRoundEndSheet,
             canHit: canHit,
             canStand: canStand,
-            showsMidHandAllIn: playStyle == .challenge && ChipRules.midHandAllInEnabled,
+            showsMidHandAllIn: propStore.canUse(.midHandAllIn, in: playStyle),
             canMidHandAllIn: canMidHandAllIn,
             emphasizeForcedAllIn: emphasizeForcedAllIn,
             chipBalancePulse: chipBalancePulse,
+            cardBack: cosmeticsStore.selectedBack,
             onHit: { Task { await game.hit() } },
             onStand: { Task { await game.stand() } },
             onAllIn: performMidHandAllIn
@@ -478,8 +519,7 @@ private struct GameSessionView: View {
     }
 
     private var canMidHandAllIn: Bool {
-        playStyle == .challenge
-            && ChipRules.midHandAllInEnabled
+        propStore.canUse(.midHandAllIn, in: playStyle)
             && game.phase == .playerTurn
             && !game.isAnimating
             && !controlsLockedAfterAllIn
@@ -543,20 +583,13 @@ private struct GameSessionView: View {
     }
 
     private func handleRoundFinished() {
-        if playStyle == .challenge {
-            settleCurrentRoundIfNeeded()
-        }
+        settleCurrentRoundIfNeeded()
         if let outcome = game.lastOutcome {
-            if playStyle == .fast {
-                fastStats.record(outcome)
-            }
-            if playStyle == .challenge {
-                sessionRoundsCompleted += 1
-            }
+            sessionRoundsCompleted += 1
             if let snapshot = game.makeRoundSnapshot(
-                wasAllInBet: playStyle == .challenge && chipBank.activeBetWasAllIn
+                wasAllInBet: chipBank.activeBetWasAllIn
             ) {
-                let scope: AchievementScope = playStyle == .challenge ? .challenge : .practice
+                let scope = playStyle.achievementScope
                 let newly = statsStore.recordRound(snapshot: snapshot, scope: scope)
                 var toastTitles = newly.map(\.title)
                 if playStyle == .challenge, chipBank.sessionEndReason == .dealerBroke {
@@ -565,14 +598,33 @@ private struct GameSessionView: View {
                     let afterPending = statsStore.pendingUnlockTitles
                     let extra = afterPending.dropFirst(beforePending.count)
                     toastTitles.append(contentsOf: extra)
+                    if challengeProgress.syncFromStats(
+                        dealerClears: statsStore.dealerBankClearCount,
+                        totalChipsWon: statsStore.totalChipsWon
+                    ) {
+                        toastTitles.append("闯关·\(challengeProgress.currentStage.title)")
+                    }
+                }
+                let newlyProps = propStore.syncFromAchievements(statsStore.unlockedIDs)
+                if playStyle == .entertainment {
+                    toastTitles.append(contentsOf: newlyProps.map { "道具·\($0.title)" })
+                } else if !newlyProps.isEmpty {
+                    toastTitles.append("道具已解锁（娱乐模式可用）")
                 }
                 if !toastTitles.isEmpty {
                     presentAchievementToast(toastTitles.joined(separator: " · "))
                 }
             } else if playStyle == .challenge, chipBank.sessionEndReason == .dealerBroke {
                 statsStore.recordDealerBankCleared()
+                _ = propStore.syncFromAchievements(statsStore.unlockedIDs)
+                if challengeProgress.syncFromStats(
+                    dealerClears: statsStore.dealerBankClearCount,
+                    totalChipsWon: statsStore.totalChipsWon
+                ) {
+                    presentAchievementToast("闯关·\(challengeProgress.currentStage.title)")
+                }
             }
-        } else if playStyle == .challenge, chipBank.activeBet > 0 {
+        } else if chipBank.activeBet > 0 {
             chipBank.refundActiveBet()
         }
     }
@@ -580,8 +632,13 @@ private struct GameSessionView: View {
     private func settleCurrentRoundIfNeeded() {
         if let outcome = game.lastOutcome {
             if let result = chipBank.settle(outcome: outcome) {
-                statsStore.recordChipSettlement(netChange: result.netChange)
-                // 胜负音效已由 finishRound 播放；此处仅余额脉冲，避免双播。
+                if playStyle == .challenge {
+                    statsStore.recordChipSettlement(netChange: result.netChange)
+                    _ = challengeProgress.syncFromStats(
+                        dealerClears: statsStore.dealerBankClearCount,
+                        totalChipsWon: statsStore.totalChipsWon
+                    )
+                }
                 pulseChipBalance()
             }
         } else if chipBank.activeBet > 0 {
@@ -592,13 +649,8 @@ private struct GameSessionView: View {
     private func continueAfterRound() {
         showRoundEndSheet = false
         achievementToast = nil
-        switch playStyle {
-        case .challenge:
-            prepareBetDraft()
-            showBetSheet = true
-        case .fast:
-            Task { await game.startNewRound() }
-        }
+        prepareBetDraft()
+        showBetSheet = true
     }
 
     private func presentAchievementToast(_ text: String) {
@@ -628,11 +680,9 @@ private struct GameSessionView: View {
     private func abandonSessionToWelcome() {
         showBetSheet = false
         showRoundEndSheet = false
-        if playStyle == .challenge {
-            chipBank.refundActiveBet()
-            chipBank.acknowledgeRestoreHint()
-            chipBank.abandonSession()
-        }
+        chipBank.refundActiveBet()
+        chipBank.acknowledgeRestoreHint()
+        chipBank.abandonSession()
         onEndSession(false)
     }
 }
@@ -773,4 +823,7 @@ private struct TableBackgroundView: View {
     ContentView()
         .environmentObject(AppSettings())
         .environmentObject(StatsStore())
+        .environmentObject(PropStore())
+        .environmentObject(ChallengeProgress())
+        .environmentObject(CosmeticsStore())
 }
