@@ -47,13 +47,10 @@ struct AchievementsView: View {
                         ForEach(PropID.allCases) { prop in
                             propRow(prop)
                         }
-                        ForEach(PlannedPropID.allCases) { planned in
-                            plannedPropRow(planned)
-                        }
                     } header: {
                         Text("道具")
                     } footer: {
-                        Text("玩法道具仅「娱乐模式」可用；闯关只用规则内筹码。卡背在设置页选用。标注「规划」的尚未接线。")
+                        Text("玩法道具仅「娱乐模式」可用；闯关只用规则内筹码。卡背在设置页选用。")
                     }
 
                     Section {
@@ -110,27 +107,6 @@ struct AchievementsView: View {
         .padding(.vertical, 2)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(id.title)，\(owned ? "已解锁" : "未解锁")")
-    }
-
-    private func plannedPropRow(_ id: PlannedPropID) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            Image(systemName: "ellipsis.circle")
-                .foregroundStyle(.secondary)
-                .font(.title3)
-            VStack(alignment: .leading, spacing: 4) {
-                Text(id.title + "（规划）")
-                    .font(.headline)
-                    .foregroundStyle(.secondary)
-                Text(id.detail)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Text(id.unlockHint)
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
-            }
-            Spacer(minLength: 0)
-        }
-        .padding(.vertical, 2)
     }
 
     private func achievementRow(_ id: AchievementID) -> some View {

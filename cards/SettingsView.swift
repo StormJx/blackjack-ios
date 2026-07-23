@@ -44,7 +44,7 @@ struct SettingsView: View {
                         Text(changeHint)
                             .foregroundStyle(.orange)
                     } else {
-                        Text(AppSettings.appliesNextRoundHint)
+                        Text("默认牌副用于主页开局；\(AppSettings.appliesNextRoundHint)")
                     }
                 }
 
@@ -57,7 +57,7 @@ struct SettingsView: View {
                     .onChange(of: settings.tableLimitPreset) { _, _ in
                         flashHint(AppSettings.tableLimitsApplyNextSessionHint)
                     }
-                    Text("闯关模式采用此桌限；娱乐模式注码随娱乐阶梯自动提升（见欢迎页），不受本项影响。改后须返回主页再开闯关新局才生效。")
+                    Text("闯关模式采用此桌限；娱乐模式注码随娱乐阶梯自动提升，不受本项影响。改后须返回主页再开闯关新局才生效。详情见主页「帮助说明」。")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } header: {

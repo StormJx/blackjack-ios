@@ -48,6 +48,12 @@ final class BlackjackGame: ObservableObject {
     @Published private(set) var hasPeekedHoleThisRound = false
     /// 娱乐道具：本局已用过换一张。
     @Published private(set) var hasRedrawnThisRound = false
+    /// 娱乐道具：本局已用过换庄家一张。
+    @Published private(set) var hasReshuffledDealerThisRound = false
+    /// 娱乐道具：刚被替换的庄家牌下标（用于牌面脉冲；短时后清空）。
+    @Published private(set) var reshufflePulseIndex: Int?
+    /// 娱乐道具：牌桌弱提示（如「已换庄家一张」）。
+    @Published private(set) var propActionHint: String?
 
     /// 当前练习变体（一副 / 两副 / 六副）；整局生命周期内不变。
     let practiceMode: PracticeMode
@@ -62,6 +68,8 @@ final class BlackjackGame: ObservableObject {
 
     private var deck: Deck
     private var peekTask: Task<Void, Never>?
+    private var propHintTask: Task<Void, Never>?
+    private var reshufflePulseTask: Task<Void, Never>?
 
     init(practiceMode: PracticeMode = .singleDeck, cutCardEnabled: Bool = true) {
         self.practiceMode = practiceMode
@@ -133,6 +141,16 @@ final class BlackjackGame: ObservableObject {
             && !isAnimating
             && !hasPeekedHoleThisRound
             && !isPeekingHoleCard
+            && dealerCards.count >= 2
+    }
+
+    /// 是否可换庄家一张（随机一张含暗牌，洗回牌库再抽）。
+    /// 窥视进行中不可用，避免「刚看到的暗牌被立刻换掉」。
+    var canReshuffleDealerCard: Bool {
+        phase == .playerTurn
+            && !isAnimating
+            && !isPeekingHoleCard
+            && !hasReshuffledDealerThisRound
             && dealerCards.count >= 2
     }
 
@@ -386,13 +404,116 @@ final class BlackjackGame: ObservableObject {
         }
     }
 
+    /// 娱乐道具：随机将庄家一张牌洗回牌库再抽一张替换（每局限 1 次）。
+    @discardableResult
+    func reshuffleDealerCard() async -> Bool {
+        var rng = SystemRandomNumberGenerator()
+        return await reshuffleDealerCard(using: &rng)
+    }
+
+    /// - Returns: 是否成功替换；供单测注入 RNG。
+    @discardableResult
+    func reshuffleDealerCard<R: RandomNumberGenerator>(using rng: inout R) async -> Bool {
+        guard canReshuffleDealerCard else { return false }
+        isAnimating = true
+        defer {
+            if phase == .playerTurn { isAnimating = false }
+        }
+
+        hasReshuffledDealerThisRound = true
+        let index = Int.random(in: 0..<dealerCards.count, using: &rng)
+        let oldCard = dealerCards[index]
+        deck.returnCardToShoe(oldCard, using: &rng)
+        // 回鞋后剩余至少 1 张，必能再抽。
+        guard let newCard = deck.draw() else {
+            publishDeckCounts()
+            return false
+        }
+        publishDeckCounts()
+
+        withAnimation(cardDealAnimation) {
+            dealerCards[index] = newCard
+        }
+        GameFeedback.shared.shuffleHint()
+        showReshufflePulse(at: index)
+        showPropActionHint("已换庄家一张")
+        try? await Task.sleep(nanoseconds: delayAfterHit)
+        return true
+    }
+
+    /// 单测用：跳过发牌动画，直接进入玩家回合并设定双方手牌；牌堆重洗以保证可再抽。
+    func preparePlayerTurnForTesting(player: [Card], dealer: [Card]) {
+        precondition(player.count >= 2 && dealer.count >= 2)
+        peekTask?.cancel()
+        peekTask = nil
+        propHintTask?.cancel()
+        propHintTask = nil
+        reshufflePulseTask?.cancel()
+        reshufflePulseTask = nil
+
+        roundToken += 1
+        outcomeMessage = ""
+        lastOutcome = nil
+        dealingCaption = nil
+        isShowingShuffleScreen = false
+        handAreaOpacity = 1
+        handAreaScale = 1
+        playerCards = player
+        dealerCards = dealer
+        dealerHoleRevealed = false
+        hitSurvivedFromOver17 = false
+        hitSurvivedFromOver18 = false
+        hitSurvivedFromOver19 = false
+        hitFrom20To21 = false
+        resetRoundPropState()
+        deck.shuffleAndCut()
+        phase = .playerTurn
+        isAnimating = false
+        publishDeckCounts()
+    }
+
+    private func showReshufflePulse(at index: Int) {
+        reshufflePulseTask?.cancel()
+        reshufflePulseIndex = index
+        reshufflePulseTask = Task {
+            try? await Task.sleep(nanoseconds: 700_000_000)
+            guard !Task.isCancelled else { return }
+            await MainActor.run {
+                if reshufflePulseIndex == index {
+                    reshufflePulseIndex = nil
+                }
+            }
+        }
+    }
+
+    private func showPropActionHint(_ text: String) {
+        propHintTask?.cancel()
+        propActionHint = text
+        propHintTask = Task {
+            try? await Task.sleep(nanoseconds: 1_600_000_000)
+            guard !Task.isCancelled else { return }
+            await MainActor.run {
+                if propActionHint == text {
+                    propActionHint = nil
+                }
+            }
+        }
+    }
+
     private func resetRoundPropState() {
         peekTask?.cancel()
         peekTask = nil
+        propHintTask?.cancel()
+        propHintTask = nil
+        reshufflePulseTask?.cancel()
+        reshufflePulseTask = nil
         dealerHitsSoft17ThisRound = false
         isPeekingHoleCard = false
         hasPeekedHoleThisRound = false
         hasRedrawnThisRound = false
+        hasReshuffledDealerThisRound = false
+        reshufflePulseIndex = nil
+        propActionHint = nil
     }
 
     private var cardDealAnimation: Animation {

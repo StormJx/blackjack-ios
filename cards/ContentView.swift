@@ -22,20 +22,20 @@ struct ContentView: View {
     @EnvironmentObject private var cosmeticsStore: CosmeticsStore
 
     @State private var session: ActiveSession?
-    @State private var selectedMode: PracticeMode = .singleDeck
     @State private var showSettings = false
     @State private var showStats = false
     @State private var showAchievements = false
+    @State private var showHelp = false
     /// 破产回主页后的短暂提示；开始新局或超时后清除。
     @State private var welcomeNotice: String?
     @State private var welcomeNoticeClearTask: Task<Void, Never>?
-    @State private var didApplyDefaultMode = false
+    @State private var didApplyDefaults = false
 
     var body: some View {
         NavigationStack {
             ZStack {
-                TableBackgroundView()
                 if let active = session {
+                    TableBackgroundView()
                     GameSessionView(
                         practiceMode: active.practiceMode,
                         playStyle: active.playStyle,
@@ -75,6 +75,7 @@ struct ContentView: View {
                         removal: .opacity
                     ))
                 } else {
+                    WelcomeBackgroundView()
                     welcomeView
                         .transition(.asymmetric(
                             insertion: .opacity.combined(with: .scale(scale: 1.02)),
@@ -96,10 +97,13 @@ struct ContentView: View {
                 AchievementsView(stats: statsStore, props: propStore)
                     .presentationDetents([.medium, .large])
             }
+            .sheet(isPresented: $showHelp) {
+                HelpView()
+                    .presentationDetents([.medium, .large])
+            }
             .onAppear {
-                guard !didApplyDefaultMode else { return }
-                didApplyDefaultMode = true
-                selectedMode = appSettings.defaultPracticeMode
+                guard !didApplyDefaults else { return }
+                didApplyDefaults = true
                 ActiveTableLimits.apply(appSettings.tableLimitPreset)
                 _ = challengeProgress.syncFromStats(
                     dealerClears: statsStore.dealerBankClearCount,
@@ -112,16 +116,11 @@ struct ContentView: View {
                 )
                 _ = propStore.syncFromAchievements(statsStore.unlockedIDs)
             }
-            .onChange(of: appSettings.defaultPracticeMode) { _, newMode in
-                if session == nil {
-                    selectedMode = newMode
-                }
-            }
         }
     }
 
     private var welcomeView: some View {
-        VStack {
+        VStack(spacing: 0) {
             HStack {
                 Button {
                     GameFeedback.shared.buttonTap()
@@ -131,6 +130,7 @@ struct ContentView: View {
                         .font(.subheadline.weight(.semibold))
                 }
                 .buttonStyle(.bordered)
+                .tint(.white)
 
                 Button {
                     GameFeedback.shared.buttonTap()
@@ -140,8 +140,10 @@ struct ContentView: View {
                         .font(.subheadline.weight(.semibold))
                 }
                 .buttonStyle(.bordered)
+                .tint(.white)
 
                 Spacer(minLength: 0)
+
                 Button {
                     GameFeedback.shared.buttonTap()
                     showSettings = true
@@ -151,143 +153,72 @@ struct ContentView: View {
                         .padding(8)
                 }
                 .buttonStyle(.bordered)
+                .tint(.white)
                 .accessibilityLabel("设置")
             }
             .padding(.horizontal, 20)
             .padding(.top, 12)
 
-            Spacer(minLength: 0)
-            VStack(spacing: 16) {
+            Spacer(minLength: 24)
+
+            VStack(spacing: 28) {
                 Text("二十一点")
-                    .font(.system(.largeTitle, design: .rounded).weight(.bold))
-                Text("闯关 · 娱乐")
-                    .font(.headline)
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 44, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.25), radius: 8, y: 2)
+                    .accessibilityAddTraits(.isHeader)
 
                 if let welcomeNotice {
                     Text(welcomeNotice)
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(Color(red: 1.0, green: 0.86, blue: 0.45))
                         .multilineTextAlignment(.center)
+                        .padding(.horizontal, 24)
                         .transition(.opacity.combined(with: .move(edge: .top)))
                 }
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("牌副")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                    Picker("牌副", selection: $selectedMode) {
-                        ForEach(PracticeMode.allCases) { mode in
-                            Text(mode.pickerLabel).tag(mode)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .padding(.vertical, 4)
-
-                VStack(spacing: 10) {
-                    Text(PlayStyle.challenge.welcomeSubtitle)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 4)
-
-                    let stage = challengeProgress.currentStage
-                    HStack(spacing: 8) {
-                        welcomeTag(selectedMode.shortLabel)
-                        welcomeTag(stage.title)
-                        welcomeTag("你 \(stage.playerStart)")
-                        welcomeTag("庄家 \(stage.dealerStart)")
-                    }
-
-                    Text(
-                        ChallengeRules.progressHint(
-                            unlockedLevel: challengeProgress.unlockedLevel,
-                            dealerClears: statsStore.dealerBankClearCount,
-                            totalChipsWon: statsStore.totalChipsWon
-                        )
-                    )
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity)
-
-                    Button(PlayStyle.challenge.welcomeButtonTitle) {
+                VStack(spacing: 14) {
+                    Button {
                         startSession(style: .challenge)
+                    } label: {
+                        Text(PlayStyle.challenge.welcomeButtonTitle)
+                            .font(.title3.weight(.semibold))
+                            .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
-                    .tint(.green)
-                    .frame(maxWidth: .infinity)
+                    .tint(Color(red: 0.92, green: 0.78, blue: 0.28))
+                    .foregroundStyle(Color(red: 0.18, green: 0.22, blue: 0.12))
 
-                    Divider().padding(.vertical, 4)
-
-                    Text(PlayStyle.entertainment.welcomeSubtitle)
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
-                        .multilineTextAlignment(.center)
-
-                    let entStage = entertainmentProgress.currentStage
-                    HStack(spacing: 8) {
-                        welcomeTag(entStage.title)
-                        welcomeTag("你 \(entStage.playerStart)")
-                        welcomeTag("庄家 \(entStage.dealerStart)")
-                    }
-
-                    Text(
-                        EntertainmentRules.progressHint(
-                            unlockedLevel: entertainmentProgress.unlockedLevel,
-                            dealerClears: entertainmentProgress.dealerClearCount,
-                            totalChipsWon: entertainmentProgress.totalChipsWon
-                        )
-                    )
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity)
-
-                    Text(entStage.tableLimitsSummary)
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
-                        .frame(maxWidth: .infinity)
-
-                    Text("打穿或累计赢码可升阶；本阶注码见上。支持「同上局」与道具。")
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
-                        .frame(maxWidth: .infinity)
-
-                    if propStore.ownedIDs.isEmpty {
-                        Text("道具尚未解锁：完成对应成就后，仅娱乐可用")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    } else {
-                        let titles = PropID.allCases.filter { propStore.owns($0) }.map(\.title)
-                        Text("已解锁道具：\(titles.joined(separator: "、"))")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.green)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-
-                    Button(PlayStyle.entertainment.welcomeButtonTitle) {
+                    Button {
                         startSession(style: .entertainment)
+                    } label: {
+                        Text(PlayStyle.entertainment.welcomeButtonTitle)
+                            .font(.title3.weight(.semibold))
+                            .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.bordered)
                     .controlSize(.large)
-                    .frame(maxWidth: .infinity)
+                    .tint(.white)
                 }
+                .frame(maxWidth: 320)
+
+                Button {
+                    GameFeedback.shared.buttonTap()
+                    showHelp = true
+                } label: {
+                    Label("帮助说明", systemImage: "questionmark.circle")
+                        .font(.body.weight(.medium))
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.white.opacity(0.78))
+                .padding(.top, 4)
             }
-            .padding(24)
-            .frame(maxWidth: 420)
-            .background {
-                RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .fill(.regularMaterial)
-                    .shadow(color: .black.opacity(0.08), radius: 20, x: 0, y: 10)
-            }
-            .padding(.horizontal, 20)
-            Spacer(minLength: 0)
+            .padding(.horizontal, 28)
+
+            Spacer(minLength: 40)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .animation(.easeInOut(duration: 0.22), value: welcomeNotice)
     }
 
@@ -305,7 +236,10 @@ struct ContentView: View {
             )
         }
         withAnimation(.easeInOut(duration: 0.28)) {
-            session = ActiveSession(practiceMode: selectedMode, playStyle: style)
+            session = ActiveSession(
+                practiceMode: appSettings.defaultPracticeMode,
+                playStyle: style
+            )
         }
     }
 
@@ -329,18 +263,6 @@ struct ContentView: View {
         withAnimation(.easeInOut(duration: 0.22)) {
             welcomeNotice = nil
         }
-    }
-
-    private func welcomeTag(_ text: String) -> some View {
-        Text(text)
-            .font(.caption.weight(.semibold))
-            .foregroundStyle(.secondary)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .background(
-                Capsule(style: .continuous)
-                    .fill(Color.primary.opacity(0.08))
-            )
     }
 }
 
@@ -565,6 +487,8 @@ private struct GameSessionView: View {
             soft17HitActive: game.dealerHitsSoft17ThisRound,
             showsRedrawOne: propStore.canUse(.redrawOne, in: playStyle),
             canRedrawOne: canRedrawOne,
+            showsReshuffleDealerCard: propStore.canUse(.reshuffleDealerCard, in: playStyle),
+            canReshuffleDealerCard: canReshuffleDealerCard,
             chipBalancePulse: chipBalancePulse,
             cardBack: cosmeticsStore.selectedBack,
             onHit: { Task { await game.hit() } },
@@ -572,7 +496,8 @@ private struct GameSessionView: View {
             onAllIn: performMidHandAllIn,
             onPeekHole: { Task { await game.peekHoleCard() } },
             onSoft17Hit: { _ = game.activateDealerSoft17Hit() },
-            onRedrawOne: { Task { await game.redrawLastHitCard() } }
+            onRedrawOne: { Task { await game.redrawLastHitCard() } },
+            onReshuffleDealerCard: { Task { _ = await game.reshuffleDealerCard() } }
         )
     }
 
@@ -637,6 +562,12 @@ private struct GameSessionView: View {
     private var canRedrawOne: Bool {
         propStore.canUse(.redrawOne, in: playStyle)
             && game.canRedrawLastHitCard
+            && !controlsLockedAfterAllIn
+    }
+
+    private var canReshuffleDealerCard: Bool {
+        propStore.canUse(.reshuffleDealerCard, in: playStyle)
+            && game.canReshuffleDealerCard
             && !controlsLockedAfterAllIn
     }
 
@@ -935,6 +866,44 @@ private struct ShuffleScreenOverlay: View {
             pulse = true
             fan = true
         }
+    }
+}
+
+// MARK: - 欢迎页背景（牌桌绿）
+
+private struct WelcomeBackgroundView: View {
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        let isDark = colorScheme == .dark
+        ZStack {
+            // 主色：赌场绒布绿（深色模式下略压暗）
+            Color(
+                red: isDark ? 0.08 : 0.12,
+                green: isDark ? 0.28 : 0.42,
+                blue: isDark ? 0.18 : 0.28
+            )
+            // 轻微微光，避免死板平涂
+            RadialGradient(
+                colors: [
+                    Color.white.opacity(isDark ? 0.06 : 0.10),
+                    Color.clear,
+                ],
+                center: UnitPoint(x: 0.5, y: 0.28),
+                startRadius: 20,
+                endRadius: 420
+            )
+            // 底部略暗，托住主按钮区
+            LinearGradient(
+                colors: [
+                    Color.clear,
+                    Color.black.opacity(isDark ? 0.28 : 0.18),
+                ],
+                startPoint: .center,
+                endPoint: .bottom
+            )
+        }
+        .ignoresSafeArea()
     }
 }
 

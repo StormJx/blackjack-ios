@@ -88,8 +88,7 @@ struct Deck: Sendable {
         return cards.removeFirst()
     }
 
-    /// 规划道具 `reshuffleDealerCard`：将一张牌插回剩余牌堆随机位置（不重算切牌点 / dealtCount）。
-    /// - Note: 效果尚未由 UI 接线；单测与实现时再锁边界（暗牌可否、每局限次等）。
+    /// 道具 `reshuffleDealerCard`：将一张牌插回剩余牌堆随机位置（不重算切牌点 / dealtCount）。
     mutating func returnCardToShoe(_ card: Card) {
         var rng = SystemRandomNumberGenerator()
         returnCardToShoe(card, using: &rng)

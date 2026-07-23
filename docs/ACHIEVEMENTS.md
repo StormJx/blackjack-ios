@@ -22,8 +22,9 @@
 | `dealerSoft17Hit` | 庄家软 17 要牌 | 成就 `dealerClear5` | **仅娱乐** |
 | `peekHole` | 窥视暗牌 | 成就 `practiceWinStreak5` | **仅娱乐** |
 | `redrawOne` | 换一张 | 成就 `practiceWins20` | **仅娱乐** |
+| `reshuffleDealerCard` | 换庄家一张 | 成就 `practiceWins50` | **仅娱乐** |
 
-规划中：`reshuffleDealerCard`（换庄家一张，见 COSMETICS_AND_PROPS.md；效果未接线）。
+> `reshuffleDealerCard`：窥视进行中不可用；牌桌有「已换庄家一张」弱提示与牌面脉冲。
 
 详见 `docs/COSMETICS_AND_PROPS.md`。
 
@@ -153,3 +154,4 @@
 | 2026-07-22 | v1.9：成就 `dealerClear1` → 永久道具「见牌后再全下」 |
 | 2026-07-22 | 道具仅娱乐可用；练习→娱乐；闯关进阶；见 COSMETICS_AND_PROPS.md |
 | 2026-07-23 | C2/C3/C4：`peekHole` / `dealerSoft17Hit` / `redrawOne` 兑换与娱乐接线 |
+| 2026-07-23 | `reshuffleDealerCard`：成就 `practiceWins50` → 永久解锁；仅娱乐接线 |

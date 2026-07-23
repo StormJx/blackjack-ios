@@ -543,7 +543,7 @@ struct E1E4FeatureTests {
     }
 
     @Test @MainActor
-    func propStoreUnlocksSoft17PeekAndRedraw() {
+    func propStoreUnlocksSoft17PeekRedrawAndReshuffle() {
         let suiteName = "cards.tests.props.more.\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suiteName)!
         defer { defaults.removePersistentDomain(forName: suiteName) }
@@ -553,12 +553,92 @@ struct E1E4FeatureTests {
             .dealerClear5,
             .practiceWinStreak5,
             .practiceWins20,
+            .practiceWins50,
         ])
-        #expect(Set(newly) == Set([.dealerSoft17Hit, .peekHole, .redrawOne]))
+        #expect(Set(newly) == Set([
+            .dealerSoft17Hit,
+            .peekHole,
+            .redrawOne,
+            .reshuffleDealerCard,
+        ]))
         #expect(props.canUse(.peekHole, in: .entertainment))
         #expect(props.canUse(.peekHole, in: .challenge) == false)
         #expect(props.canUse(.dealerSoft17Hit, in: .entertainment))
         #expect(props.canUse(.redrawOne, in: .challenge) == false)
+        #expect(props.canUse(.reshuffleDealerCard, in: .entertainment))
+        #expect(props.canUse(.reshuffleDealerCard, in: .challenge) == false)
+        #expect(PropID.reshuffleDealerCard.unlockAchievement == .practiceWins50)
+    }
+
+    @Test @MainActor
+    func reshuffleDealerCardBlockedOutsidePlayerTurn() async {
+        let game = BlackjackGame(practiceMode: .singleDeck, cutCardEnabled: true)
+        #expect(game.canReshuffleDealerCard == false)
+        var rng = SeededRNG(state: 3)
+        #expect(await game.reshuffleDealerCard(using: &rng) == false)
+        #expect(game.hasReshuffledDealerThisRound == false)
+    }
+
+    @Test @MainActor
+    func reshuffleDealerCardReplacesOneDealerCardOncePerRound() async {
+        let game = BlackjackGame(practiceMode: .singleDeck, cutCardEnabled: true)
+        let player = [
+            Card(suit: .hearts, rank: .ten),
+            Card(suit: .clubs, rank: .seven),
+        ]
+        let dealer = [
+            Card(suit: .spades, rank: .nine),
+            Card(suit: .diamonds, rank: .four),
+        ]
+        game.preparePlayerTurnForTesting(player: player, dealer: dealer)
+
+        #expect(game.phase == .playerTurn)
+        #expect(game.canReshuffleDealerCard)
+        let beforeRemaining = game.remainingCardCount
+        let beforeDealer = game.dealerCards
+
+        var rng = SeededRNG(state: 99)
+        let ok = await game.reshuffleDealerCard(using: &rng)
+        #expect(ok)
+        #expect(game.dealerCards.count == beforeDealer.count)
+        #expect(game.remainingCardCount == beforeRemaining)
+        #expect(game.hasReshuffledDealerThisRound)
+        #expect(game.canReshuffleDealerCard == false)
+        #expect(game.propActionHint == "已换庄家一张")
+        #expect(game.reshufflePulseIndex != nil)
+
+        let afterFirst = game.dealerCards
+        var rng2 = SeededRNG(state: 100)
+        #expect(await game.reshuffleDealerCard(using: &rng2) == false)
+        #expect(game.dealerCards == afterFirst)
+    }
+
+    @Test @MainActor
+    func reshuffleDealerCardBlockedWhilePeeking() async {
+        let game = BlackjackGame(practiceMode: .singleDeck, cutCardEnabled: true)
+        let player = [
+            Card(suit: .hearts, rank: .ten),
+            Card(suit: .clubs, rank: .eight),
+        ]
+        let dealer = [
+            Card(suit: .spades, rank: .king),
+            Card(suit: .diamonds, rank: .six),
+        ]
+        game.preparePlayerTurnForTesting(player: player, dealer: dealer)
+        #expect(game.canReshuffleDealerCard)
+
+        let peek = Task { await game.peekHoleCard() }
+        // 窥视启动后短等，确认窥视中门控。
+        try? await Task.sleep(nanoseconds: 50_000_000)
+        if game.isPeekingHoleCard {
+            #expect(game.canReshuffleDealerCard == false)
+            var rng = SeededRNG(state: 7)
+            #expect(await game.reshuffleDealerCard(using: &rng) == false)
+            #expect(game.hasReshuffledDealerThisRound == false)
+        }
+        await peek.value
+        #expect(game.isPeekingHoleCard == false)
+        #expect(game.canReshuffleDealerCard)
     }
 
     // MARK: - v1.9 Sounds (P2)

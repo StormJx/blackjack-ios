@@ -18,6 +18,8 @@ enum PropID: String, CaseIterable, Identifiable {
     case peekHole
     /// 换掉最近一次要牌得到的牌（每局限 1 次）。
     case redrawOne
+    /// 随机将庄家一张牌洗回牌库再抽一张替换（每局限 1 次）。
+    case reshuffleDealerCard
 
     var id: String { rawValue }
 
@@ -27,6 +29,7 @@ enum PropID: String, CaseIterable, Identifiable {
         case .dealerSoft17Hit: return "庄家软 17 要牌"
         case .peekHole: return "窥视暗牌"
         case .redrawOne: return "换一张"
+        case .reshuffleDealerCard: return "换庄家一张"
         }
     }
 
@@ -40,6 +43,8 @@ enum PropID: String, CaseIterable, Identifiable {
             return "仅娱乐模式：玩家回合偷看庄家暗牌约 1 秒，每局限 1 次。"
         case .redrawOne:
             return "仅娱乐模式：弃掉最近一次要牌得到的牌并重发一张（须已要过牌）。每局限 1 次；天然 BJ 不可用。"
+        case .reshuffleDealerCard:
+            return "仅娱乐模式：随机将庄家手牌中一张（含暗牌）洗回牌库再抽一张替换。每局限 1 次；窥视进行中不可用；可与其它娱乐道具同局先后使用。"
         }
     }
 
@@ -53,6 +58,8 @@ enum PropID: String, CaseIterable, Identifiable {
             return "娱乐模式连胜达 5 后永久解锁"
         case .redrawOne:
             return "娱乐模式累计胜 20 局后永久解锁"
+        case .reshuffleDealerCard:
+            return "娱乐模式累计胜 50 局后永久解锁"
         }
     }
 
@@ -63,6 +70,7 @@ enum PropID: String, CaseIterable, Identifiable {
         case .dealerSoft17Hit: return .dealerClear5
         case .peekHole: return .practiceWinStreak5
         case .redrawOne: return .practiceWins20
+        case .reshuffleDealerCard: return .practiceWins50
         }
     }
 }

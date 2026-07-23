@@ -49,16 +49,13 @@
 | `dealerSoft17Hit` | 庄家软 17 要牌 | `dealerClear5` | **仅娱乐** | 玩家回合点一次后，**本局**庄家软 17 必须要牌 |
 | `peekHole` | 窥视暗牌 | `practiceWinStreak5` | **仅娱乐** | 玩家回合偷看暗牌约 1 秒，每局限 1 次 |
 | `redrawOne` | 换一张 | `practiceWins20` | **仅娱乐** | 弃掉最近一次要牌得到的牌并重发；须已要过牌；每局限 1 次 |
+| `reshuffleDealerCard` | 换庄家一张 | `practiceWins50` | **仅娱乐** | 随机将庄家一张（含暗牌）洗回牌库再抽一张替换；每局限 1 次；窥视进行中不可用；可与其它娱乐道具同局先后使用 |
 
 > 持有模型：成就达成后**永久解锁**（不消耗库存）；部分道具另有每局限次。
 
 ### 规划（未接线效果）
 
-| PlannedPropID | 标题 | 效果草案 |
-|---------------|------|----------|
-| `reshuffleDealerCard` | 换庄家一张 | 随机将庄家一张牌洗回牌库再抽一张替换；解锁条件待定 |
-
-底座：`Deck.returnCardToShoe` 已预留；UI / 门控 / 解锁未接线。
+当前无待接线规划道具。底座：`Deck.returnCardToShoe` 已由 `reshuffleDealerCard` 使用。
 
 ### 其它候选（更后）
 
@@ -119,3 +116,4 @@
 | 2026-07-23 | C1 卡背解锁选用；F2 进度弱提示；P4 桌限预设；C2/C3/C4 道具落地；第 3 轮 F10/P5/P8 延后 |
 | 2026-07-23 | 娱乐独立进阶 + 注码随阶；规划道具 `reshuffleDealerCard` + `Deck.returnCardToShoe` |
 | 2026-07-23 | P3 同上局（仅娱乐）；娱乐固定真实切牌；P8 深色；F10 程序合成音效替换占位；横竖/无障碍见 `docs/P8_ORIENTATION_AND_A11Y.md` |
+| 2026-07-23 | `reshuffleDealerCard` 接线：解锁 `practiceWins50`；随机换庄家一张；每局限 1 次；仅娱乐 |

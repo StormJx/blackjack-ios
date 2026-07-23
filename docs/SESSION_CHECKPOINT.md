@@ -32,11 +32,10 @@
 - [x] 娱乐独立进阶 `EntertainmentProgress`（打穿或累计赢升阶；注码随阶）
 - [x] P3 「同上局」下注（仅娱乐）
 - [x] 娱乐固定真实切牌（设置切牌开关只影响闯关）
-- [x] 道具：`midHandAllIn` / `dealerSoft17Hit` / `peekHole` / `redrawOne`（仅娱乐，永久解锁）
+- [x] 道具：`midHandAllIn` / `dealerSoft17Hit` / `peekHole` / `redrawOne` / `reshuffleDealerCard`（仅娱乐，永久解锁）
 - [x] F10：六基名 wav 已换为程序合成增强版（非录音级）
 
 ### 规划入库（效果未接线）
-- [x] `PlannedPropID.reshuffleDealerCard` + `Deck.returnCardToShoe`（解锁条件未定）
 - [x] P8 横竖屏 / 无障碍深化 → 仅文档备案
 
 ---
@@ -45,7 +44,6 @@
 
 | 编号 | 内容 | 备注 |
 |------|------|------|
-| reshuffleDealerCard | 接线 UI/规则 | 解锁条件用户未定 |
 | P5 | 切牌「仅仪式感」三态 | 娱乐已固定真实切牌；仪式感另议 |
 | P8 横竖屏 | 允许横屏与布局 | 见 P8 文档 |
 | P8 无障碍深化 | VoiceOver / 动态字体等 | 见 P8 文档 |
@@ -71,10 +69,10 @@
 ## 建议下一步（任选点名）
 
 1. 试玩后调娱乐阶梯数值  
-2. 定 `reshuffleDealerCard` 解锁条件并接线  
-3. 提供正片 wav 换 F10  
-4. P8 横竖或无障碍切片  
-5. 讨论 C5 / P6 产品  
+2. 提供正片 wav 换 F10  
+3. P8 横竖或无障碍切片  
+4. F1 全下解锁可配置  
+5. 讨论 C5 / P6 产品 / P5 切牌三态  
 
 ---
 
@@ -83,3 +81,6 @@
 | 日期 | 说明 |
 |------|------|
 | 2026-07-23 | 初版检查点：对应 v1.10 推送交接 |
+| 2026-07-23 | `reshuffleDealerCard` 接线（`practiceWins50`；仅娱乐） |
+| 2026-07-23 | 换庄家体验：正向单测、牌面脉冲弱提示、窥视中禁用、道具两列网格；排除无关 hooks 改动 |
+| 2026-07-23 | 欢迎页精简：纯色底 + 游戏名 + 双入口 + 帮助说明；冗余规则迁入 HelpView；牌副改走设置默认 |

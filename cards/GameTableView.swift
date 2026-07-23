@@ -26,6 +26,8 @@ struct GameTableView: View {
     let soft17HitActive: Bool
     let showsRedrawOne: Bool
     let canRedrawOne: Bool
+    let showsReshuffleDealerCard: Bool
+    let canReshuffleDealerCard: Bool
     /// E4：确认下注后短暂放大余额行。
     let chipBalancePulse: Bool
     var cardBack: CardBackStyle = .classicNavy
@@ -35,6 +37,7 @@ struct GameTableView: View {
     let onPeekHole: () -> Void
     let onSoft17Hit: () -> Void
     let onRedrawOne: () -> Void
+    let onReshuffleDealerCard: () -> Void
 
     var body: some View {
         VStack(spacing: 0) {
@@ -151,8 +154,13 @@ struct GameTableView: View {
                 LazyVGrid(columns: cardGridColumns, alignment: .leading, spacing: 8) {
                     ForEach(0..<dealerCardFaces.count, id: \.self) { i in
                         PlayingCardView(face: dealerCardFaces[i], cardBack: cardBack)
-                            .id("\(game.roundToken)-d-\(i)")
+                            .id("\(game.roundToken)-d-\(i)-\(dealerCardIdentity(i))")
                             .cardDealEntrance()
+                            .scaleEffect(game.reshufflePulseIndex == i ? 1.12 : 1)
+                            .animation(
+                                .spring(response: 0.32, dampingFraction: 0.55),
+                                value: game.reshufflePulseIndex == i
+                            )
                     }
                 }
                 .animation(.spring(response: 0.38, dampingFraction: 0.78), value: dealerCardFaces.count)
@@ -198,16 +206,28 @@ struct GameTableView: View {
     private var statusSection: some View {
         // 局末弹窗已展示完整结果时，牌桌结果区只保留弱提示，避免双份重复。
         let sheetOwnsResult = game.phase == .finished || showRoundEndPanel
+        let propHint = game.propActionHint
         let hasOutcome = game.lastOutcome != nil && !sheetOwnsResult
         let color = game.lastOutcome?.statusColor ?? .secondary
         let icon = game.lastOutcome?.statusIconName ?? "hourglass.circle.fill"
+        let statusText: String = {
+            if sheetOwnsResult { return "本局已结束" }
+            if hasOutcome { return game.outcomeMessage }
+            if let propHint { return propHint }
+            return "等待本局结果"
+        }()
+        let statusColor: Color = {
+            if hasOutcome { return color }
+            if propHint != nil { return .orange }
+            return .secondary
+        }()
         return HStack(spacing: 8) {
-            Image(systemName: sheetOwnsResult ? "checkmark.circle" : icon)
+            Image(systemName: sheetOwnsResult ? "checkmark.circle" : (propHint != nil ? "arrow.triangle.2.circlepath" : icon))
                 .font(.subheadline.weight(.semibold))
-                .foregroundStyle(hasOutcome ? color : .secondary)
-            Text(sheetOwnsResult ? "本局已结束" : (hasOutcome ? game.outcomeMessage : "等待本局结果"))
+                .foregroundStyle(statusColor)
+            Text(statusText)
                 .font(sheetOwnsResult ? .subheadline.weight(.medium) : .title3.weight(.semibold))
-                .foregroundStyle(hasOutcome ? color : .secondary)
+                .foregroundStyle(statusColor)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
         }
@@ -216,12 +236,14 @@ struct GameTableView: View {
         .padding(.vertical, 10)
         .background(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(color.opacity(hasOutcome ? 0.14 : 0.06))
+                .fill(statusColor.opacity(hasOutcome || propHint != nil ? 0.14 : 0.06))
         )
         .overlay(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .strokeBorder(color.opacity(hasOutcome ? 0.28 : 0.08), lineWidth: 1)
+                .strokeBorder(statusColor.opacity(hasOutcome || propHint != nil ? 0.28 : 0.08), lineWidth: 1)
         )
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(statusText)
     }
 
     private var controls: some View {
@@ -267,8 +289,8 @@ struct GameTableView: View {
                 }
             }
 
-            if showsPeekHole || showsSoft17Hit || showsRedrawOne {
-                HStack(spacing: 10) {
+            if showsPeekHole || showsSoft17Hit || showsRedrawOne || showsReshuffleDealerCard {
+                LazyVGrid(columns: propButtonColumns, spacing: 10) {
                     if showsPeekHole {
                         propButton(
                             title: "窥视",
@@ -290,6 +312,13 @@ struct GameTableView: View {
                             action: onRedrawOne
                         )
                     }
+                    if showsReshuffleDealerCard {
+                        propButton(
+                            title: "换庄家",
+                            enabled: canReshuffleDealerCard,
+                            action: onReshuffleDealerCard
+                        )
+                    }
                 }
             }
         }
@@ -306,6 +335,21 @@ struct GameTableView: View {
         .frame(maxWidth: .infinity)
         .disabled(!enabled)
         .opacity(enabled ? 1 : 0.55)
+        .accessibilityLabel(title)
+        .accessibilityHint(enabled ? "可用" : "当前不可用")
+    }
+
+    private var propButtonColumns: [GridItem] {
+        [
+            GridItem(.flexible(), spacing: 10),
+            GridItem(.flexible(), spacing: 10),
+        ]
+    }
+
+    private func dealerCardIdentity(_ index: Int) -> String {
+        guard game.dealerCards.indices.contains(index) else { return "\(index)" }
+        let card = game.dealerCards[index]
+        return "\(card.suit.rawValue)-\(card.rank.shortName)"
     }
 
     private var dealerCardFaces: [PlayingCardView.Face] {
