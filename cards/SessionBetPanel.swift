@@ -16,9 +16,14 @@ struct SessionBetPanel: View {
     let sessionRoundsCompleted: Int
     /// 一副牌残局等：全下按钮用强调文案「强制全下」（仍须已解锁）。
     let emphasizeForcedAllIn: Bool
+    /// P3：仅娱乐显示「同上局」。
+    var showsRepeatLastBet: Bool = false
+    var lastBetAmount: Int = 0
+    var canRepeatLastBet: Bool = false
     let onClear: () -> Void
     let onSelectChip: (Int) -> Void
     let onAllIn: () -> Void
+    var onRepeatLastBet: () -> Void = {}
     let onConfirm: () -> Void
 
     private var allInUnlocked: Bool {
@@ -96,6 +101,15 @@ struct SessionBetPanel: View {
                 }
                 .font(.subheadline.weight(.semibold))
                 .disabled(draftBet == 0)
+
+                if showsRepeatLastBet {
+                    Button(lastBetAmount > 0 ? "同上局 \(lastBetAmount)" : "同上局") {
+                        GameFeedback.shared.buttonTap()
+                        onRepeatLastBet()
+                    }
+                    .font(.subheadline.weight(.semibold))
+                    .disabled(!canRepeatLastBet)
+                }
 
                 Spacer(minLength: 0)
             }

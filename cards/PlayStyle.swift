@@ -29,7 +29,7 @@ enum PlayStyle: String, CaseIterable, Identifiable, Sendable {
         case .challenge:
             return ChipRules.challengeWelcomeSummary
         case .entertainment:
-            return "休闲对局；已解锁道具可在此使用。局末同样结算筹码。"
+            return "道具可用；打穿庄家升阶（起始筹码与注码随阶提升）；固定真实切牌；可「同上局」下注。"
         }
     }
 

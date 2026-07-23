@@ -53,7 +53,13 @@ struct E1E4FeatureTests {
         #expect(reloaded.cutCardEnabled == false)
         #expect(reloaded.soundEnabled == false)
         #expect(reloaded.hapticsEnabled == false)
-        #expect(reloaded.tableLimitsSummary.contains("\(ChipRules.minimumBet)"))
+        #expect(reloaded.tableLimitPreset == .standard)
+        #expect(reloaded.tableLimitsSummary.contains("100"))
+
+        settings.tableLimitPreset = .light
+        let reloadedLimits = AppSettings(defaults: defaults)
+        #expect(reloadedLimits.tableLimitPreset == .light)
+        #expect(reloadedLimits.tableLimitsSummary.contains("50"))
     }
 
     @Test func deckCutDisabledRequiresReshuffleAfterAnyDeal() {
@@ -421,6 +427,138 @@ struct E1E4FeatureTests {
         #expect(ChallengeRules.computedUnlockedLevel(dealerClears: 5, totalChipsWon: 0) == 5)
         #expect(ChallengeRules.computedUnlockedLevel(dealerClears: 0, totalChipsWon: 20_000) == 5)
         #expect(ChallengeRules.stage(level: 3).dealerStart == 7000)
+    }
+
+    @Test func challengeProgressHintShowsGapOrCleared() {
+        let early = ChallengeRules.progressHint(
+            unlockedLevel: 1,
+            dealerClears: 0,
+            totalChipsWon: 500
+        )
+        #expect(early.contains("第一关"))
+        #expect(early.contains("1 次"))
+        #expect(early.contains("1500"))
+
+        let maxed = ChallengeRules.progressHint(
+            unlockedLevel: 5,
+            dealerClears: 5,
+            totalChipsWon: 20_000
+        )
+        #expect(maxed.contains("已通关全部关卡"))
+    }
+
+    // MARK: - C1 Cosmetics / P4 Table limits / C2–C4 Props
+
+    @Test @MainActor
+    func cosmeticsUnlockByChallengeProgress() {
+        let suiteName = "cards.tests.cosmetics.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let store = CosmeticsStore(defaults: defaults)
+        #expect(store.owns(.classicNavy))
+        #expect(store.owns(.emeraldLattice) == false)
+
+        let emerald = store.syncFromProgress(unlockedLevel: 1, dealerClears: 1, totalChipsWon: 0)
+        #expect(emerald == [.emeraldLattice])
+        #expect(store.owns(.emeraldLattice))
+
+        let crimson = store.syncFromProgress(unlockedLevel: 3, dealerClears: 1, totalChipsWon: 0)
+        #expect(crimson == [.crimsonRibbon])
+        store.select(.crimsonRibbon)
+        #expect(store.selectedBack == .crimsonRibbon)
+
+        let reloaded = CosmeticsStore(defaults: defaults)
+        #expect(reloaded.owns(.crimsonRibbon))
+        #expect(reloaded.selectedBack == .crimsonRibbon)
+    }
+
+    @Test func tableLimitPresetsAreValid() {
+        for preset in TableLimitPreset.allCases {
+            #expect(preset.betChipValues.count == 3)
+            #expect(preset.betChipValues[0] == preset.minimumBet)
+            #expect(preset.betChipValues[0] < preset.betChipValues[1])
+            #expect(preset.betChipValues[1] < preset.betChipValues[2])
+        }
+        ActiveTableLimits.apply(.light)
+        #expect(ChipRules.minimumBet == 50)
+        #expect(ChipRules.betChipValues == [50, 100, 250])
+        ActiveTableLimits.apply(.standard)
+        #expect(ChipRules.minimumBet == 100)
+    }
+
+    @Test @MainActor
+    func entertainmentProgressUnlocksStagesAndBets() {
+        let suiteName = "cards.tests.ent.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let progress = EntertainmentProgress(defaults: defaults)
+        #expect(progress.unlockedLevel == 1)
+        #expect(progress.currentStage.betChipValues == [100, 200, 500])
+
+        progress.recordChipsWon(2000)
+        #expect(progress.unlockedLevel == 2)
+        #expect(progress.currentStage.betChipValues == [200, 400, 800])
+
+        _ = progress.recordDealerCleared() // clears = 1，仍为 2 阶
+        #expect(progress.unlockedLevel == 2)
+        #expect(progress.recordDealerCleared()) // clears = 2 → 3 阶
+        #expect(progress.unlockedLevel == 3)
+        #expect(progress.currentStage.minimumBet == 200)
+
+        let reloaded = EntertainmentProgress(defaults: defaults)
+        #expect(reloaded.unlockedLevel == 3)
+        #expect(reloaded.dealerClearCount == 2)
+    }
+
+    @Test func deckReturnCardToShoeIncreasesRemaining() {
+        var deck = Deck(numberOfDecks: 1, cutCardEnabled: true)
+        var rng = SeededRNG(state: 42)
+        deck.shuffleAndCut(using: &rng)
+        let before = deck.remainingCount
+        guard let card = deck.draw() else {
+            Issue.record("expected a card")
+            return
+        }
+        #expect(deck.remainingCount == before - 1)
+        deck.returnCardToShoe(card, using: &rng)
+        #expect(deck.remainingCount == before)
+    }
+
+    @Test func handSoftSeventeenDetection() {
+        let soft17 = Hand(cards: [
+            Card(suit: .hearts, rank: .ace),
+            Card(suit: .spades, rank: .six),
+        ])
+        #expect(soft17.isSoftSeventeen)
+        #expect(soft17.isSoft)
+
+        let hard17 = Hand(cards: [
+            Card(suit: .hearts, rank: .ten),
+            Card(suit: .spades, rank: .seven),
+        ])
+        #expect(hard17.bestValue == 17)
+        #expect(hard17.isSoftSeventeen == false)
+    }
+
+    @Test @MainActor
+    func propStoreUnlocksSoft17PeekAndRedraw() {
+        let suiteName = "cards.tests.props.more.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let props = PropStore(defaults: defaults)
+        let newly = props.syncFromAchievements([
+            .dealerClear5,
+            .practiceWinStreak5,
+            .practiceWins20,
+        ])
+        #expect(Set(newly) == Set([.dealerSoft17Hit, .peekHole, .redrawOne]))
+        #expect(props.canUse(.peekHole, in: .entertainment))
+        #expect(props.canUse(.peekHole, in: .challenge) == false)
+        #expect(props.canUse(.dealerSoft17Hit, in: .entertainment))
+        #expect(props.canUse(.redrawOne, in: .challenge) == false)
     }
 
     // MARK: - v1.9 Sounds (P2)

@@ -43,19 +43,17 @@ struct AchievementsView: View {
                         Text("战绩摘要")
                     }
 
-                    if scope == .challenge {
-                        Section {
-                            ForEach(PropID.allCases) { prop in
-                                propRow(prop)
-                            }
-                            ForEach(PlannedPropID.allCases) { planned in
-                                plannedPropRow(planned)
-                            }
-                        } header: {
-                            Text("道具")
-                        } footer: {
-                            Text("玩法道具仅「娱乐模式」可用；闯关只用规则内筹码。卡背等外观见 docs/COSMETICS_AND_PROPS.md。")
+                    Section {
+                        ForEach(PropID.allCases) { prop in
+                            propRow(prop)
                         }
+                        ForEach(PlannedPropID.allCases) { planned in
+                            plannedPropRow(planned)
+                        }
+                    } header: {
+                        Text("道具")
+                    } footer: {
+                        Text("玩法道具仅「娱乐模式」可用；闯关只用规则内筹码。卡背在设置页选用。标注「规划」的尚未接线。")
                     }
 
                     Section {
@@ -126,7 +124,7 @@ struct AchievementsView: View {
                 Text(id.detail)
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                Text("后续实现")
+                Text(id.unlockHint)
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
             }

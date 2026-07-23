@@ -40,6 +40,14 @@ final class BlackjackGame: ObservableObject {
     @Published private(set) var totalCardCount: Int = 0
     /// 本局胜负类别（供筹码结算模块消费；不含金额）
     @Published private(set) var lastOutcome: RoundOutcome?
+    /// 娱乐道具：本局已开启「庄家软 17 要牌」。
+    @Published private(set) var dealerHitsSoft17ThisRound = false
+    /// 娱乐道具：正在窥视暗牌（约 1 秒）。
+    @Published private(set) var isPeekingHoleCard = false
+    /// 娱乐道具：本局已用过窥视。
+    @Published private(set) var hasPeekedHoleThisRound = false
+    /// 娱乐道具：本局已用过换一张。
+    @Published private(set) var hasRedrawnThisRound = false
 
     /// 当前练习变体（一副 / 两副 / 六副）；整局生命周期内不变。
     let practiceMode: PracticeMode
@@ -53,6 +61,7 @@ final class BlackjackGame: ObservableObject {
     private var hitFrom20To21 = false
 
     private var deck: Deck
+    private var peekTask: Task<Void, Never>?
 
     init(practiceMode: PracticeMode = .singleDeck, cutCardEnabled: Bool = true) {
         self.practiceMode = practiceMode
@@ -98,6 +107,7 @@ final class BlackjackGame: ObservableObject {
     private let delayClearFadeIn: UInt64 = 200_000_000
     /// 局间全屏洗牌页停留时长
     private let delayShuffleScreen: UInt64 = 1_600_000_000
+    private let delayPeekHole: UInt64 = 1_000_000_000
 
     var playerBestValue: Int {
         Hand(cards: playerCards).bestValue
@@ -105,6 +115,25 @@ final class BlackjackGame: ObservableObject {
 
     var dealerBestValue: Int {
         Hand(cards: dealerCards).bestValue
+    }
+
+    /// 是否可换最近一次要牌得到的牌（须已要过至少一张）。
+    var canRedrawLastHitCard: Bool {
+        phase == .playerTurn && !isAnimating && playerCards.count > 2 && !hasRedrawnThisRound
+    }
+
+    /// 是否可开启本局庄家软 17 要牌。
+    var canActivateDealerSoft17Hit: Bool {
+        phase == .playerTurn && !isAnimating && !dealerHitsSoft17ThisRound
+    }
+
+    /// 是否可窥视暗牌。
+    var canPeekHoleCard: Bool {
+        phase == .playerTurn
+            && !isAnimating
+            && !hasPeekedHoleThisRound
+            && !isPeekingHoleCard
+            && dealerCards.count >= 2
     }
 
     /// 牌桌副标题：共 N 张 + 剩余张数。
@@ -126,8 +155,9 @@ final class BlackjackGame: ObservableObject {
         )
     }
 
-    /// 玩家回合或发牌中或庄家未翻暗牌时，第二张庄家牌盖着
+    /// 玩家回合或发牌中或庄家未翻暗牌时，第二张庄家牌盖着（窥视中除外）。
     var hideDealerHoleCard: Bool {
+        if isPeekingHoleCard { return false }
         guard dealerCards.count >= 2 else { return false }
         if phase == .playerTurn || phase == .dealing { return true }
         if phase == .dealerTurn && !dealerHoleRevealed { return true }
@@ -160,6 +190,7 @@ final class BlackjackGame: ObservableObject {
         hitSurvivedFromOver18 = false
         hitSurvivedFromOver19 = false
         hitFrom20To21 = false
+        resetRoundPropState()
 
         if hadCards {
             withAnimation(.spring(response: 0.48, dampingFraction: 0.82)) {
@@ -281,8 +312,97 @@ final class BlackjackGame: ObservableObject {
         await playDealerTurnAsync()
     }
 
+    /// 娱乐道具：本局开启庄家软 17 要牌。
+    @discardableResult
+    func activateDealerSoft17Hit() -> Bool {
+        guard canActivateDealerSoft17Hit else { return false }
+        dealerHitsSoft17ThisRound = true
+        return true
+    }
+
+    /// 娱乐道具：窥视暗牌约 1 秒（每局限 1 次）。
+    func peekHoleCard() async {
+        guard canPeekHoleCard else { return }
+        hasPeekedHoleThisRound = true
+        isPeekingHoleCard = true
+        GameFeedback.shared.holeRevealed()
+        peekTask?.cancel()
+        peekTask = Task {
+            try? await Task.sleep(nanoseconds: delayPeekHole)
+            guard !Task.isCancelled else { return }
+            await MainActor.run {
+                isPeekingHoleCard = false
+            }
+        }
+        await peekTask?.value
+    }
+
+    /// 娱乐道具：换掉最近一次要牌得到的牌（每局限 1 次）。
+    func redrawLastHitCard() async {
+        guard canRedrawLastHitCard else { return }
+        isAnimating = true
+        defer {
+            if phase == .playerTurn { isAnimating = false }
+        }
+
+        hasRedrawnThisRound = true
+        let beforeBest = Hand(cards: Array(playerCards.dropLast())).bestValue
+        playerCards.removeLast()
+
+        guard let card = deck.draw() else {
+            publishDeckCounts()
+            await playDealerTurnAsync()
+            return
+        }
+        publishDeckCounts()
+
+        withAnimation(cardDealAnimation) {
+            playerCards.append(card)
+        }
+        GameFeedback.shared.cardDealt()
+        try? await Task.sleep(nanoseconds: delayAfterHit)
+
+        let hand = Hand(cards: playerCards)
+        if hand.isBusted {
+            finishRound(
+                message: "爆牌，你输了",
+                outcome: .playerLose,
+                playerWon: false,
+                isPush: false
+            )
+            isAnimating = false
+            return
+        }
+
+        if beforeBest > 17 { hitSurvivedFromOver17 = true }
+        if beforeBest > 18 { hitSurvivedFromOver18 = true }
+        if beforeBest > 19 { hitSurvivedFromOver19 = true }
+        if beforeBest == 20 && hand.bestValue == 21 {
+            hitFrom20To21 = true
+        }
+
+        if hand.bestValue == 21 {
+            await playDealerTurnAsync()
+        }
+    }
+
+    private func resetRoundPropState() {
+        peekTask?.cancel()
+        peekTask = nil
+        dealerHitsSoft17ThisRound = false
+        isPeekingHoleCard = false
+        hasPeekedHoleThisRound = false
+        hasRedrawnThisRound = false
+    }
+
     private var cardDealAnimation: Animation {
         .spring(response: 0.38, dampingFraction: 0.78)
+    }
+
+    private func dealerShouldHit(_ hand: Hand) -> Bool {
+        if hand.bestValue < 17 { return true }
+        if dealerHitsSoft17ThisRound && hand.isSoftSeventeen { return true }
+        return false
     }
 
     private func resolvePlayerNaturalBlackjack() {
@@ -318,7 +438,7 @@ final class BlackjackGame: ObservableObject {
         try? await Task.sleep(nanoseconds: delayAfterHoleFlip)
 
         var hand = Hand(cards: dealerCards)
-        while hand.bestValue < 17 {
+        while dealerShouldHit(hand) {
             guard let card = deck.draw() else { break }
             publishDeckCounts()
             withAnimation(cardDealAnimation) {

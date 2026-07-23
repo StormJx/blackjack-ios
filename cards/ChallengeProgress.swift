@@ -42,6 +42,32 @@ enum ChallengeRules {
         if dealerClears >= 5 || totalChipsWon >= 20_000 { level = max(level, 5) }
         return min(level, maxLevel)
     }
+
+    /// 下一关解锁门槛（打穿次数、累计赢筹码）；已满级返回 `nil`。
+    static func nextStageThreshold(afterLevel level: Int) -> (clears: Int, chipsWon: Int)? {
+        switch level {
+        case 1: return (1, 2000)
+        case 2: return (2, 5000)
+        case 3: return (3, 10_000)
+        case 4: return (5, 20_000)
+        default: return nil
+        }
+    }
+
+    /// 欢迎页弱提示：当前关 + 距下一关差额（F2）。
+    static func progressHint(
+        unlockedLevel: Int,
+        dealerClears: Int,
+        totalChipsWon: Int
+    ) -> String {
+        let stage = stage(level: unlockedLevel)
+        guard let next = nextStageThreshold(afterLevel: unlockedLevel) else {
+            return "\(stage.title)：已通关全部关卡"
+        }
+        let clearsLeft = max(0, next.clears - dealerClears)
+        let chipsLeft = max(0, next.chipsWon - totalChipsWon)
+        return "\(stage.title)：下一关再打穿 \(clearsLeft) 次或再累计赢 \(chipsLeft)"
+    }
 }
 
 /// 闯关进度：已解锁最高关（持久化）。

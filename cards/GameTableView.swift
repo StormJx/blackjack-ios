@@ -19,12 +19,22 @@ struct GameTableView: View {
     let showsMidHandAllIn: Bool
     let canMidHandAllIn: Bool
     let emphasizeForcedAllIn: Bool
+    let showsPeekHole: Bool
+    let canPeekHole: Bool
+    let showsSoft17Hit: Bool
+    let canSoft17Hit: Bool
+    let soft17HitActive: Bool
+    let showsRedrawOne: Bool
+    let canRedrawOne: Bool
     /// E4：确认下注后短暂放大余额行。
     let chipBalancePulse: Bool
     var cardBack: CardBackStyle = .classicNavy
     let onHit: () -> Void
     let onStand: () -> Void
     let onAllIn: () -> Void
+    let onPeekHole: () -> Void
+    let onSoft17Hit: () -> Void
+    let onRedrawOne: () -> Void
 
     var body: some View {
         VStack(spacing: 0) {
@@ -215,47 +225,87 @@ struct GameTableView: View {
     }
 
     private var controls: some View {
-        HStack(spacing: 12) {
-            Button("要牌") {
-                GameFeedback.shared.buttonTap()
-                onHit()
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .frame(maxWidth: .infinity)
-            .tint(.blue)
-            .disabled(!canHit)
-            .opacity(canHit ? 1 : 0.55)
-            .saturation(canHit ? 1 : 0.2)
-
-            Button("停牌") {
-                GameFeedback.shared.buttonTap()
-                onStand()
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .frame(maxWidth: .infinity)
-            .tint(.orange)
-            .disabled(!canStand)
-            .opacity(canStand ? 1 : 0.55)
-            .saturation(canStand ? 1 : 0.2)
-
-            // 持有道具「见牌后再全下」时显示（逻辑见 ChipBank.goAllIn / PropStore）。
-            if showsMidHandAllIn {
-                Button(emphasizeForcedAllIn ? "强制全下" : "全下") {
+        VStack(spacing: 10) {
+            HStack(spacing: 12) {
+                Button("要牌") {
                     GameFeedback.shared.buttonTap()
-                    onAllIn()
+                    onHit()
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
                 .frame(maxWidth: .infinity)
-                .tint(emphasizeForcedAllIn ? .orange : .red.opacity(0.85))
-                .disabled(!canMidHandAllIn)
-                .opacity(canMidHandAllIn ? 1 : 0.55)
-                .saturation(canMidHandAllIn ? 1 : 0.2)
+                .tint(.blue)
+                .disabled(!canHit)
+                .opacity(canHit ? 1 : 0.55)
+                .saturation(canHit ? 1 : 0.2)
+
+                Button("停牌") {
+                    GameFeedback.shared.buttonTap()
+                    onStand()
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .frame(maxWidth: .infinity)
+                .tint(.orange)
+                .disabled(!canStand)
+                .opacity(canStand ? 1 : 0.55)
+                .saturation(canStand ? 1 : 0.2)
+
+                // 持有道具「见牌后再全下」时显示（逻辑见 ChipBank.goAllIn / PropStore）。
+                if showsMidHandAllIn {
+                    Button(emphasizeForcedAllIn ? "强制全下" : "全下") {
+                        GameFeedback.shared.buttonTap()
+                        onAllIn()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    .frame(maxWidth: .infinity)
+                    .tint(emphasizeForcedAllIn ? .orange : .red.opacity(0.85))
+                    .disabled(!canMidHandAllIn)
+                    .opacity(canMidHandAllIn ? 1 : 0.55)
+                    .saturation(canMidHandAllIn ? 1 : 0.2)
+                }
+            }
+
+            if showsPeekHole || showsSoft17Hit || showsRedrawOne {
+                HStack(spacing: 10) {
+                    if showsPeekHole {
+                        propButton(
+                            title: "窥视",
+                            enabled: canPeekHole,
+                            action: onPeekHole
+                        )
+                    }
+                    if showsSoft17Hit {
+                        propButton(
+                            title: soft17HitActive ? "软17已开" : "软17要牌",
+                            enabled: canSoft17Hit,
+                            action: onSoft17Hit
+                        )
+                    }
+                    if showsRedrawOne {
+                        propButton(
+                            title: "换一张",
+                            enabled: canRedrawOne,
+                            action: onRedrawOne
+                        )
+                    }
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func propButton(title: String, enabled: Bool, action: @escaping () -> Void) -> some View {
+        Button(title) {
+            GameFeedback.shared.buttonTap()
+            action()
+        }
+        .buttonStyle(.bordered)
+        .controlSize(.regular)
+        .frame(maxWidth: .infinity)
+        .disabled(!enabled)
+        .opacity(enabled ? 1 : 0.55)
     }
 
     private var dealerCardFaces: [PlayingCardView.Face] {

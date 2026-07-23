@@ -18,6 +18,7 @@ struct ContentView: View {
     @EnvironmentObject private var statsStore: StatsStore
     @EnvironmentObject private var propStore: PropStore
     @EnvironmentObject private var challengeProgress: ChallengeProgress
+    @EnvironmentObject private var entertainmentProgress: EntertainmentProgress
     @EnvironmentObject private var cosmeticsStore: CosmeticsStore
 
     @State private var session: ActiveSession?
@@ -38,21 +39,34 @@ struct ContentView: View {
                     GameSessionView(
                         practiceMode: active.practiceMode,
                         playStyle: active.playStyle,
-                        cutCardEnabled: appSettings.cutCardEnabled,
+                        cutCardEnabled: active.playStyle == .entertainment
+                            ? true
+                            : appSettings.cutCardEnabled,
                         statsStore: statsStore,
                         propStore: propStore,
                         challengeProgress: challengeProgress,
+                        entertainmentProgress: entertainmentProgress,
                         cosmeticsStore: cosmeticsStore,
                         onEndSession: { showClearedHint in
                             withAnimation(.easeInOut(duration: 0.28)) {
                                 session = nil
                             }
-                            _ = challengeProgress.syncFromStats(
+                            ActiveTableLimits.apply(appSettings.tableLimitPreset)
+                            let leveledUp = challengeProgress.syncFromStats(
+                                dealerClears: statsStore.dealerBankClearCount,
+                                totalChipsWon: statsStore.totalChipsWon
+                            )
+                            let newlyBacks = cosmeticsStore.syncFromProgress(
+                                unlockedLevel: challengeProgress.unlockedLevel,
                                 dealerClears: statsStore.dealerBankClearCount,
                                 totalChipsWon: statsStore.totalChipsWon
                             )
                             if showClearedHint {
                                 presentWelcomeNotice(ChipRules.sessionClearedReturnHomeHint)
+                            } else if leveledUp {
+                                presentWelcomeNotice("解锁\(challengeProgress.currentStage.title)")
+                            } else if let back = newlyBacks.first {
+                                presentWelcomeNotice("卡背解锁：\(back.title)")
                             }
                         }
                     )
@@ -71,7 +85,7 @@ struct ContentView: View {
             .animation(.easeInOut(duration: 0.28), value: session != nil)
             .toolbar(.hidden, for: .navigationBar)
             .sheet(isPresented: $showSettings) {
-                SettingsView(settings: appSettings)
+                SettingsView(settings: appSettings, cosmetics: cosmeticsStore)
                     .presentationDetents([.medium, .large])
             }
             .sheet(isPresented: $showStats) {
@@ -86,10 +100,17 @@ struct ContentView: View {
                 guard !didApplyDefaultMode else { return }
                 didApplyDefaultMode = true
                 selectedMode = appSettings.defaultPracticeMode
+                ActiveTableLimits.apply(appSettings.tableLimitPreset)
                 _ = challengeProgress.syncFromStats(
                     dealerClears: statsStore.dealerBankClearCount,
                     totalChipsWon: statsStore.totalChipsWon
                 )
+                _ = cosmeticsStore.syncFromProgress(
+                    unlockedLevel: challengeProgress.unlockedLevel,
+                    dealerClears: statsStore.dealerBankClearCount,
+                    totalChipsWon: statsStore.totalChipsWon
+                )
+                _ = propStore.syncFromAchievements(statsStore.unlockedIDs)
             }
             .onChange(of: appSettings.defaultPracticeMode) { _, newMode in
                 if session == nil {
@@ -180,6 +201,18 @@ struct ContentView: View {
                         welcomeTag("庄家 \(stage.dealerStart)")
                     }
 
+                    Text(
+                        ChallengeRules.progressHint(
+                            unlockedLevel: challengeProgress.unlockedLevel,
+                            dealerClears: statsStore.dealerBankClearCount,
+                            totalChipsWon: statsStore.totalChipsWon
+                        )
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+
                     Button(PlayStyle.challenge.welcomeButtonTitle) {
                         startSession(style: .challenge)
                     }
@@ -195,15 +228,45 @@ struct ContentView: View {
                         .foregroundStyle(.tertiary)
                         .multilineTextAlignment(.center)
 
-                    if propStore.owns(.midHandAllIn) {
-                        Text("道具已解锁：可在娱乐模式使用「\(PropID.midHandAllIn.title)」")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.green)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    } else {
-                        Text("道具：闯关打穿庄家后解锁，仅娱乐模式可用")
+                    let entStage = entertainmentProgress.currentStage
+                    HStack(spacing: 8) {
+                        welcomeTag(entStage.title)
+                        welcomeTag("你 \(entStage.playerStart)")
+                        welcomeTag("庄家 \(entStage.dealerStart)")
+                    }
+
+                    Text(
+                        EntertainmentRules.progressHint(
+                            unlockedLevel: entertainmentProgress.unlockedLevel,
+                            dealerClears: entertainmentProgress.dealerClearCount,
+                            totalChipsWon: entertainmentProgress.totalChipsWon
+                        )
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+
+                    Text(entStage.tableLimitsSummary)
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                        .frame(maxWidth: .infinity)
+
+                    Text("打穿或累计赢码可升阶；本阶注码见上。支持「同上局」与道具。")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                        .frame(maxWidth: .infinity)
+
+                    if propStore.ownedIDs.isEmpty {
+                        Text("道具尚未解锁：完成对应成就后，仅娱乐可用")
                             .font(.caption)
                             .foregroundStyle(.tertiary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    } else {
+                        let titles = PropID.allCases.filter { propStore.owns($0) }.map(\.title)
+                        Text("已解锁道具：\(titles.joined(separator: "、"))")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.green)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
 
@@ -231,6 +294,16 @@ struct ContentView: View {
     private func startSession(style: PlayStyle) {
         GameFeedback.shared.buttonTap()
         clearWelcomeNotice()
+        switch style {
+        case .challenge:
+            ActiveTableLimits.apply(appSettings.tableLimitPreset)
+        case .entertainment:
+            let stage = entertainmentProgress.currentStage
+            ActiveTableLimits.apply(
+                minimumBet: stage.minimumBet,
+                betChipValues: stage.betChipValues
+            )
+        }
         withAnimation(.easeInOut(duration: 0.28)) {
             session = ActiveSession(practiceMode: selectedMode, playStyle: style)
         }
@@ -281,6 +354,7 @@ private struct GameSessionView: View {
     @ObservedObject var statsStore: StatsStore
     @ObservedObject var propStore: PropStore
     @ObservedObject var challengeProgress: ChallengeProgress
+    @ObservedObject var entertainmentProgress: EntertainmentProgress
     @ObservedObject var cosmeticsStore: CosmeticsStore
     /// `true`：破产「返回主页」后提示进度已清空；主动退出叉号则为 `false`。
     let onEndSession: (_ showClearedHint: Bool) -> Void
@@ -291,6 +365,8 @@ private struct GameSessionView: View {
     @State private var showAbandonConfirm = false
     @State private var controlsLockedAfterAllIn = false
     @State private var draftBet = 0
+    /// P3：本会话上一局确认下注额（仅娱乐「同上局」）。
+    @State private var lastConfirmedBet = 0
     /// 本会话已完成局数；满 5 局解锁开局全下。
     @State private var sessionRoundsCompleted = 0
     @State private var chipBalancePulse = false
@@ -304,6 +380,7 @@ private struct GameSessionView: View {
         statsStore: StatsStore,
         propStore: PropStore,
         challengeProgress: ChallengeProgress,
+        entertainmentProgress: EntertainmentProgress,
         cosmeticsStore: CosmeticsStore,
         onEndSession: @escaping (_ showClearedHint: Bool) -> Void
     ) {
@@ -312,6 +389,7 @@ private struct GameSessionView: View {
         self.statsStore = statsStore
         self.propStore = propStore
         self.challengeProgress = challengeProgress
+        self.entertainmentProgress = entertainmentProgress
         self.cosmeticsStore = cosmeticsStore
         self.onEndSession = onEndSession
         _game = StateObject(wrappedValue: BlackjackGame(
@@ -326,6 +404,7 @@ private struct GameSessionView: View {
                 dealerStartingBank: stage.dealerStart
             ))
         case .entertainment:
+            let stage = entertainmentProgress.currentStage
             let suiteName = "cards.chipBank.entertainment"
             let suite = UserDefaults(suiteName: suiteName) ?? .standard
             _chipBank = StateObject(wrappedValue: ChipBank(
@@ -333,8 +412,8 @@ private struct GameSessionView: View {
                 storageKey: "entertainment.balance",
                 dealerBankKey: "entertainment.dealerBank",
                 activeBetKey: "entertainment.activeBet",
-                startingBalance: ChipRules.startingBalance,
-                dealerStartingBank: ChipRules.dealerStartingBank
+                startingBalance: stage.playerStart,
+                dealerStartingBank: stage.dealerStart
             ))
         }
     }
@@ -438,9 +517,13 @@ private struct GameSessionView: View {
             sessionRoundsCompleted: sessionRoundsCompleted,
             emphasizeForcedAllIn: game.isForcedAllInAvailable
                 && sessionRoundsCompleted >= ChipRules.preDealAllInUnlockCompletedRounds,
+            showsRepeatLastBet: playStyle == .entertainment,
+            lastBetAmount: lastConfirmedBet,
+            canRepeatLastBet: canRepeatLastBet,
             onClear: clearDraftBet,
             onSelectChip: selectChip,
             onAllIn: applyPreDealAllIn,
+            onRepeatLastBet: applyRepeatLastBet,
             onConfirm: confirmBetAndDeal
         )
     }
@@ -475,11 +558,21 @@ private struct GameSessionView: View {
             showsMidHandAllIn: propStore.canUse(.midHandAllIn, in: playStyle),
             canMidHandAllIn: canMidHandAllIn,
             emphasizeForcedAllIn: emphasizeForcedAllIn,
+            showsPeekHole: propStore.canUse(.peekHole, in: playStyle),
+            canPeekHole: canPeekHole,
+            showsSoft17Hit: propStore.canUse(.dealerSoft17Hit, in: playStyle),
+            canSoft17Hit: canSoft17Hit,
+            soft17HitActive: game.dealerHitsSoft17ThisRound,
+            showsRedrawOne: propStore.canUse(.redrawOne, in: playStyle),
+            canRedrawOne: canRedrawOne,
             chipBalancePulse: chipBalancePulse,
             cardBack: cosmeticsStore.selectedBack,
             onHit: { Task { await game.hit() } },
             onStand: { Task { await game.stand() } },
-            onAllIn: performMidHandAllIn
+            onAllIn: performMidHandAllIn,
+            onPeekHole: { Task { await game.peekHoleCard() } },
+            onSoft17Hit: { _ = game.activateDealerSoft17Hit() },
+            onRedrawOne: { Task { await game.redrawLastHitCard() } }
         )
     }
 
@@ -531,6 +624,30 @@ private struct GameSessionView: View {
         canMidHandAllIn && game.isForcedAllInAvailable
     }
 
+    private var canPeekHole: Bool {
+        propStore.canUse(.peekHole, in: playStyle) && game.canPeekHoleCard && !controlsLockedAfterAllIn
+    }
+
+    private var canSoft17Hit: Bool {
+        propStore.canUse(.dealerSoft17Hit, in: playStyle)
+            && game.canActivateDealerSoft17Hit
+            && !controlsLockedAfterAllIn
+    }
+
+    private var canRedrawOne: Bool {
+        propStore.canUse(.redrawOne, in: playStyle)
+            && game.canRedrawLastHitCard
+            && !controlsLockedAfterAllIn
+    }
+
+    private var canRepeatLastBet: Bool {
+        playStyle == .entertainment
+            && lastConfirmedBet >= ChipRules.minimumBet
+            && lastConfirmedBet <= chipBank.balance
+            && chipBank.activeBet == 0
+            && !chipBank.isSessionOver
+    }
+
     private func prepareBetDraft() {
         draftBet = 0
     }
@@ -543,6 +660,11 @@ private struct GameSessionView: View {
     private func selectChip(_ value: Int) {
         guard ChipRules.canSelectBetChip(value, balance: chipBank.balance) else { return }
         draftBet = value
+    }
+
+    private func applyRepeatLastBet() {
+        guard canRepeatLastBet else { return }
+        draftBet = lastConfirmedBet
     }
 
     /// 开局全下：须已解锁且当前未选筹码档。
@@ -567,6 +689,9 @@ private struct GameSessionView: View {
 
     private func confirmBetAndDeal() {
         guard chipBank.placeBet(draftBet) else { return }
+        if playStyle == .entertainment {
+            lastConfirmedBet = draftBet
+        }
         chipBank.acknowledgeRestoreHint()
         GameFeedback.shared.betPlaced()
         pulseChipBalance()
@@ -605,12 +730,25 @@ private struct GameSessionView: View {
                         toastTitles.append("闯关·\(challengeProgress.currentStage.title)")
                     }
                 }
+                if playStyle == .entertainment, chipBank.sessionEndReason == .dealerBroke {
+                    if entertainmentProgress.recordDealerCleared() {
+                        toastTitles.append(entertainmentProgress.currentStage.title)
+                    } else {
+                        toastTitles.append("娱乐·打穿庄家")
+                    }
+                }
                 let newlyProps = propStore.syncFromAchievements(statsStore.unlockedIDs)
+                let newlyBacks = cosmeticsStore.syncFromProgress(
+                    unlockedLevel: challengeProgress.unlockedLevel,
+                    dealerClears: statsStore.dealerBankClearCount,
+                    totalChipsWon: statsStore.totalChipsWon
+                )
                 if playStyle == .entertainment {
                     toastTitles.append(contentsOf: newlyProps.map { "道具·\($0.title)" })
                 } else if !newlyProps.isEmpty {
                     toastTitles.append("道具已解锁（娱乐模式可用）")
                 }
+                toastTitles.append(contentsOf: newlyBacks.map { "卡背·\($0.title)" })
                 if !toastTitles.isEmpty {
                     presentAchievementToast(toastTitles.joined(separator: " · "))
                 }
@@ -622,6 +760,15 @@ private struct GameSessionView: View {
                     totalChipsWon: statsStore.totalChipsWon
                 ) {
                     presentAchievementToast("闯关·\(challengeProgress.currentStage.title)")
+                }
+                _ = cosmeticsStore.syncFromProgress(
+                    unlockedLevel: challengeProgress.unlockedLevel,
+                    dealerClears: statsStore.dealerBankClearCount,
+                    totalChipsWon: statsStore.totalChipsWon
+                )
+            } else if playStyle == .entertainment, chipBank.sessionEndReason == .dealerBroke {
+                if entertainmentProgress.recordDealerCleared() {
+                    presentAchievementToast(entertainmentProgress.currentStage.title)
                 }
             }
         } else if chipBank.activeBet > 0 {
@@ -638,6 +785,13 @@ private struct GameSessionView: View {
                         dealerClears: statsStore.dealerBankClearCount,
                         totalChipsWon: statsStore.totalChipsWon
                     )
+                    _ = cosmeticsStore.syncFromProgress(
+                        unlockedLevel: challengeProgress.unlockedLevel,
+                        dealerClears: statsStore.dealerBankClearCount,
+                        totalChipsWon: statsStore.totalChipsWon
+                    )
+                } else if playStyle == .entertainment {
+                    entertainmentProgress.recordChipsWon(result.netChange)
                 }
                 pulseChipBalance()
             }
@@ -787,19 +941,27 @@ private struct ShuffleScreenOverlay: View {
 // MARK: - 牌桌背景
 
 private struct TableBackgroundView: View {
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
+        let isDark = colorScheme == .dark
         ZStack {
             LinearGradient(
-                colors: [
-                    Color(red: 0.94, green: 0.95, blue: 0.97),
-                    Color(red: 0.86, green: 0.88, blue: 0.93),
-                ],
+                colors: isDark
+                    ? [
+                        Color(red: 0.10, green: 0.12, blue: 0.16),
+                        Color(red: 0.06, green: 0.08, blue: 0.11),
+                    ]
+                    : [
+                        Color(red: 0.94, green: 0.95, blue: 0.97),
+                        Color(red: 0.86, green: 0.88, blue: 0.93),
+                    ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
             RadialGradient(
                 colors: [
-                    Color.white.opacity(0.55),
+                    (isDark ? Color.white.opacity(0.08) : Color.white.opacity(0.55)),
                     Color.clear,
                 ],
                 center: UnitPoint(x: 0.15, y: 0.1),
@@ -809,7 +971,7 @@ private struct TableBackgroundView: View {
             LinearGradient(
                 colors: [
                     Color.clear,
-                    Color.black.opacity(0.04),
+                    Color.black.opacity(isDark ? 0.28 : 0.04),
                 ],
                 startPoint: .center,
                 endPoint: .bottom
@@ -825,5 +987,6 @@ private struct TableBackgroundView: View {
         .environmentObject(StatsStore())
         .environmentObject(PropStore())
         .environmentObject(ChallengeProgress())
+        .environmentObject(EntertainmentProgress())
         .environmentObject(CosmeticsStore())
 }

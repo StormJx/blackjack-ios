@@ -88,6 +88,22 @@ struct Deck: Sendable {
         return cards.removeFirst()
     }
 
+    /// 规划道具 `reshuffleDealerCard`：将一张牌插回剩余牌堆随机位置（不重算切牌点 / dealtCount）。
+    /// - Note: 效果尚未由 UI 接线；单测与实现时再锁边界（暗牌可否、每局限次等）。
+    mutating func returnCardToShoe(_ card: Card) {
+        var rng = SystemRandomNumberGenerator()
+        returnCardToShoe(card, using: &rng)
+    }
+
+    mutating func returnCardToShoe<R: RandomNumberGenerator>(_ card: Card, using rng: inout R) {
+        if cards.isEmpty {
+            cards = [card]
+            return
+        }
+        let index = Int.random(in: 0...cards.count, using: &rng)
+        cards.insert(card, at: index)
+    }
+
     private static func buildCards(numberOfDecks: Int) -> [Card] {
         var built: [Card] = []
         built.reserveCapacity(52 * numberOfDecks)

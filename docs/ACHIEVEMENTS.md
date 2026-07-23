@@ -19,8 +19,13 @@
 | PropID | 标题 | 解锁条件 | 可用模式 |
 |--------|------|----------|----------|
 | `midHandAllIn` | 见牌后再全下 | 成就 `dealerClear1` | **仅娱乐** |
+| `dealerSoft17Hit` | 庄家软 17 要牌 | 成就 `dealerClear5` | **仅娱乐** |
+| `peekHole` | 窥视暗牌 | 成就 `practiceWinStreak5` | **仅娱乐** |
+| `redrawOne` | 换一张 | 成就 `practiceWins20` | **仅娱乐** |
 
-规划中：`peekHole` / `dealerSoft17Hit` / `redrawOne`（见 COSMETICS_AND_PROPS.md）。
+规划中：`reshuffleDealerCard`（换庄家一张，见 COSMETICS_AND_PROPS.md；效果未接线）。
+
+详见 `docs/COSMETICS_AND_PROPS.md`。
 
 ---
 
@@ -147,3 +152,4 @@
 | 2026-07-20 | 下注三档单选；挑战全下需本会话 5 局解锁；全下获胜阶梯 5/15/30 |
 | 2026-07-22 | v1.9：成就 `dealerClear1` → 永久道具「见牌后再全下」 |
 | 2026-07-22 | 道具仅娱乐可用；练习→娱乐；闯关进阶；见 COSMETICS_AND_PROPS.md |
+| 2026-07-23 | C2/C3/C4：`peekHole` / `dealerSoft17Hit` / `redrawOne` 兑换与娱乐接线 |

@@ -15,11 +15,11 @@ enum ChipRules {
     /// 庄家筹码池起始（闯关第 1 关 / 娱乐默认）。
     static let dealerStartingBank = 2000
 
-    /// 最小下注（相对起始 1000，小面额节奏过慢）。
-    static let minimumBet = 100
+    /// 最小下注（来自当前生效桌限；默认标准档 100）。
+    static var minimumBet: Int { ActiveTableLimits.minimumBet }
 
     /// 下注页筹码面额：三档单选（点选即覆盖，不可累加）。
-    static let betChipValues = [100, 200, 500]
+    static var betChipValues: [Int] { ActiveTableLimits.betChipValues }
 
     /// 有筹码模式：本会话完成至少该局数后，开局下注页才解锁「全下」。
     static let preDealAllInUnlockCompletedRounds = 5
