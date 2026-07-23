@@ -3,7 +3,7 @@
 > 本地另有 `VERSION_ROADMAP.txt`（gitignore，勿推送）。两边请同步维护。  
 > 成就：`docs/ACHIEVEMENTS.md` · 外观道具：`docs/COSMETICS_AND_PROPS.md` · P8 后续：`docs/P8_ORIENTATION_AND_A11Y.md`
 
-**基线：** `main` @ Tag `v1.10.0`（若尚未打 Tag，以最新 push commit 为准）  
+**基线：** `main` @ `6ebe464`（「完成换庄家道具接线，并精简欢迎页为牌桌绿主入口。」；Tag `v1.10.0` 为上一里程碑）  
 **仓库：** https://github.com/StormJx/blackjack-ios  
 **平台：** iOS 17.0+；庄家小于 17 要牌、大于等于 17 停（软 17 同停）；音效基名 deal/flip/shuffle/win/lose/push
 
@@ -20,19 +20,23 @@
 
 ---
 
-## 已完成（v1.10 本批 + 既有 v1.9）
+## 已完成（v1.10 + 本批增量）
 
-### 外观 / 设置
+### 外观 / 设置 / 欢迎页
 - [x] C1 卡背解锁 + 设置页选用（classicNavy / emeraldLattice / crimsonRibbon）
 - [x] P4 桌限预设（标准/轻量/偏大）— **仅闯关新会话生效**；娱乐跟阶梯注码
-- [x] P8 **深色**基础适配（`TableBackgroundView` 跟随系统）
-- [x] F2 闯关欢迎页进度弱提示
+- [x] P8 **深色**基础适配（对局 `TableBackgroundView` 跟随系统）
+- [x] 欢迎页精简：牌桌绿底 + 游戏名 + 闯关/娱乐入口 + 帮助说明；顶栏成就/战绩/设置保留
+- [x] `HelpView`：规则与模式说明迁入帮助；主页不再堆进度/道具/牌副文案
+- [x] 开局牌副改读设置「默认牌副」（欢迎页无 Picker）
+- [~] F2 闯关进度弱提示：曾在欢迎页；现改为帮助/战绩侧说明（欢迎页已去掉冗余）
 
 ### 娱乐
 - [x] 娱乐独立进阶 `EntertainmentProgress`（打穿或累计赢升阶；注码随阶）
 - [x] P3 「同上局」下注（仅娱乐）
 - [x] 娱乐固定真实切牌（设置切牌开关只影响闯关）
 - [x] 道具：`midHandAllIn` / `dealerSoft17Hit` / `peekHole` / `redrawOne` / `reshuffleDealerCard`（仅娱乐，永久解锁）
+- [x] `reshuffleDealerCard`：解锁 `practiceWins50`；每局限 1；随机含暗牌；窥视中禁用；牌面脉冲 +「已换庄家一张」弱提示；音效 `shuffleHint`
 - [x] F10：六基名 wav 已换为程序合成增强版（非录音级）
 
 ### 规划入库（效果未接线）
@@ -59,7 +63,7 @@
 
 ## 工程要点
 
-- `PlayStyle` / `PropStore` / `ChallengeProgress` / `EntertainmentProgress` / `CosmeticsStore` / `TableLimitPreset`
+- `PlayStyle` / `PropStore` / `ChallengeProgress` / `EntertainmentProgress` / `CosmeticsStore` / `TableLimitPreset` / `HelpView`
 - `ChipBank` 支持会话起始筹码；退出清空持久化键
 - `BlackjackGame` 只发牌；筹码 `ChipBank`；成就 `StatsStore`
 - 推送前：`./scripts/check-before-push.sh`；勿提交 `VERSION_ROADMAP.txt` / `.env` / 密钥
@@ -82,5 +86,5 @@
 |------|------|
 | 2026-07-23 | 初版检查点：对应 v1.10 推送交接 |
 | 2026-07-23 | `reshuffleDealerCard` 接线（`practiceWins50`；仅娱乐） |
-| 2026-07-23 | 换庄家体验：正向单测、牌面脉冲弱提示、窥视中禁用、道具两列网格；排除无关 hooks 改动 |
-| 2026-07-23 | 欢迎页精简：纯色底 + 游戏名 + 双入口 + 帮助说明；冗余规则迁入 HelpView；牌副改走设置默认 |
+| 2026-07-23 | 换庄家体验：正向单测、牌面脉冲弱提示、窥视中禁用、道具两列网格 |
+| 2026-07-23 | 欢迎页精简：牌桌绿 + 双入口 + HelpView；牌副改走设置默认；基线 `6ebe464` |
