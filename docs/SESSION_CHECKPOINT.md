@@ -3,7 +3,7 @@
 > 本地另有 `VERSION_ROADMAP.txt`（gitignore，勿推送）。两边请同步维护。  
 > 成就：`docs/ACHIEVEMENTS.md` · 外观道具：`docs/COSMETICS_AND_PROPS.md` · P8 后续：`docs/P8_ORIENTATION_AND_A11Y.md`
 
-**基线：** 本批增量在 `main` @ `9715bf5` 之上（Tag `v1.10.0` 为上一里程碑；推送后请改写 commit）  
+**基线：** `main` @ `c670180`（「完成 P5 切牌三态、F1 全下解锁可配置，并增强合成音效。」；Tag `v1.10.0` 为上一里程碑）  
 **仓库：** https://github.com/StormJx/blackjack-ios  
 **平台：** iOS 17.0+；庄家小于 17 要牌、大于等于 17 停（软 17 同停）；音效基名 deal/flip/shuffle/win/lose/push
 
@@ -16,11 +16,11 @@
 | 闯关 `.challenge` | 关卡进阶 | **禁用** | **设置三态**（每局重洗 / 仪式感 / 真实） | 成就 challenge 轨 |
 | 娱乐 `.entertainment`（rawValue=`fast`） | **独立阶梯** + 注码随阶 | **可用** | **固定真实切牌** | 「同上局」；成就 practice 轨 |
 
-成就分轨：娱乐不计入闯关成就。外观（卡背）跨模式可选用。
+成就分轨：娱乐不计入闯关成就。外观（卡背）跨模式可选用。开局全下解锁局数（F1）两模式共用设置。
 
 ---
 
-## 已完成（v1.10 + 本批增量）
+## 已完成（v1.10 + 后续增量，均已推送）
 
 ### 外观 / 设置 / 欢迎页
 - [x] C1 卡背解锁 + 设置页选用（classicNavy / emeraldLattice / crimsonRibbon）
@@ -33,13 +33,13 @@
 - [x] F1 全下解锁局数可配置（设置 Stepper 0–10，默认 5；`ActivePreDealAllInUnlock` 新会话生效；两模式共用）
 - [~] F2 闯关进度弱提示：曾在欢迎页；现改为帮助/战绩侧说明（欢迎页已去掉冗余）
 
-### 娱乐
+### 娱乐 / 道具 / 音效
 - [x] 娱乐独立进阶 `EntertainmentProgress`（打穿或累计赢升阶；注码随阶）
 - [x] P3 「同上局」下注（仅娱乐）
 - [x] 娱乐固定真实切牌（设置切牌只影响闯关）
 - [x] 道具：`midHandAllIn` / `dealerSoft17Hit` / `peekHole` / `redrawOne` / `reshuffleDealerCard`（仅娱乐，永久解锁）
-- [x] `reshuffleDealerCard`：解锁 `practiceWins50`；每局限 1；随机含暗牌；窥视中禁用；牌面脉冲 +「已换庄家一张」弱提示；音效 `shuffleHint`
-- [x] F10：六基名 wav 升为 44.1kHz 高质量程序合成（仍非录音正片；可替换 `Sounds/`）
+- [x] `reshuffleDealerCard`：解锁 `practiceWins50`；每局限 1；随机含暗牌；窥视中禁用；牌面脉冲 +「已换庄家一张」；`shuffleHint`
+- [x] F10：六基名 wav 为 44.1kHz 高质量程序合成（**仍非录音正片**；可替换 `Sounds/`）
 
 ### 规划入库（效果未接线）
 - [x] P8 横竖屏 / 无障碍深化 → 仅文档备案
@@ -88,3 +88,4 @@
 | 2026-07-23 | 换庄家体验：正向单测、牌面脉冲弱提示、窥视中禁用、道具两列网格 |
 | 2026-07-23 | 欢迎页精简：牌桌绿 + 双入口 + HelpView；牌副改走设置默认；基线 `6ebe464` |
 | 2026-07-25 | P5 切牌三态 + F1 全下解锁可配置 + F10 44.1kHz 合成音增强 |
+| 2026-07-27 | 功能已推送 `c670180`；检查点基线同步 |
