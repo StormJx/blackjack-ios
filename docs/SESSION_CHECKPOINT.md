@@ -4,7 +4,7 @@
 > 成就：`docs/ACHIEVEMENTS.md` · 外观道具：`docs/COSMETICS_AND_PROPS.md`  
 > P8：`docs/P8_ORIENTATION_AND_A11Y.md` · 评审批次 backlog：`docs/ENGINEERING_REVIEW_BACKLOG.md`
 
-**基线：** `main` @ `c670180`（「完成 P5 切牌三态、F1 全下解锁可配置，并增强合成音效。」；Tag `v1.10.0` 为上一里程碑）  
+**基线：** `main` @ `d443bfa`（「修复换庄家牌堆穿透边界，并在战绩页展示关卡/阶梯进度。」；功能主体含此前 `c670180`；Tag `v1.10.0` 为上一正式里程碑）  
 **仓库：** https://github.com/StormJx/blackjack-ios  
 **平台：** iOS 17.0+；庄家小于 17 要牌、大于等于 17 停（软 17 同停）；音效基名 deal/flip/shuffle/win/lose/push
 
@@ -84,7 +84,7 @@
 4. 讨论 **P6「加倍」** 规则后单切片；完整分牌 / C5 / F10 正片后置  
 5. 任选 UX1–UX9（见 `docs/ENGINEERING_REVIEW_BACKLOG.md`）
 
-**本批已完成（待 push）：** 换庄家牌堆边界 + F2 战绩进度 + 评审 backlog / P8 第一切片文档。
+**本批已推送：** `d443bfa`（换庄家牌堆边界 + F2 战绩进度 + 评审 backlog / P8 第一切片文档）。
 
 ---
 
@@ -99,3 +99,4 @@
 | 2026-07-25 | P5 切牌三态 + F1 全下解锁可配置 + F10 44.1kHz 合成音增强 |
 | 2026-07-27 | 功能已推送 `c670180`；检查点基线同步 |
 | 2026-07-27 | 换庄家牌堆边界；F2 战绩关/阶进度；新增 `ENGINEERING_REVIEW_BACKLOG`；P8 第一切片清单 |
+| 2026-07-28 | 已推送 `d443bfa`；检查点基线同步 |
