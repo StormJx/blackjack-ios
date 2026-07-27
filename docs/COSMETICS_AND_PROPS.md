@@ -117,3 +117,4 @@
 | 2026-07-23 | 娱乐独立进阶 + 注码随阶；规划道具 `reshuffleDealerCard` + `Deck.returnCardToShoe` |
 | 2026-07-23 | P3 同上局（仅娱乐）；娱乐固定真实切牌；P8 深色；F10 程序合成音效替换占位；横竖/无障碍见 `docs/P8_ORIENTATION_AND_A11Y.md` |
 | 2026-07-23 | `reshuffleDealerCard` 接线：解锁 `practiceWins50`；随机换庄家一张；每局限 1 次；仅娱乐 |
+| 2026-07-25 | P5 切牌三态（闯关设置）；F1 全下解锁局数可配置；F10 44.1kHz 合成音增强 |

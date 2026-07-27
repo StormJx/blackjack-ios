@@ -169,6 +169,9 @@ struct ChipSettlementTests {
     }
 
     @Test func preDealAllInRequiresUnlockAndNoChipSelection() {
+        ActivePreDealAllInUnlock.apply(5)
+        defer { ActivePreDealAllInUnlock.apply(ChipRules.defaultPreDealAllInUnlockCompletedRounds) }
+
         #expect(ChipRules.canPreDealAllIn(balance: ChipRules.minimumBet))
         #expect(ChipRules.canPreDealAllIn(balance: ChipRules.minimumBet - 1) == false)
 
@@ -194,6 +197,34 @@ struct ChipSettlementTests {
             sessionRoundsCompleted: 5,
             draftBet: 200
         ) == false)
+    }
+
+    @Test func preDealAllInUnlockRoundsConfigurableIncludingZero() {
+        ActivePreDealAllInUnlock.apply(0)
+        defer { ActivePreDealAllInUnlock.apply(ChipRules.defaultPreDealAllInUnlockCompletedRounds) }
+
+        #expect(ChipRules.isPreDealAllInEnabled(
+            balance: 1000,
+            sessionRoundsCompleted: 0,
+            draftBet: 0
+        ))
+        #expect(ChipRules.preDealAllInLockHint(sessionRoundsCompleted: 0) == nil)
+
+        ActivePreDealAllInUnlock.apply(3)
+        #expect(ChipRules.isPreDealAllInEnabled(
+            balance: 1000,
+            sessionRoundsCompleted: 2,
+            draftBet: 0
+        ) == false)
+        #expect(ChipRules.preDealAllInLockHint(sessionRoundsCompleted: 2) == "再玩 1 局后解锁全下")
+        #expect(ChipRules.isPreDealAllInEnabled(
+            balance: 1000,
+            sessionRoundsCompleted: 3,
+            draftBet: 0
+        ))
+
+        #expect(ChipRules.clampPreDealAllInUnlockRounds(-1) == 0)
+        #expect(ChipRules.clampPreDealAllInUnlockRounds(99) == 10)
     }
 
     // MARK: - 开局全下 / 对局中全下（道具门控见 PropStore）

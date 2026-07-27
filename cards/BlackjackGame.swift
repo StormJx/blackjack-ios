@@ -57,8 +57,8 @@ final class BlackjackGame: ObservableObject {
 
     /// 当前练习变体（一副 / 两副 / 六副）；整局生命周期内不变。
     let practiceMode: PracticeMode
-    /// E2：本会话是否启用切牌（来自设置；会话内不变）。
-    let cutCardEnabled: Bool
+    /// P5：本会话切牌策略（来自设置或娱乐固定真实；会话内不变）。
+    let cutCardMode: CutCardMode
 
     /// 成就：本局曾在 >17 / >18 / >19 点要牌且该次未爆；以及 20→21。
     private var hitSurvivedFromOver17 = false
@@ -71,12 +71,12 @@ final class BlackjackGame: ObservableObject {
     private var propHintTask: Task<Void, Never>?
     private var reshufflePulseTask: Task<Void, Never>?
 
-    init(practiceMode: PracticeMode = .singleDeck, cutCardEnabled: Bool = true) {
+    init(practiceMode: PracticeMode = .singleDeck, cutCardMode: CutCardMode = .real) {
         self.practiceMode = practiceMode
-        self.cutCardEnabled = cutCardEnabled
+        self.cutCardMode = cutCardMode
         var initialDeck = Deck(
             numberOfDecks: practiceMode.numberOfDecks,
-            cutCardEnabled: cutCardEnabled
+            cutCardMode: cutCardMode
         )
         initialDeck.shuffleAndCut()
         self.deck = initialDeck

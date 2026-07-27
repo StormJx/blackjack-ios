@@ -39,9 +39,9 @@ struct ContentView: View {
                     GameSessionView(
                         practiceMode: active.practiceMode,
                         playStyle: active.playStyle,
-                        cutCardEnabled: active.playStyle == .entertainment
-                            ? true
-                            : appSettings.cutCardEnabled,
+                        cutCardMode: active.playStyle == .entertainment
+                            ? .real
+                            : appSettings.cutCardMode,
                         statsStore: statsStore,
                         propStore: propStore,
                         challengeProgress: challengeProgress,
@@ -52,6 +52,7 @@ struct ContentView: View {
                                 session = nil
                             }
                             ActiveTableLimits.apply(appSettings.tableLimitPreset)
+                            ActivePreDealAllInUnlock.apply(appSettings.preDealAllInUnlockRounds)
                             let leveledUp = challengeProgress.syncFromStats(
                                 dealerClears: statsStore.dealerBankClearCount,
                                 totalChipsWon: statsStore.totalChipsWon
@@ -105,6 +106,7 @@ struct ContentView: View {
                 guard !didApplyDefaults else { return }
                 didApplyDefaults = true
                 ActiveTableLimits.apply(appSettings.tableLimitPreset)
+                ActivePreDealAllInUnlock.apply(appSettings.preDealAllInUnlockRounds)
                 _ = challengeProgress.syncFromStats(
                     dealerClears: statsStore.dealerBankClearCount,
                     totalChipsWon: statsStore.totalChipsWon
@@ -225,6 +227,7 @@ struct ContentView: View {
     private func startSession(style: PlayStyle) {
         GameFeedback.shared.buttonTap()
         clearWelcomeNotice()
+        ActivePreDealAllInUnlock.apply(appSettings.preDealAllInUnlockRounds)
         switch style {
         case .challenge:
             ActiveTableLimits.apply(appSettings.tableLimitPreset)
@@ -289,7 +292,7 @@ private struct GameSessionView: View {
     @State private var draftBet = 0
     /// P3：本会话上一局确认下注额（仅娱乐「同上局」）。
     @State private var lastConfirmedBet = 0
-    /// 本会话已完成局数；满 5 局解锁开局全下。
+    /// 本会话已完成局数；达设置解锁局数后开放开局全下。
     @State private var sessionRoundsCompleted = 0
     @State private var chipBalancePulse = false
     @State private var achievementToast: String?
@@ -298,7 +301,7 @@ private struct GameSessionView: View {
     init(
         practiceMode: PracticeMode,
         playStyle: PlayStyle,
-        cutCardEnabled: Bool,
+        cutCardMode: CutCardMode,
         statsStore: StatsStore,
         propStore: PropStore,
         challengeProgress: ChallengeProgress,
@@ -316,7 +319,7 @@ private struct GameSessionView: View {
         self.onEndSession = onEndSession
         _game = StateObject(wrappedValue: BlackjackGame(
             practiceMode: practiceMode,
-            cutCardEnabled: cutCardEnabled
+            cutCardMode: cutCardMode
         ))
         switch playStyle {
         case .challenge:
@@ -357,7 +360,7 @@ private struct GameSessionView: View {
             }
 
             if game.isShowingShuffleScreen {
-                ShuffleScreenOverlay(cutCardEnabled: game.cutCardEnabled)
+                ShuffleScreenOverlay(cutCardMode: game.cutCardMode)
                     .transition(.opacity.combined(with: .scale(scale: 0.98)))
                     .zIndex(4)
             }
@@ -799,7 +802,7 @@ private struct AbandonConfirmModifier: ViewModifier {
 // MARK: - 局间洗牌全屏页
 
 private struct ShuffleScreenOverlay: View {
-    let cutCardEnabled: Bool
+    let cutCardMode: CutCardMode
     @State private var pulse = false
     @State private var fan = false
 
@@ -846,9 +849,7 @@ private struct ShuffleScreenOverlay: View {
                     Text("洗牌中…")
                         .font(.title2.weight(.semibold))
                         .foregroundStyle(.white)
-                    Text(cutCardEnabled
-                         ? "切牌点已过，正在重新整理牌堆"
-                         : "本局已结束，正在重新整理牌堆")
+                    Text(cutCardMode.shuffleOverlayDetail)
                         .font(.subheadline)
                         .foregroundStyle(.white.opacity(0.78))
                 }

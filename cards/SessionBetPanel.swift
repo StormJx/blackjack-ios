@@ -12,7 +12,7 @@ struct SessionBetPanel: View {
     @Binding var draftBet: Int
     let showRestoreHint: Bool
     let canConfirm: Bool
-    /// 本会话已完成局数（挑战模式全下解锁用）。
+    /// 本会话已完成局数（开局全下解锁用；门槛见设置 / ActivePreDealAllInUnlock）。
     let sessionRoundsCompleted: Int
     /// 一副牌残局等：全下按钮用强调文案「强制全下」（仍须已解锁）。
     let emphasizeForcedAllIn: Bool

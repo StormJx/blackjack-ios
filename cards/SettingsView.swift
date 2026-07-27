@@ -2,7 +2,7 @@
 //  SettingsView.swift
 //  cards
 //
-//  E2 / P4 / C1：设置页（牌副 / 切牌 / 桌限预设 / 卡背 / 音效触觉）。
+//  E2 / P4 / C1 / P5 / F1：设置页（牌副 / 切牌三态 / 桌限 / 全下解锁 / 卡背 / 音效触觉）。
 //
 
 import SwiftUI
@@ -25,16 +25,18 @@ struct SettingsView: View {
                         flashHint(AppSettings.appliesNextRoundHint)
                     }
 
-                    Toggle("切牌（渗透率）", isOn: $settings.cutCardEnabled)
-                        .onChange(of: settings.cutCardEnabled) { _, _ in
-                            flashHint(AppSettings.appliesNextRoundHint)
+                    Picker("切牌（闯关）", selection: $settings.cutCardMode) {
+                        ForEach(CutCardMode.allCases) { mode in
+                            Text(mode.title).tag(mode)
                         }
-                    Text(settings.cutCardEnabled
-                         ? "闯关：开启后按 50%–75% 切牌点局间重洗。"
-                         : "闯关：关闭后每局打完下一局必整副重洗（无渗透）。")
+                    }
+                    .onChange(of: settings.cutCardMode) { _, _ in
+                        flashHint(AppSettings.appliesNextRoundHint)
+                    }
+                    Text(settings.cutCardMode.settingsDetail)
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Text("娱乐模式固定「真实切牌」（不受本开关影响）；仪式感切牌后续再做。")
+                    Text("娱乐模式固定「真实切牌」（不受本项影响）。")
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                 } header: {
@@ -65,6 +67,25 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    Stepper(
+                        value: $settings.preDealAllInUnlockRounds,
+                        in: ChipRules.preDealAllInUnlockRoundsRange
+                    ) {
+                        Text("全下解锁局数：\(settings.preDealAllInUnlockRounds)")
+                    }
+                    .onChange(of: settings.preDealAllInUnlockRounds) { _, _ in
+                        flashHint(AppSettings.allInUnlockAppliesNextSessionHint)
+                    }
+                    Text(settings.preDealAllInUnlockRounds == 0
+                         ? "开局下注页即可使用「全下」（闯关与娱乐共用）。"
+                         : "本会话打满 \(settings.preDealAllInUnlockRounds) 局后，开局下注页解锁「全下」（闯关与娱乐共用）。")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } header: {
+                    Text("全下")
+                }
+
+                Section {
                     ForEach(CardBackStyle.allCases) { style in
                         cardBackRow(style)
                     }
@@ -77,7 +98,7 @@ struct SettingsView: View {
                 Section("反馈") {
                     Toggle("音效", isOn: $settings.soundEnabled)
                     Toggle("触觉", isOn: $settings.hapticsEnabled)
-                    Text("音效来自 Sounds/ 六基名文件（当前为程序合成增强版）；关闭开关后不播放；缺文件时静默跳过。可替换为录音级 wav/mp3。")
+                    Text("音效来自 Sounds/ 六基名文件（当前为高质量程序合成；可替换为录音级 wav/mp3）；关闭开关后不播放；缺文件时静默跳过。")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

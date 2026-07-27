@@ -44,26 +44,48 @@ struct E1E4FeatureTests {
 
         let settings = AppSettings(defaults: defaults)
         settings.defaultPracticeMode = .shoe6
-        settings.cutCardEnabled = false
+        settings.cutCardMode = .off
+        settings.preDealAllInUnlockRounds = 3
         settings.soundEnabled = false
         settings.hapticsEnabled = false
 
         let reloaded = AppSettings(defaults: defaults)
         #expect(reloaded.defaultPracticeMode == .shoe6)
-        #expect(reloaded.cutCardEnabled == false)
+        #expect(reloaded.cutCardMode == .off)
+        #expect(reloaded.preDealAllInUnlockRounds == 3)
         #expect(reloaded.soundEnabled == false)
         #expect(reloaded.hapticsEnabled == false)
         #expect(reloaded.tableLimitPreset == .standard)
         #expect(reloaded.tableLimitsSummary.contains("100"))
 
         settings.tableLimitPreset = .light
+        settings.cutCardMode = .ceremonial
         let reloadedLimits = AppSettings(defaults: defaults)
         #expect(reloadedLimits.tableLimitPreset == .light)
         #expect(reloadedLimits.tableLimitsSummary.contains("50"))
+        #expect(reloadedLimits.cutCardMode == .ceremonial)
+    }
+
+    @Test @MainActor
+    func appSettingsMigratesLegacyCutCardBool() {
+        let suiteName = "cards.tests.settings.cut.migrate.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        defaults.set(false, forKey: "appSettings.cutCardEnabled")
+        let offSettings = AppSettings(defaults: defaults)
+        #expect(offSettings.cutCardMode == .off)
+
+        let suiteName2 = "cards.tests.settings.cut.migrate2.\(UUID().uuidString)"
+        let defaults2 = UserDefaults(suiteName: suiteName2)!
+        defer { defaults2.removePersistentDomain(forName: suiteName2) }
+        defaults2.set(true, forKey: "appSettings.cutCardEnabled")
+        let realSettings = AppSettings(defaults: defaults2)
+        #expect(realSettings.cutCardMode == .real)
     }
 
     @Test func deckCutDisabledRequiresReshuffleAfterAnyDeal() {
-        var d = Deck(numberOfDecks: 1, cutCardEnabled: false)
+        var d = Deck(numberOfDecks: 1, cutCardMode: .off)
         var rng = SeededRNG(state: 11)
         d.shuffleAndCut(using: &rng)
         #expect(d.needsReshuffleBeforeNextRound == false)
@@ -72,8 +94,24 @@ struct E1E4FeatureTests {
         #expect(d.needsReshuffleBeforeNextRound == true)
     }
 
+    @Test func deckCeremonialIgnoresCutPositionUntilCardsRunLow() {
+        var d = Deck(numberOfDecks: 1, cutCardMode: .ceremonial)
+        var rng = SeededRNG(state: 33)
+        d.shuffleAndCut(using: &rng)
+        let cut = d.cutPosition
+        for _ in 0..<cut { _ = d.draw() }
+        #expect(d.dealtCount >= cut)
+        #expect(d.remainingCount >= Deck.minimumCardsForRound)
+        #expect(d.needsReshuffleBeforeNextRound == false)
+
+        while d.remainingCount >= Deck.minimumCardsForRound {
+            _ = d.draw()
+        }
+        #expect(d.needsReshuffleBeforeNextRound == true)
+    }
+
     @Test func deckCutEnabledStillHonorsPenetration() {
-        var d = Deck(numberOfDecks: 1, cutCardEnabled: true)
+        var d = Deck(numberOfDecks: 1, cutCardMode: .real)
         var rng = SeededRNG(state: 22)
         d.shuffleAndCut(using: &rng)
         for _ in 0..<3 { _ = d.draw() }
@@ -513,7 +551,7 @@ struct E1E4FeatureTests {
     }
 
     @Test func deckReturnCardToShoeIncreasesRemaining() {
-        var deck = Deck(numberOfDecks: 1, cutCardEnabled: true)
+        var deck = Deck(numberOfDecks: 1, cutCardMode: .real)
         var rng = SeededRNG(state: 42)
         deck.shuffleAndCut(using: &rng)
         let before = deck.remainingCount
@@ -572,7 +610,7 @@ struct E1E4FeatureTests {
 
     @Test @MainActor
     func reshuffleDealerCardBlockedOutsidePlayerTurn() async {
-        let game = BlackjackGame(practiceMode: .singleDeck, cutCardEnabled: true)
+        let game = BlackjackGame(practiceMode: .singleDeck, cutCardMode: .real)
         #expect(game.canReshuffleDealerCard == false)
         var rng = SeededRNG(state: 3)
         #expect(await game.reshuffleDealerCard(using: &rng) == false)
@@ -581,7 +619,7 @@ struct E1E4FeatureTests {
 
     @Test @MainActor
     func reshuffleDealerCardReplacesOneDealerCardOncePerRound() async {
-        let game = BlackjackGame(practiceMode: .singleDeck, cutCardEnabled: true)
+        let game = BlackjackGame(practiceMode: .singleDeck, cutCardMode: .real)
         let player = [
             Card(suit: .hearts, rank: .ten),
             Card(suit: .clubs, rank: .seven),
@@ -615,7 +653,7 @@ struct E1E4FeatureTests {
 
     @Test @MainActor
     func reshuffleDealerCardBlockedWhilePeeking() async {
-        let game = BlackjackGame(practiceMode: .singleDeck, cutCardEnabled: true)
+        let game = BlackjackGame(practiceMode: .singleDeck, cutCardMode: .real)
         let player = [
             Card(suit: .hearts, rank: .ten),
             Card(suit: .clubs, rank: .eight),

@@ -21,8 +21,23 @@ enum ChipRules {
     /// 下注页筹码面额：三档单选（点选即覆盖，不可累加）。
     static var betChipValues: [Int] { ActiveTableLimits.betChipValues }
 
-    /// 有筹码模式：本会话完成至少该局数后，开局下注页才解锁「全下」。
-    static let preDealAllInUnlockCompletedRounds = 5
+    /// F1：开局「全下」解锁局数默认值（设置可改；进程内生效值见 `ActivePreDealAllInUnlock`）。
+    static let defaultPreDealAllInUnlockCompletedRounds = 5
+
+    /// 设置页可配范围（含 0 = 开局即可全下）。
+    static let preDealAllInUnlockRoundsRange = 0...10
+
+    static func clampPreDealAllInUnlockRounds(_ value: Int) -> Int {
+        min(
+            max(value, preDealAllInUnlockRoundsRange.lowerBound),
+            preDealAllInUnlockRoundsRange.upperBound
+        )
+    }
+
+    /// 当前会话生效的解锁局数（新开局时由设置同步）。
+    static var preDealAllInUnlockCompletedRounds: Int {
+        ActivePreDealAllInUnlock.requiredRounds
+    }
 
     /// 是否可选中该筹码档作为本局唯一注码。
     static func canSelectBetChip(_ value: Int, balance: Int) -> Bool {
@@ -34,23 +49,26 @@ enum ChipRules {
         balance >= minimumBet
     }
 
-    /// 挑战模式开局全下是否可用：局数解锁 + 尚未点选筹码档（避免与红色全下误触）。
+    /// 开局全下是否可用：局数解锁 + 尚未点选筹码档（避免与红色全下误触）。
     /// - Note: `draftBet == 0` 表示未选档；已选档时全下灰显，需先「清空」再全下。
     static func isPreDealAllInEnabled(
         balance: Int,
         sessionRoundsCompleted: Int,
-        draftBet: Int
+        draftBet: Int,
+        unlockRounds: Int = ActivePreDealAllInUnlock.requiredRounds
     ) -> Bool {
         canPreDealAllIn(balance: balance)
-            && sessionRoundsCompleted >= preDealAllInUnlockCompletedRounds
+            && sessionRoundsCompleted >= unlockRounds
             && draftBet == 0
     }
 
     /// 全下未解锁时的提示文案。
-    static func preDealAllInLockHint(sessionRoundsCompleted: Int) -> String? {
-        let need = preDealAllInUnlockCompletedRounds
-        guard sessionRoundsCompleted < need else { return nil }
-        let left = need - sessionRoundsCompleted
+    static func preDealAllInLockHint(
+        sessionRoundsCompleted: Int,
+        unlockRounds: Int = ActivePreDealAllInUnlock.requiredRounds
+    ) -> String? {
+        guard sessionRoundsCompleted < unlockRounds else { return nil }
+        let left = unlockRounds - sessionRoundsCompleted
         return "再玩 \(left) 局后解锁全下"
     }
 
@@ -71,7 +89,11 @@ enum ChipRules {
 
     /// 闯关欢迎页规则说明。
     static var challengeWelcomeSummary: String {
-        "闯关挑战：打穿庄家或累计赢码可解锁更高关卡。注码三档单选；开局全下需本会话打满 \(preDealAllInUnlockCompletedRounds) 局。玩法道具仅娱乐模式可用。"
+        let need = preDealAllInUnlockCompletedRounds
+        let allInNote = need == 0
+            ? "开局即可全下"
+            : "开局全下需本会话打满 \(need) 局"
+        return "闯关挑战：打穿庄家或累计赢码可解锁更高关卡。注码三档单选；\(allInNote)。玩法道具仅娱乐模式可用。"
     }
 
     /// 兼容旧调用。
@@ -132,6 +154,15 @@ enum ChipRules {
         case .playerLose, .push:
             return 0
         }
+    }
+}
+
+/// 进程内当前生效的开局全下解锁局数；由欢迎页 / 开新会话时同步。
+enum ActivePreDealAllInUnlock {
+    static var requiredRounds: Int = ChipRules.defaultPreDealAllInUnlockCompletedRounds
+
+    static func apply(_ rounds: Int) {
+        requiredRounds = ChipRules.clampPreDealAllInUnlockRounds(rounds)
     }
 }
 
