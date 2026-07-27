@@ -95,6 +95,13 @@ enum EntertainmentRules {
         }
     }
 
+    /// 战绩页：当前阶起始筹码摘要。
+    static func stageBankSummary(level: Int) -> String {
+        let stage = stage(level: level)
+        return "\(stage.title)：你 \(stage.playerStart) · 庄家 \(stage.dealerStart)"
+    }
+
+    /// 战绩 / 帮助：当前阶 + 距下一阶差额（F2）。
     static func progressHint(
         unlockedLevel: Int,
         dealerClears: Int,
@@ -138,6 +145,11 @@ final class EntertainmentProgress: ObservableObject {
 
     var currentStage: EntertainmentStage {
         EntertainmentRules.stage(level: unlockedLevel)
+    }
+
+    /// 战绩页娱乐累计摘要。
+    var chipsSummaryLine: String {
+        "累计赢 \(totalChipsWon) · 打穿庄家 \(dealerClearCount) 次"
     }
 
     /// 结算净赢计入娱乐累计（仅正数）。

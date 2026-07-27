@@ -91,8 +91,12 @@ struct ContentView: View {
                     .presentationDetents([.medium, .large])
             }
             .sheet(isPresented: $showStats) {
-                StatsView(stats: statsStore)
-                    .presentationDetents([.medium, .large])
+                StatsView(
+                    stats: statsStore,
+                    challengeProgress: challengeProgress,
+                    entertainmentProgress: entertainmentProgress
+                )
+                .presentationDetents([.medium, .large])
             }
             .sheet(isPresented: $showAchievements) {
                 AchievementsView(stats: statsStore, props: propStore)

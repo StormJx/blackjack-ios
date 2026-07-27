@@ -1,7 +1,8 @@
 # 会话检查点（可推送 GitHub）
 
 > 本地另有 `VERSION_ROADMAP.txt`（gitignore，勿推送）。两边请同步维护。  
-> 成就：`docs/ACHIEVEMENTS.md` · 外观道具：`docs/COSMETICS_AND_PROPS.md` · P8 后续：`docs/P8_ORIENTATION_AND_A11Y.md`
+> 成就：`docs/ACHIEVEMENTS.md` · 外观道具：`docs/COSMETICS_AND_PROPS.md`  
+> P8：`docs/P8_ORIENTATION_AND_A11Y.md` · 评审批次 backlog：`docs/ENGINEERING_REVIEW_BACKLOG.md`
 
 **基线：** `main` @ `c670180`（「完成 P5 切牌三态、F1 全下解锁可配置，并增强合成音效。」；Tag `v1.10.0` 为上一里程碑）  
 **仓库：** https://github.com/StormJx/blackjack-ios  
@@ -20,7 +21,7 @@
 
 ---
 
-## 已完成（v1.10 + 后续增量，均已推送）
+## 已完成（v1.10 + 后续增量）
 
 ### 外观 / 设置 / 欢迎页
 - [x] C1 卡背解锁 + 设置页选用（classicNavy / emeraldLattice / crimsonRibbon）
@@ -31,18 +32,19 @@
 - [x] 开局牌副改读设置「默认牌副」（欢迎页无 Picker）
 - [x] P5 切牌三态：`CutCardMode`（off / ceremonial / real）；设置 Picker；娱乐固定 real；旧布尔键可迁移
 - [x] F1 全下解锁局数可配置（设置 Stepper 0–10，默认 5；`ActivePreDealAllInUnlock` 新会话生效；两模式共用）
-- [~] F2 闯关进度弱提示：曾在欢迎页；现改为帮助/战绩侧说明（欢迎页已去掉冗余）
+- [x] **F2 战绩进度**：`StatsView` 展示闯关关 / 娱乐阶、起始筹码、下一门槛、娱乐累计；帮助文案指向战绩（欢迎页仍不堆进度）
 
 ### 娱乐 / 道具 / 音效
 - [x] 娱乐独立进阶 `EntertainmentProgress`（打穿或累计赢升阶；注码随阶）
 - [x] P3 「同上局」下注（仅娱乐）
 - [x] 娱乐固定真实切牌（设置切牌只影响闯关）
 - [x] 道具：`midHandAllIn` / `dealerSoft17Hit` / `peekHole` / `redrawOne` / `reshuffleDealerCard`（仅娱乐，永久解锁）
-- [x] `reshuffleDealerCard`：解锁 `practiceWins50`；每局限 1；随机含暗牌；窥视中禁用；牌面脉冲 +「已换庄家一张」；`shuffleHint`
+- [x] `reshuffleDealerCard`：解锁 `practiceWins50`；每局限 1；随机含暗牌；窥视中禁用；牌面脉冲 +「已换庄家一张」；`shuffleHint`；**穿透净不变**；非空鞋不原样抽回
 - [x] F10：六基名 wav 为 44.1kHz 高质量程序合成（**仍非录音正片**；可替换 `Sounds/`）
 
 ### 规划入库（效果未接线）
-- [x] P8 横竖屏 / 无障碍深化 → 仅文档备案
+- [x] P8 横竖屏 / 无障碍深化 → 见 `docs/P8_ORIENTATION_AND_A11Y.md`（第一切片清单已写）
+- [x] 工程评审批次 backlog → `docs/ENGINEERING_REVIEW_BACKLOG.md`
 
 ---
 
@@ -50,11 +52,14 @@
 
 | 编号 | 内容 | 备注 |
 |------|------|------|
+| Q1 | 杀进程恢复与「本会话全下解锁局数」语义 | 见 backlog |
+| P8-1 | 无障碍第一切片 | 见 P8 文档；横屏后置 |
+| Q2 | 状态机可测化 + 核心单测 | 进入 P6 前建议完成 |
+| UX1–UX9 | 欢迎副文案、全下确认、成就 toast、道具分栏等 | 见 backlog |
 | P8 横竖屏 | 允许横屏与布局 | 见 P8 文档 |
-| P8 无障碍深化 | VoiceOver / 动态字体等 | 见 P8 文档 |
-| F10 正片录音 | 录音级素材替换 | 基名不变，替换 Sounds/ 即可 |
+| F10 正片录音 | 录音级素材替换 | 基名不变 |
 | C5 | 对道具战模式 | 须先锁产品 |
-| P6 | 分牌/加倍/保险/投降 | 大改，须锁规则 |
+| P6 | 建议先「加倍」单切片；分牌/保险/投降更后 | 须锁规则 |
 | 娱乐阶梯数值 | 试玩后再调 | 当前表保持 |
 
 **明确不做：** 闯关启用玩法道具；娱乐计入闯关成就；默认模式内独立「练习分」。
@@ -63,19 +68,23 @@
 
 ## 工程要点
 
-- `PlayStyle` / `PropStore` / `ChallengeProgress` / `EntertainmentProgress` / `CosmeticsStore` / `TableLimitPreset` / `CutCardMode` / `ActivePreDealAllInUnlock` / `HelpView`
+- `PlayStyle` / `PropStore` / `ChallengeProgress` / `EntertainmentProgress` / `CosmeticsStore` / `TableLimitPreset` / `CutCardMode` / `ActivePreDealAllInUnlock` / `HelpView` / `StatsView`
 - `ChipBank` 支持会话起始筹码；退出清空持久化键
 - `BlackjackGame` 只发牌；筹码 `ChipBank`；成就 `StatsStore`
+- `Deck.returnCardToShoe`：回退 `dealtCount`；非空鞋禁止立即原样抽回
 - 推送前：`./scripts/check-before-push.sh`；勿提交 `VERSION_ROADMAP.txt` / `.env` / 密钥
 
 ---
 
-## 建议下一步（任选点名）
+## 建议下一步（按优先级）
 
-1. 试玩后调娱乐阶梯数值  
-2. 提供录音级 wav 换 F10 正片  
-3. P8 横竖或无障碍切片  
-4. 讨论 C5 / P6 产品  
+1. **Q1**：杀进程恢复与全下解锁局数语义  
+2. **P8-1**：无障碍第一切片（见 P8 文档）  
+3. **Q2**：`BlackjackGame` 可测化 + 天然 BJ / 庄家回合 / hit-stand 单测  
+4. 讨论 **P6「加倍」** 规则后单切片；完整分牌 / C5 / F10 正片后置  
+5. 任选 UX1–UX9（见 `docs/ENGINEERING_REVIEW_BACKLOG.md`）
+
+**本批已完成（待 push）：** 换庄家牌堆边界 + F2 战绩进度 + 评审 backlog / P8 第一切片文档。
 
 ---
 
@@ -89,3 +98,4 @@
 | 2026-07-23 | 欢迎页精简：牌桌绿 + 双入口 + HelpView；牌副改走设置默认；基线 `6ebe464` |
 | 2026-07-25 | P5 切牌三态 + F1 全下解锁可配置 + F10 44.1kHz 合成音增强 |
 | 2026-07-27 | 功能已推送 `c670180`；检查点基线同步 |
+| 2026-07-27 | 换庄家牌堆边界；F2 战绩关/阶进度；新增 `ENGINEERING_REVIEW_BACKLOG`；P8 第一切片清单 |

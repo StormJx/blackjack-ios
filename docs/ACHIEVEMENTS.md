@@ -24,7 +24,9 @@
 | `redrawOne` | 换一张 | 成就 `practiceWins20` | **仅娱乐** |
 | `reshuffleDealerCard` | 换庄家一张 | 成就 `practiceWins50` | **仅娱乐** |
 
-> `reshuffleDealerCard`：窥视进行中不可用；牌桌有「已换庄家一张」弱提示与牌面脉冲。
+> `reshuffleDealerCard`：窥视进行中不可用；牌桌有「已换庄家一张」弱提示与牌面脉冲；替换不推进切牌穿透；非空鞋不会原样抽回。
+
+> 关卡 / 阶梯进度展示在「战绩」页（`StatsView`），不在欢迎页堆文案。
 
 详见 `docs/COSMETICS_AND_PROPS.md`。
 
@@ -155,3 +157,5 @@
 | 2026-07-22 | 道具仅娱乐可用；练习→娱乐；闯关进阶；见 COSMETICS_AND_PROPS.md |
 | 2026-07-23 | C2/C3/C4：`peekHole` / `dealerSoft17Hit` / `redrawOne` 兑换与娱乐接线 |
 | 2026-07-23 | `reshuffleDealerCard`：成就 `practiceWins50` → 永久解锁；仅娱乐接线 |
+| 2026-07-27 | 换庄家牌堆边界：穿透净不变 + 非空鞋不原样抽回 |
+| 2026-07-27 | F2：战绩页展示关/阶进度；成就手册注明进度入口 |

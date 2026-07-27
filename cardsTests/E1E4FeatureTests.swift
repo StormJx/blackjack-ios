@@ -485,6 +485,21 @@ struct E1E4FeatureTests {
         #expect(maxed.contains("已通关全部关卡"))
     }
 
+    @Test func challengeAndEntertainmentStageBankSummariesForStats() {
+        #expect(ChallengeRules.stageBankSummary(level: 1) == "第一关：你 1000 · 庄家 2000")
+        #expect(ChallengeRules.stageBankSummary(level: 3) == "第三关：你 2500 · 庄家 7000")
+        #expect(EntertainmentRules.stageBankSummary(level: 2) == "娱乐二阶：你 2000 · 庄家 5000")
+        #expect(EntertainmentRules.stage(level: 2).tableLimitsSummary.contains("200 / 400 / 800"))
+
+        let entHint = EntertainmentRules.progressHint(
+            unlockedLevel: 1,
+            dealerClears: 0,
+            totalChipsWon: 500
+        )
+        #expect(entHint.contains("娱乐一阶"))
+        #expect(entHint.contains("1500"))
+    }
+
     // MARK: - C1 Cosmetics / P4 Table limits / C2–C4 Props
 
     @Test @MainActor
@@ -560,8 +575,51 @@ struct E1E4FeatureTests {
             return
         }
         #expect(deck.remainingCount == before - 1)
+        let dealtAfterDraw = deck.dealtCount
         deck.returnCardToShoe(card, using: &rng)
         #expect(deck.remainingCount == before)
+        #expect(deck.dealtCount == dealtAfterDraw - 1)
+    }
+
+    @Test func returnThenDrawKeepsDealtCountAndAvoidsSameCard() {
+        var deck = Deck(numberOfDecks: 1, cutCardMode: .real)
+        var rng = SeededRNG(state: 77)
+        deck.shuffleAndCut(using: &rng)
+        guard let card = deck.draw() else {
+            Issue.record("expected a card")
+            return
+        }
+        let dealtBeforeSwap = deck.dealtCount
+        let remainingBeforeSwap = deck.remainingCount
+        deck.returnCardToShoe(card, using: &rng)
+        #expect(deck.dealtCount == dealtBeforeSwap - 1)
+        #expect(deck.remainingCount == remainingBeforeSwap + 1)
+
+        guard let replacement = deck.draw() else {
+            Issue.record("expected replacement")
+            return
+        }
+        #expect(deck.dealtCount == dealtBeforeSwap)
+        #expect(deck.remainingCount == remainingBeforeSwap)
+        #expect(replacement != card)
+    }
+
+    @Test func returnCardToEmptyShoeAllowsSameCardRedraw() {
+        var deck = Deck(numberOfDecks: 1, cutCardMode: .real)
+        var rng = SeededRNG(state: 5)
+        deck.shuffleAndCut(using: &rng)
+        var last: Card?
+        while deck.remainingCount > 0 {
+            last = deck.draw()
+        }
+        guard let card = last else {
+            Issue.record("expected last card")
+            return
+        }
+        #expect(deck.remainingCount == 0)
+        deck.returnCardToShoe(card, using: &rng)
+        #expect(deck.remainingCount == 1)
+        #expect(deck.draw() == card)
     }
 
     @Test func handSoftSeventeenDetection() {
@@ -640,6 +698,7 @@ struct E1E4FeatureTests {
         #expect(ok)
         #expect(game.dealerCards.count == beforeDealer.count)
         #expect(game.remainingCardCount == beforeRemaining)
+        #expect(game.dealerCards != beforeDealer)
         #expect(game.hasReshuffledDealerThisRound)
         #expect(game.canReshuffleDealerCard == false)
         #expect(game.propActionHint == "已换庄家一张")

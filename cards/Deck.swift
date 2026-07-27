@@ -93,18 +93,26 @@ struct Deck: Sendable {
         return cards.removeFirst()
     }
 
-    /// 道具 `reshuffleDealerCard`：将一张牌插回剩余牌堆随机位置（不重算切牌点 / dealtCount）。
+    /// 道具 `reshuffleDealerCard`：将一张已发牌插回剩余牌堆随机位置。
+    /// - 回退 `dealtCount`（穿透深度按「净发出」计；随后再 `draw` 则净变化为 0）。
+    /// - 不重算切牌点。
+    /// - 牌堆非空时绝不插到队首，保证紧接着的一次 `draw` 不会原样抽回同一张。
     mutating func returnCardToShoe(_ card: Card) {
         var rng = SystemRandomNumberGenerator()
         returnCardToShoe(card, using: &rng)
     }
 
     mutating func returnCardToShoe<R: RandomNumberGenerator>(_ card: Card, using rng: inout R) {
+        if dealtCount > 0 {
+            dealtCount -= 1
+        }
         if cards.isEmpty {
+            // 鞋内已空：只能原牌回库；紧接着的 draw 仍会抽到它（无其它候选）。
             cards = [card]
             return
         }
-        let index = Int.random(in: 0...cards.count, using: &rng)
+        // 1...count：插到现有牌之后或队尾，下一张一定不是刚还回的牌。
+        let index = Int.random(in: 1...cards.count, using: &rng)
         cards.insert(card, at: index)
     }
 

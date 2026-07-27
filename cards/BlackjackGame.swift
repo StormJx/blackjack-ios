@@ -405,6 +405,7 @@ final class BlackjackGame: ObservableObject {
     }
 
     /// 娱乐道具：随机将庄家一张牌洗回牌库再抽一张替换（每局限 1 次）。
+    /// 穿透：`returnCardToShoe` + `draw` 后 `dealtCount` / 剩余张数净不变；非空鞋时不会原样抽回同一张。
     @discardableResult
     func reshuffleDealerCard() async -> Bool {
         var rng = SystemRandomNumberGenerator()
@@ -424,7 +425,7 @@ final class BlackjackGame: ObservableObject {
         let index = Int.random(in: 0..<dealerCards.count, using: &rng)
         let oldCard = dealerCards[index]
         deck.returnCardToShoe(oldCard, using: &rng)
-        // 回鞋后剩余至少 1 张，必能再抽。
+        // 回库后剩余至少 1 张，必能再抽；非空鞋时 Deck 保证下一张 ≠ 刚还回的牌。
         guard let newCard = deck.draw() else {
             publishDeckCounts()
             return false

@@ -44,7 +44,7 @@ enum PropID: String, CaseIterable, Identifiable {
         case .redrawOne:
             return "仅娱乐模式：弃掉最近一次要牌得到的牌并重发一张（须已要过牌）。每局限 1 次；天然 BJ 不可用。"
         case .reshuffleDealerCard:
-            return "仅娱乐模式：随机将庄家手牌中一张（含暗牌）洗回牌库再抽一张替换。每局限 1 次；窥视进行中不可用；可与其它娱乐道具同局先后使用。"
+            return "仅娱乐模式：随机将庄家手牌中一张（含暗牌）洗回牌库再抽一张替换（不推进切牌穿透；牌库有其它牌时不会原样抽回）。每局限 1 次；窥视进行中不可用；可与其它娱乐道具同局先后使用。"
         }
     }
 

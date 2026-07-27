@@ -54,7 +54,13 @@ enum ChallengeRules {
         }
     }
 
-    /// 欢迎页弱提示：当前关 + 距下一关差额（F2）。
+    /// 战绩页：当前关起始筹码摘要。
+    static func stageBankSummary(level: Int) -> String {
+        let stage = stage(level: level)
+        return "\(stage.title)：你 \(stage.playerStart) · 庄家 \(stage.dealerStart)"
+    }
+
+    /// 战绩 / 帮助：当前关 + 距下一关差额（F2）。
     static func progressHint(
         unlockedLevel: Int,
         dealerClears: Int,
