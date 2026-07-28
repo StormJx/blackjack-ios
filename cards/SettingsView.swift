@@ -98,7 +98,8 @@ struct SettingsView: View {
                 Section("反馈") {
                     Toggle("音效", isOn: $settings.soundEnabled)
                     Toggle("触觉", isOn: $settings.hapticsEnabled)
-                    Text("关闭后不播放音效；未配置音效文件时会静默跳过。")
+                    Toggle("局内全下需确认", isOn: $settings.confirmMidHandAllIn)
+                    Text("关闭后不播放音效；未配置音效文件时会静默跳过。「局内全下需确认」仅影响娱乐模式见牌后再全下。")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

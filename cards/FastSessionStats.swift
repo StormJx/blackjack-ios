@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// 娱乐模式会话内统计；不跨会话持久化。
+/// 娱乐模式本会话胜负累计（纯值类型，可单测；不跨会话持久化）。
 struct FastSessionStats: Equatable, Sendable {
     var wins: Int = 0
     var losses: Int = 0

@@ -33,6 +33,7 @@
 - [x] P5 切牌三态：`CutCardMode`（off / ceremonial / real）；设置 Picker；娱乐固定 real；旧布尔键可迁移
 - [x] F1 全下解锁局数可配置（设置 Stepper 0–10，默认 5；`ActivePreDealAllInUnlock` 新会话生效；两模式共用）
 - [x] **F2 战绩进度**：`StatsView` 展示闯关关 / 娱乐阶、起始筹码、下一门槛、娱乐累计；帮助文案指向战绩（欢迎页仍不堆进度）
+- [x] **UX1**：欢迎页闯关/娱乐按钮下各一行短副文案（`PlayStyle.welcomeSubtitle`）
 
 ### 娱乐 / 道具 / 音效
 - [x] 娱乐独立进阶 `EntertainmentProgress`（打穿或累计赢升阶；注码随阶）
@@ -41,8 +42,17 @@
 - [x] 道具：`midHandAllIn` / `dealerSoft17Hit` / `peekHole` / `redrawOne` / `reshuffleDealerCard`（仅娱乐，永久解锁）
 - [x] `reshuffleDealerCard`：解锁 `practiceWins50`；每局限 1；随机含暗牌；窥视中禁用；牌面脉冲 +「已换庄家一张」；`shuffleHint`；**穿透净不变**；非空鞋不原样抽回
 - [x] F10：六基名 wav 为 44.1kHz 高质量程序合成（**仍非录音正片**；可替换 `Sounds/`）
+- [x] **UX2**：局内全下二次确认（设置可关，默认开）
+- [x] **UX5**：娱乐局末展示本会话 `FastSessionStats`
+- [x] **UX6**：窥视倒计时条 + 娱乐道具首次引导 alert
+- [x] **UX7**：局末可「查看牌面」收起，再「显示结果」
 
-### 工程 / 无障碍（本批）
+### 成就 / 体验
+- [x] **UX3**：局末解锁改为卡片队列（非长 toast）
+- [x] **UX4**：成就页道具仅「娱乐」tab；闯关解锁道具标「去闯关解锁」
+- [x] **UX8**：娱乐成就标题「练习」→「娱乐」
+
+### 工程 / 无障碍
 - [x] **Q1**：`ChipBank.sessionRoundsCompleted` 与筹码同 suite 持久化；杀进程后全下解锁进度保留；恢复提示文案同步；主动退出清空；单测
 - [x] **P8-1** 无障碍第一切片：下注/局末可滚动 + 粘性主按钮；VoiceOver（点数/余额/注码/结果/要牌停牌/道具具体禁用原因）；欢迎标题动态字体；洗牌页尊重减弱动态效果；设置页去开发者音效文案
 - [x] **Q2**：`GameTiming` / `GameFeedbackServing` 注入；`SessionConfiguration`；`cancelPendingWork()`；天然 BJ / hit 爆牌 / 软 17 默认停与道具要 / 牌尽 fallback 单测
@@ -57,7 +67,7 @@
 
 | 编号 | 内容 | 备注 |
 |------|------|------|
-| UX1–UX9 | 欢迎副文案、全下确认、成就 toast、道具分栏等 | 见 backlog |
+| UX9 | 设置「对局中不生效」全局提示再统一 | 见 backlog |
 | P8 横竖屏 | 允许横屏与布局 | 见 P8 文档 |
 | F10 正片录音 | 录音级素材替换 | 基名不变 |
 | C5 | 对道具战模式 | 须先锁产品 |
@@ -81,10 +91,10 @@
 ## 建议下一步（按优先级）
 
 1. 讨论 **P6「加倍」** 规则后单切片；完整分牌 / C5 / F10 正片后置  
-2. 任选 UX1–UX9（见 `docs/ENGINEERING_REVIEW_BACKLOG.md`）  
+2. **UX9**（可选）设置变更全局提示  
 3. P8 横竖屏（第一切片已完成后可评估）
 
-**本批已推送：** `7cb0e62`（Q1 全下解锁局数持久化 + P8-1 无障碍第一切片 + Q2 状态机可测化与核心单测）。
+**本批代码（待 commit/push）：** UX1–UX8 体验优化。
 
 ---
 
@@ -101,3 +111,4 @@
 | 2026-07-27 | 换庄家牌堆边界；F2 战绩关/阶进度；新增 `ENGINEERING_REVIEW_BACKLOG`；P8 第一切片清单 |
 | 2026-07-28 | 已推送 `d443bfa`；检查点基线同步 `3d575d6` |
 | 2026-07-28 | 已推送 `7cb0e62`（Q1 / P8-1 / Q2）；检查点基线同步 |
+| 2026-07-28 | UX1–UX8 落地（待推送） |

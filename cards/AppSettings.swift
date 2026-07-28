@@ -50,6 +50,11 @@ final class AppSettings: ObservableObject {
         }
     }
 
+    /// UX2：局内「见牌后再全下」是否二次确认（默认开）。
+    @Published var confirmMidHandAllIn: Bool {
+        didSet { persist() }
+    }
+
     private let defaults: UserDefaults
 
     private enum Keys {
@@ -61,6 +66,7 @@ final class AppSettings: ObservableObject {
         static let allInUnlockRounds = "appSettings.preDealAllInUnlockRounds"
         static let sound = "appSettings.soundEnabled"
         static let haptics = "appSettings.hapticsEnabled"
+        static let confirmMidHandAllIn = "appSettings.confirmMidHandAllIn"
     }
 
     init(defaults: UserDefaults = .standard) {
@@ -109,6 +115,12 @@ final class AppSettings: ObservableObject {
             hapticsEnabled = true
         }
 
+        if defaults.object(forKey: Keys.confirmMidHandAllIn) != nil {
+            confirmMidHandAllIn = defaults.bool(forKey: Keys.confirmMidHandAllIn)
+        } else {
+            confirmMidHandAllIn = true
+        }
+
         GameFeedback.shared.soundEnabled = soundEnabled
         GameFeedback.shared.hapticsEnabled = hapticsEnabled
     }
@@ -134,5 +146,6 @@ final class AppSettings: ObservableObject {
         defaults.set(preDealAllInUnlockRounds, forKey: Keys.allInUnlockRounds)
         defaults.set(soundEnabled, forKey: Keys.sound)
         defaults.set(hapticsEnabled, forKey: Keys.haptics)
+        defaults.set(confirmMidHandAllIn, forKey: Keys.confirmMidHandAllIn)
     }
 }

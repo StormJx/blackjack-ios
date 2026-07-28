@@ -193,9 +193,14 @@ struct ContentView: View {
                     Button {
                         startSession(style: .challenge)
                     } label: {
-                        Text(PlayStyle.challenge.welcomeButtonTitle)
-                            .font(.title3.weight(.semibold))
-                            .frame(maxWidth: .infinity)
+                        VStack(spacing: 4) {
+                            Text(PlayStyle.challenge.welcomeButtonTitle)
+                                .font(.title3.weight(.semibold))
+                            Text(PlayStyle.challenge.welcomeSubtitle)
+                                .font(.caption)
+                                .opacity(0.85)
+                        }
+                        .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
@@ -205,9 +210,14 @@ struct ContentView: View {
                     Button {
                         startSession(style: .entertainment)
                     } label: {
-                        Text(PlayStyle.entertainment.welcomeButtonTitle)
-                            .font(.title3.weight(.semibold))
-                            .frame(maxWidth: .infinity)
+                        VStack(spacing: 4) {
+                            Text(PlayStyle.entertainment.welcomeButtonTitle)
+                                .font(.title3.weight(.semibold))
+                            Text(PlayStyle.entertainment.welcomeSubtitle)
+                                .font(.caption)
+                                .opacity(0.9)
+                        }
+                        .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.bordered)
                     .controlSize(.large)
@@ -300,14 +310,20 @@ private struct GameSessionView: View {
     @State private var didPresentInitialFlow = false
     @State private var showBetSheet = false
     @State private var showRoundEndSheet = false
+    @State private var roundEndPanelCollapsed = false
     @State private var showAbandonConfirm = false
+    @State private var showMidHandAllInConfirm = false
+    @State private var showPropsGuide = false
     @State private var controlsLockedAfterAllIn = false
     @State private var draftBet = 0
     /// P3：本会话上一局确认下注额（仅娱乐「同上局」）。
     @State private var lastConfirmedBet = 0
     @State private var chipBalancePulse = false
-    @State private var achievementToast: String?
-    @State private var achievementToastTask: Task<Void, Never>?
+    /// UX3：本局解锁卡片队列。
+    @State private var unlockNotices: [String] = []
+    /// UX5：娱乐本会话胜负统计。
+    @State private var entertainmentSessionStats = FastSessionStats()
+    @EnvironmentObject private var appSettings: AppSettings
 
     init(
         practiceMode: PracticeMode,
@@ -365,10 +381,32 @@ private struct GameSessionView: View {
                     .zIndex(2)
             }
 
-            if showRoundEndSheet {
+            if showRoundEndSheet, !roundEndPanelCollapsed {
                 sessionPanelOverlay { roundEndPanelContent }
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                     .zIndex(3)
+            }
+
+            if showRoundEndSheet, roundEndPanelCollapsed {
+                VStack {
+                    Spacer(minLength: 0)
+                    Button {
+                        GameFeedback.shared.buttonTap()
+                        withAnimation(.easeInOut(duration: 0.22)) {
+                            roundEndPanelCollapsed = false
+                        }
+                    } label: {
+                        Label("显示结果", systemImage: "rectangle.bottomthird.inset.filled")
+                            .font(.subheadline.weight(.semibold))
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.green)
+                    .padding(.bottom, 28)
+                    .accessibilityHint("重新打开本局结果面板")
+                }
+                .zIndex(3)
             }
 
             if game.isShowingShuffleScreen {
@@ -396,21 +434,45 @@ private struct GameSessionView: View {
             playStyle: playStyle,
             onConfirm: abandonSessionToWelcome
         ))
+        .confirmationDialog(
+            "确认全下？",
+            isPresented: $showMidHandAllInConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("全下并停牌", role: .destructive) {
+                executeMidHandAllIn()
+            }
+            Button("取消", role: .cancel) {}
+        } message: {
+            Text("将把剩余筹码全部追加为注码，并自动停牌。")
+        }
+        .alert("玩法道具已就绪", isPresented: $showPropsGuide) {
+            Button("知道了") {
+                propStore.acknowledgeGameplayPropsGuide()
+            }
+        } message: {
+            Text("娱乐模式玩家回合可使用已解锁道具（如窥视、换牌、软 17 要牌、见牌后再全下）。每局限次以按钮提示为准。")
+        }
         .onChange(of: game.phase) { _, newPhase in
             if newPhase != .playerTurn {
                 controlsLockedAfterAllIn = false
             }
             if newPhase == .finished {
                 handleRoundFinished()
+                roundEndPanelCollapsed = false
                 showRoundEndSheet = true
             } else {
                 showRoundEndSheet = false
+                roundEndPanelCollapsed = false
             }
         }
         .onAppear {
             guard !didPresentInitialFlow else { return }
             didPresentInitialFlow = true
             beginInitialFlow()
+            if playStyle == .entertainment, propStore.needsGameplayPropsGuide {
+                showPropsGuide = true
+            }
         }
     }
 
@@ -476,10 +538,15 @@ private struct GameSessionView: View {
             balance: chipBank.balance,
             dealerBank: chipBank.dealerBank,
             shoeStatusLine: game.shoeStatusLine,
-            fastStats: nil,
-            achievementToast: achievementToast,
+            fastStats: playStyle == .entertainment ? entertainmentSessionStats : nil,
+            unlockNotices: unlockNotices,
             onReturnHome: returnToWelcomeAfterSessionEnd,
-            onContinue: continueAfterRound
+            onContinue: continueAfterRound,
+            onPeekTable: {
+                withAnimation(.easeInOut(duration: 0.22)) {
+                    roundEndPanelCollapsed = true
+                }
+            }
         )
     }
 
@@ -525,7 +592,7 @@ private struct GameSessionView: View {
             cardBack: cosmeticsStore.selectedBack,
             onHit: { Task { await game.hit() } },
             onStand: { Task { await game.stand() } },
-            onAllIn: performMidHandAllIn,
+            onAllIn: requestMidHandAllIn,
             onPeekHole: { Task { await game.peekHoleCard() } },
             onSoft17Hit: { _ = game.activateDealerSoft17Hit() },
             onRedrawOne: { Task { await game.redrawLastHitCard() } },
@@ -657,7 +724,16 @@ private struct GameSessionView: View {
         return base ?? "当前不可用"
     }
 
-    private func performMidHandAllIn() {
+    private func requestMidHandAllIn() {
+        guard canMidHandAllIn else { return }
+        if appSettings.confirmMidHandAllIn {
+            showMidHandAllInConfirm = true
+        } else {
+            executeMidHandAllIn()
+        }
+    }
+
+    private func executeMidHandAllIn() {
         guard canMidHandAllIn else { return }
         controlsLockedAfterAllIn = true
         guard chipBank.goAllIn() != nil else {
@@ -689,32 +765,36 @@ private struct GameSessionView: View {
 
     private func handleRoundFinished() {
         settleCurrentRoundIfNeeded()
+        unlockNotices = []
         if let outcome = game.lastOutcome {
             chipBank.recordRoundCompleted()
+            if playStyle == .entertainment {
+                entertainmentSessionStats.record(outcome)
+            }
             if let snapshot = game.makeRoundSnapshot(
                 wasAllInBet: chipBank.activeBetWasAllIn
             ) {
                 let scope = playStyle.achievementScope
                 let newly = statsStore.recordRound(snapshot: snapshot, scope: scope)
-                var toastTitles = newly.map(\.title)
+                var notices = newly.map(\.title)
                 if playStyle == .challenge, chipBank.sessionEndReason == .dealerBroke {
                     let beforePending = statsStore.pendingUnlockTitles
                     statsStore.recordDealerBankCleared()
                     let afterPending = statsStore.pendingUnlockTitles
                     let extra = afterPending.dropFirst(beforePending.count)
-                    toastTitles.append(contentsOf: extra)
+                    notices.append(contentsOf: extra)
                     if challengeProgress.syncFromStats(
                         dealerClears: statsStore.dealerBankClearCount,
                         totalChipsWon: statsStore.totalChipsWon
                     ) {
-                        toastTitles.append("闯关·\(challengeProgress.currentStage.title)")
+                        notices.append("闯关·\(challengeProgress.currentStage.title)")
                     }
                 }
                 if playStyle == .entertainment, chipBank.sessionEndReason == .dealerBroke {
                     if entertainmentProgress.recordDealerCleared() {
-                        toastTitles.append(entertainmentProgress.currentStage.title)
+                        notices.append(entertainmentProgress.currentStage.title)
                     } else {
-                        toastTitles.append("娱乐·打穿庄家")
+                        notices.append("娱乐·打穿庄家")
                     }
                 }
                 let newlyProps = propStore.syncFromAchievements(statsStore.unlockedIDs)
@@ -724,14 +804,12 @@ private struct GameSessionView: View {
                     totalChipsWon: statsStore.totalChipsWon
                 )
                 if playStyle == .entertainment {
-                    toastTitles.append(contentsOf: newlyProps.map { "道具·\($0.title)" })
+                    notices.append(contentsOf: newlyProps.map { "道具·\($0.title)" })
                 } else if !newlyProps.isEmpty {
-                    toastTitles.append("道具已解锁（娱乐模式可用）")
+                    notices.append("道具已解锁（娱乐模式可用）")
                 }
-                toastTitles.append(contentsOf: newlyBacks.map { "卡背·\($0.title)" })
-                if !toastTitles.isEmpty {
-                    presentAchievementToast(toastTitles.joined(separator: " · "))
-                }
+                notices.append(contentsOf: newlyBacks.map { "卡背·\($0.title)" })
+                unlockNotices = notices
             } else if playStyle == .challenge, chipBank.sessionEndReason == .dealerBroke {
                 statsStore.recordDealerBankCleared()
                 _ = propStore.syncFromAchievements(statsStore.unlockedIDs)
@@ -739,7 +817,7 @@ private struct GameSessionView: View {
                     dealerClears: statsStore.dealerBankClearCount,
                     totalChipsWon: statsStore.totalChipsWon
                 ) {
-                    presentAchievementToast("闯关·\(challengeProgress.currentStage.title)")
+                    unlockNotices = ["闯关·\(challengeProgress.currentStage.title)"]
                 }
                 _ = cosmeticsStore.syncFromProgress(
                     unlockedLevel: challengeProgress.unlockedLevel,
@@ -748,7 +826,7 @@ private struct GameSessionView: View {
                 )
             } else if playStyle == .entertainment, chipBank.sessionEndReason == .dealerBroke {
                 if entertainmentProgress.recordDealerCleared() {
-                    presentAchievementToast(entertainmentProgress.currentStage.title)
+                    unlockNotices = [entertainmentProgress.currentStage.title]
                 }
             }
         } else if chipBank.activeBet > 0 {
@@ -782,32 +860,18 @@ private struct GameSessionView: View {
 
     private func continueAfterRound() {
         showRoundEndSheet = false
-        achievementToast = nil
+        roundEndPanelCollapsed = false
+        unlockNotices = []
         prepareBetDraft()
         showBetSheet = true
-    }
-
-    private func presentAchievementToast(_ text: String) {
-        achievementToastTask?.cancel()
-        withAnimation(.easeInOut(duration: 0.2)) {
-            achievementToast = "成就解锁：\(text)"
-        }
-        achievementToastTask = Task {
-            try? await Task.sleep(nanoseconds: 2_800_000_000)
-            guard !Task.isCancelled else { return }
-            await MainActor.run {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    achievementToast = nil
-                }
-            }
-        }
     }
 
     private func returnToWelcomeAfterSessionEnd() {
         showBetSheet = false
         showRoundEndSheet = false
+        roundEndPanelCollapsed = false
         game.cancelPendingWork()
-        achievementToastTask?.cancel()
+        unlockNotices = []
         chipBank.acknowledgeRestoreHint()
         chipBank.abandonSession()
         onEndSession(true)
@@ -816,8 +880,9 @@ private struct GameSessionView: View {
     private func abandonSessionToWelcome() {
         showBetSheet = false
         showRoundEndSheet = false
+        roundEndPanelCollapsed = false
         game.cancelPendingWork()
-        achievementToastTask?.cancel()
+        unlockNotices = []
         chipBank.refundActiveBet()
         chipBank.acknowledgeRestoreHint()
         chipBank.abandonSession()

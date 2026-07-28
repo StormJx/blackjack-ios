@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// 成就所属模式：挑战与练习进度 / 解锁相互隔离。
+/// 成就所属模式：挑战与娱乐进度 / 解锁相互隔离。
 enum AchievementScope: String, CaseIterable, Identifiable, Sendable {
     case challenge
     case practice
@@ -160,7 +160,7 @@ enum AchievementID: String, CaseIterable, Identifiable, Sendable {
     case allInWin15
     case allInWin30
 
-    // MARK: 练习 · 连胜 / 胜场 / 平局 / 稳健
+    // MARK: 娱乐 · 连胜 / 胜场 / 平局 / 稳健
     case practiceWinStreak5
     case practiceWinStreak10
     case practiceWins20
@@ -227,18 +227,18 @@ enum AchievementID: String, CaseIterable, Identifiable, Sendable {
         case .allInWin5: return "全下首胜"
         case .allInWin15: return "全下连捷"
         case .allInWin30: return "全下传说"
-        case .practiceWinStreak5: return "练习连胜·五"
-        case .practiceWinStreak10: return "练习连胜·十"
-        case .practiceWins20: return "练习胜场·二十"
-        case .practiceWins50: return "练习胜场·五十"
-        case .practiceWins100: return "练习胜场·一百"
-        case .practicePush10: return "练习平局·十"
-        case .practicePush20: return "练习平局·二十"
-        case .practicePush50: return "练习平局·五十"
-        case .practiceNoBust10: return "练习稳健·十"
-        case .practiceNoBust20: return "练习稳健·二十"
-        case .practiceFiveCard: return "练习五龙"
-        case .practiceNaturalBJ: return "练习极速 BJ"
+        case .practiceWinStreak5: return "娱乐连胜·五"
+        case .practiceWinStreak10: return "娱乐连胜·十"
+        case .practiceWins20: return "娱乐胜场·二十"
+        case .practiceWins50: return "娱乐胜场·五十"
+        case .practiceWins100: return "娱乐胜场·一百"
+        case .practicePush10: return "娱乐平局·十"
+        case .practicePush20: return "娱乐平局·二十"
+        case .practicePush50: return "娱乐平局·五十"
+        case .practiceNoBust10: return "娱乐稳健·十"
+        case .practiceNoBust20: return "娱乐稳健·二十"
+        case .practiceFiveCard: return "娱乐五龙"
+        case .practiceNaturalBJ: return "娱乐极速 BJ"
         }
     }
 

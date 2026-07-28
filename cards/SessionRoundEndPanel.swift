@@ -2,8 +2,7 @@
 //  SessionRoundEndPanel.swift
 //  cards
 //
-//  D10 / E1：局末结果（挑战含筹码；快速含会话统计）。
-//  P8-1：可滚动 + VoiceOver + 大字体下主按钮可达。
+//  D10 / E1 / UX3 / UX5 / UX7：局末结果、解锁卡片、娱乐会话统计、可收起看牌面。
 //
 
 import SwiftUI
@@ -18,12 +17,14 @@ struct SessionRoundEndPanel: View {
     let balance: Int
     let dealerBank: Int
     let shoeStatusLine: String
-    /// 快速模式本会话统计；挑战模式传 nil。
+    /// 娱乐模式本会话胜负统计；闯关传 nil。
     let fastStats: FastSessionStats?
-    /// 成就轻提示（不挡操作）。
-    let achievementToast: String?
+    /// UX3：本局解锁队列（成就 / 道具 / 卡背等短标题）。
+    let unlockNotices: [String]
     let onReturnHome: () -> Void
     let onContinue: () -> Void
+    /// UX7：暂时收起面板查看牌面。
+    var onPeekTable: (() -> Void)? = nil
 
     @State private var settlementPulse = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -43,9 +44,21 @@ struct SessionRoundEndPanel: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(spacing: 12) {
-                    Text(titleText)
-                        .font(.title2.weight(.semibold))
-                        .accessibilityAddTraits(.isHeader)
+                    HStack {
+                        Text(titleText)
+                            .font(.title2.weight(.semibold))
+                            .accessibilityAddTraits(.isHeader)
+                        Spacer(minLength: 0)
+                        if onPeekTable != nil, !isSessionOver {
+                            Button("查看牌面") {
+                                GameFeedback.shared.buttonTap()
+                                onPeekTable?()
+                            }
+                            .font(.subheadline.weight(.semibold))
+                            .accessibilityHint("暂时收起结果，查看桌上牌面")
+                        }
+                    }
+
                     if let reason = sessionEndReason, isSessionOver {
                         Text(reason.title)
                             .font(.title3.weight(.bold))
@@ -63,24 +76,21 @@ struct SessionRoundEndPanel: View {
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityLabel("本局结果：\(outcomeMessage)")
 
-                    if let achievementToast {
-                        Text(achievementToast)
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.orange)
-                            .multilineTextAlignment(.center)
-                            .transition(.opacity.combined(with: .move(edge: .top)))
-                            .accessibilityLabel(achievementToast)
+                    if !unlockNotices.isEmpty {
+                        unlockCardsBlock
                     }
 
                     VStack(spacing: 8) {
                         if playStyle.showsChips {
                             challengeSettlementBlock
-                        } else if let fastStats {
+                        }
+                        if let fastStats {
                             Text(fastStats.summaryLine)
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(.secondary)
                                 .monospacedDigit()
                                 .multilineTextAlignment(.center)
+                                .accessibilityLabel(fastStats.summaryLine)
                         }
                         Text(shoeStatusLine)
                             .font(.caption)
@@ -148,6 +158,40 @@ struct SessionRoundEndPanel: View {
             return "本局游戏结束"
         }
         return "本局结束"
+    }
+
+    private var unlockCardsBlock: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("本局解锁")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+            ForEach(Array(unlockNotices.enumerated()), id: \.offset) { _, title in
+                HStack(alignment: .top, spacing: 8) {
+                    Image(systemName: "checkmark.seal.fill")
+                        .foregroundStyle(.orange)
+                        .font(.subheadline)
+                    Text(title)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.primary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: 0)
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
+                .background(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(Color.orange.opacity(0.12))
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .strokeBorder(Color.orange.opacity(0.22), lineWidth: 1)
+                )
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("解锁：\(title)")
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .transition(.opacity.combined(with: .move(edge: .top)))
     }
 
     @ViewBuilder

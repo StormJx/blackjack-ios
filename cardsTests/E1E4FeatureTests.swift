@@ -48,6 +48,7 @@ struct E1E4FeatureTests {
         settings.preDealAllInUnlockRounds = 3
         settings.soundEnabled = false
         settings.hapticsEnabled = false
+        settings.confirmMidHandAllIn = false
 
         let reloaded = AppSettings(defaults: defaults)
         #expect(reloaded.defaultPracticeMode == .shoe6)
@@ -55,6 +56,7 @@ struct E1E4FeatureTests {
         #expect(reloaded.preDealAllInUnlockRounds == 3)
         #expect(reloaded.soundEnabled == false)
         #expect(reloaded.hapticsEnabled == false)
+        #expect(reloaded.confirmMidHandAllIn == false)
         #expect(reloaded.tableLimitPreset == .standard)
         #expect(reloaded.tableLimitsSummary.contains("100"))
 
@@ -747,6 +749,55 @@ struct E1E4FeatureTests {
                 "Missing bundled sound: \(sound.rawValue) under Sounds/"
             )
         }
+    }
+
+    // MARK: - UX1–UX8
+
+    @Test func welcomeSubtitlesAreShortOneLiners() {
+        #expect(PlayStyle.challenge.welcomeSubtitle.count <= 24)
+        #expect(PlayStyle.entertainment.welcomeSubtitle.count <= 24)
+        #expect(!PlayStyle.challenge.welcomeSubtitle.contains("三档"))
+    }
+
+    @Test func entertainmentAchievementTitlesUseEntertainmentWording() {
+        #expect(AchievementID.practiceWinStreak5.title.hasPrefix("娱乐"))
+        #expect(AchievementID.practiceWins20.title.hasPrefix("娱乐"))
+        #expect(AchievementID.practiceFiveCard.title.hasPrefix("娱乐"))
+        #expect(AchievementID.practiceNaturalBJ.title.hasPrefix("娱乐"))
+        #expect(!AchievementID.practiceWins50.title.contains("练习"))
+    }
+
+    @Test func challengeUnlockedPropsShowCrossModeHint() {
+        #expect(PropID.midHandAllIn.unlocksViaChallenge)
+        #expect(PropID.dealerSoft17Hit.unlocksViaChallenge)
+        #expect(PropID.peekHole.unlocksViaChallenge == false)
+    }
+
+    @Test @MainActor
+    func propGameplayGuideAcknowledgedOnce() {
+        let suiteName = "cards.tests.props.guide.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let props = PropStore(defaults: defaults)
+        #expect(props.needsGameplayPropsGuide == false)
+        #expect(props.unlock(.peekHole))
+        #expect(props.needsGameplayPropsGuide)
+        props.acknowledgeGameplayPropsGuide()
+        #expect(props.needsGameplayPropsGuide == false)
+
+        let reloaded = PropStore(defaults: defaults)
+        #expect(reloaded.owns(.peekHole))
+        #expect(reloaded.needsGameplayPropsGuide == false)
+    }
+
+    @Test @MainActor
+    func confirmMidHandAllInDefaultsToTrue() {
+        let suiteName = "cards.tests.settings.allin.confirm.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let settings = AppSettings(defaults: defaults)
+        #expect(settings.confirmMidHandAllIn)
     }
 
     // MARK: - Helpers

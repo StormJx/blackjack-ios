@@ -123,18 +123,18 @@
 
 | ID | 标题 | 条件 |
 |----|------|------|
-| `practiceWinStreak5` | 练习连胜·五 | 最长连胜 ≥5 |
-| `practiceWinStreak10` | 练习连胜·十 | ≥10 |
-| `practiceWins20` | 练习胜场·二十 | 累计胜 20 |
-| `practiceWins50` | 练习胜场·五十 | 50 |
-| `practiceWins100` | 练习胜场·一百 | 100 |
-| `practicePush10` | 练习平局·十 | 累计平局 10 |
-| `practicePush20` | 练习平局·二十 | 20 |
-| `practicePush50` | 练习平局·五十 | 50 |
-| `practiceNoBust10` | 练习稳健·十 | 最长连续未爆 ≥10 |
-| `practiceNoBust20` | 练习稳健·二十 | ≥20 |
-| `practiceFiveCard` | 练习五龙 | 单局 5 张未爆 |
-| `practiceNaturalBJ` | 练习极速 BJ | 开局天然 BJ |
+| `practiceWinStreak5` | 娱乐连胜·五 | 最长连胜 ≥5 |
+| `practiceWinStreak10` | 娱乐连胜·十 | ≥10 |
+| `practiceWins20` | 娱乐胜场·二十 | 累计胜 20 |
+| `practiceWins50` | 娱乐胜场·五十 | 50 |
+| `practiceWins100` | 娱乐胜场·一百 | 100 |
+| `practicePush10` | 娱乐平局·十 | 累计平局 10 |
+| `practicePush20` | 娱乐平局·二十 | 20 |
+| `practicePush50` | 娱乐平局·五十 | 50 |
+| `practiceNoBust10` | 娱乐稳健·十 | 最长连续未爆 ≥10 |
+| `practiceNoBust20` | 娱乐稳健·二十 | ≥20 |
+| `practiceFiveCard` | 娱乐五龙 | 单局 5 张未爆 |
+| `practiceNaturalBJ` | 娱乐极速 BJ | 开局天然 BJ |
 
 ---
 
@@ -159,3 +159,4 @@
 | 2026-07-23 | `reshuffleDealerCard`：成就 `practiceWins50` → 永久解锁；仅娱乐接线 |
 | 2026-07-27 | 换庄家牌堆边界：穿透净不变 + 非空鞋不原样抽回 |
 | 2026-07-27 | F2：战绩页展示关/阶进度；成就手册注明进度入口 |
+| 2026-07-28 | UX8：娱乐成就标题「练习」→「娱乐」；道具区仅娱乐 tab（UX4） |

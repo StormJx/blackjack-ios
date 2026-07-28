@@ -2,7 +2,7 @@
 //  AchievementsView.swift
 //  cards
 //
-//  成就页签：挑战 / 练习分栏，展示已解锁与未解锁；挑战栏含道具。
+//  成就页签：闯关 / 娱乐分栏；道具区仅娱乐 tab（UX4）。
 //
 
 import SwiftUI
@@ -43,14 +43,24 @@ struct AchievementsView: View {
                         Text("战绩摘要")
                     }
 
-                    Section {
-                        ForEach(PropID.allCases) { prop in
-                            propRow(prop)
+                    if scope == .practice {
+                        Section {
+                            ForEach(PropID.allCases) { prop in
+                                propRow(prop)
+                            }
+                        } header: {
+                            Text("道具")
+                        } footer: {
+                            Text("玩法道具仅「娱乐模式」对局可用。部分道具需先在闯关解锁成就。卡背在设置页选用。")
                         }
-                    } header: {
-                        Text("道具")
-                    } footer: {
-                        Text("玩法道具仅「娱乐模式」可用；闯关只用规则内筹码。卡背在设置页选用。")
+                    } else {
+                        Section {
+                            Text("玩法道具请切换到「娱乐」页签查看；闯关对局中不可使用道具。")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        } header: {
+                            Text("道具")
+                        }
                     }
 
                     Section {
@@ -86,9 +96,22 @@ struct AchievementsView: View {
                 .foregroundStyle(owned ? .orange : .secondary)
                 .font(.title3)
             VStack(alignment: .leading, spacing: 4) {
-                Text(id.title)
-                    .font(.headline)
-                    .foregroundStyle(owned ? .primary : .secondary)
+                HStack(spacing: 6) {
+                    Text(id.title)
+                        .font(.headline)
+                        .foregroundStyle(owned ? .primary : .secondary)
+                    if !owned, id.unlocksViaChallenge {
+                        Text("去闯关解锁")
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(.orange)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(
+                                Capsule(style: .continuous)
+                                    .fill(Color.orange.opacity(0.14))
+                            )
+                    }
+                }
                 Text(id.detail)
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -96,6 +119,10 @@ struct AchievementsView: View {
                     Text("已永久解锁 · 仅娱乐模式可用")
                         .font(.caption2)
                         .foregroundStyle(.green)
+                } else if id.unlocksViaChallenge {
+                    Text("去闯关解锁 · \(id.unlockHint)")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
                 } else {
                     Text(id.unlockHint)
                         .font(.caption2)
@@ -106,7 +133,9 @@ struct AchievementsView: View {
         }
         .padding(.vertical, 2)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(id.title)，\(owned ? "已解锁" : "未解锁")")
+        .accessibilityLabel(
+            "\(id.title)，\(owned ? "已解锁" : (id.unlocksViaChallenge ? "未解锁，去闯关解锁" : "未解锁"))"
+        )
     }
 
     private func achievementRow(_ id: AchievementID) -> some View {

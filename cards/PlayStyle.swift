@@ -27,9 +27,9 @@ enum PlayStyle: String, CaseIterable, Identifiable, Sendable {
     var welcomeSubtitle: String {
         switch self {
         case .challenge:
-            return ChipRules.challengeWelcomeSummary
+            return "打穿庄家升关 · 玩法道具禁用"
         case .entertainment:
-            return "道具可用；打穿庄家升阶（起始筹码与注码随阶提升）；固定真实切牌；可「同上局」下注。"
+            return "道具可用 · 独立升阶与注码"
         }
     }
 

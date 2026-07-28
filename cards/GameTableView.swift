@@ -225,41 +225,53 @@ struct GameTableView: View {
     private var statusSection: some View {
         // 局末弹窗已展示完整结果时，牌桌结果区只保留弱提示，避免双份重复。
         let sheetOwnsResult = game.phase == .finished || showRoundEndPanel
+        let peeking = game.isPeekingHoleCard
         let propHint = game.propActionHint
         let hasOutcome = game.lastOutcome != nil && !sheetOwnsResult
         let color = game.lastOutcome?.statusColor ?? .secondary
         let icon = game.lastOutcome?.statusIconName ?? "hourglass.circle.fill"
         let statusText: String = {
+            if peeking { return "窥视暗牌中…" }
             if sheetOwnsResult { return "本局已结束" }
             if hasOutcome { return game.outcomeMessage }
             if let propHint { return propHint }
             return "等待本局结果"
         }()
         let statusColor: Color = {
+            if peeking { return .orange }
             if hasOutcome { return color }
             if propHint != nil { return .orange }
             return .secondary
         }()
-        return HStack(spacing: 8) {
-            Image(systemName: sheetOwnsResult ? "checkmark.circle" : (propHint != nil ? "arrow.triangle.2.circlepath" : icon))
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(statusColor)
-            Text(statusText)
-                .font(sheetOwnsResult ? .subheadline.weight(.medium) : .title3.weight(.semibold))
-                .foregroundStyle(statusColor)
-                .multilineTextAlignment(.center)
-                .lineLimit(2)
+        return VStack(spacing: 8) {
+            HStack(spacing: 8) {
+                Image(systemName: peeking
+                      ? "eye.fill"
+                      : (sheetOwnsResult ? "checkmark.circle" : (propHint != nil ? "arrow.triangle.2.circlepath" : icon)))
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(statusColor)
+                Text(statusText)
+                    .font(sheetOwnsResult ? .subheadline.weight(.medium) : .title3.weight(.semibold))
+                    .foregroundStyle(statusColor)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+            }
+            if peeking {
+                PeekCountdownBar()
+                    .frame(height: 4)
+                    .padding(.horizontal, 4)
+            }
         }
         .frame(maxWidth: .infinity, minHeight: 36)
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
         .background(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(statusColor.opacity(hasOutcome || propHint != nil ? 0.14 : 0.06))
+                .fill(statusColor.opacity(hasOutcome || propHint != nil || peeking ? 0.14 : 0.06))
         )
         .overlay(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .strokeBorder(statusColor.opacity(hasOutcome || propHint != nil ? 0.28 : 0.08), lineWidth: 1)
+                .strokeBorder(statusColor.opacity(hasOutcome || propHint != nil || peeking ? 0.28 : 0.08), lineWidth: 1)
         )
         .accessibilityElement(children: .combine)
         .accessibilityLabel(statusText)
@@ -441,5 +453,34 @@ struct GameTableView: View {
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
             )
+    }
+}
+
+/// UX6：窥视约 1 秒倒计时条（与 BlackjackGame.delayPeekHole 对齐）。
+private struct PeekCountdownBar: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var progress: CGFloat = 1
+
+    var body: some View {
+        GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                Capsule(style: .continuous)
+                    .fill(Color.orange.opacity(0.18))
+                Capsule(style: .continuous)
+                    .fill(Color.orange.opacity(0.85))
+                    .frame(width: max(4, geo.size.width * progress))
+            }
+        }
+        .onAppear {
+            progress = 1
+            if reduceMotion {
+                progress = 0
+                return
+            }
+            withAnimation(.linear(duration: 1.0)) {
+                progress = 0
+            }
+        }
+        .accessibilityHidden(true)
     }
 }

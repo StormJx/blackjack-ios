@@ -63,6 +63,14 @@ enum PropID: String, CaseIterable, Identifiable {
         }
     }
 
+    /// 是否主要靠闯关成就解锁（娱乐页签展示「去闯关解锁」）。
+    var unlocksViaChallenge: Bool {
+        switch self {
+        case .midHandAllIn, .dealerSoft17Hit: return true
+        case .peekHole, .redrawOne, .reshuffleDealerCard: return false
+        }
+    }
+
     /// 成就 → 道具兑换映射。
     var unlockAchievement: AchievementID {
         switch self {
@@ -79,22 +87,37 @@ enum PropID: String, CaseIterable, Identifiable {
 @MainActor
 final class PropStore: ObservableObject {
     @Published private(set) var ownedIDs: Set<PropID>
+    /// UX6：是否已看过娱乐道具首次引导。
+    @Published private(set) var hasSeenGameplayPropsGuide: Bool
 
     private let defaults: UserDefaults
 
     private enum Keys {
         static let owned = "props.owned"
+        static let propsGuide = "props.didShowGameplayGuide"
     }
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         let raw = defaults.stringArray(forKey: Keys.owned) ?? []
         ownedIDs = Set(raw.compactMap(PropID.init(rawValue:)))
+        hasSeenGameplayPropsGuide = defaults.bool(forKey: Keys.propsGuide)
         _ = syncFromAchievementRawValues(defaults.stringArray(forKey: "stats.unlockedAchievements") ?? [])
     }
 
     func owns(_ id: PropID) -> Bool {
         ownedIDs.contains(id)
+    }
+
+    /// 娱乐会话开局：已有道具且未看过引导时提示。
+    var needsGameplayPropsGuide: Bool {
+        !hasSeenGameplayPropsGuide && !ownedIDs.isEmpty
+    }
+
+    func acknowledgeGameplayPropsGuide() {
+        guard !hasSeenGameplayPropsGuide else { return }
+        hasSeenGameplayPropsGuide = true
+        defaults.set(true, forKey: Keys.propsGuide)
     }
 
     /// 是否可在当前玩法下使用（持有 + 模式允许）。
