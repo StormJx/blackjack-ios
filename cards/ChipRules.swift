@@ -79,9 +79,9 @@ enum ChipRules {
     /// 默认全下在发牌前完成，故天然 BJ 仍可吃到开局全下；对局中见牌后再全下由 `PropStore.owns(.midHandAllIn)` 门控。
     static let naturalBlackjackResolvesBeforePlayerTurn = true
 
-    /// 杀进程恢复后下注页提示（未结算注已退回，双方进度保留）。
+    /// 杀进程恢复后下注页提示（未结算注已退回；筹码与全下解锁局数保留）。
     static let restoreAfterInterruptHint =
-        "上次对局未完成，未结算注码已退回；双方筹码进度已保留。"
+        "上次对局未完成，未结算注码已退回；双方筹码与本会话全下解锁进度已保留。"
 
     /// 主动退出确认说明（与杀进程自动恢复相对）。
     static let abandonSessionConfirmDetail =
@@ -111,6 +111,9 @@ enum ChipRules {
 
     /// UserDefaults 键：尚未结算的本局注码（用于杀进程 / 异常退出后退注）。
     static let activeBetStorageKey = "chipBank.activeBet"
+
+    /// UserDefaults 键：本会话已完成局数（开局全下解锁；与筹码同 suite 持久化）。
+    static let sessionRoundsStorageKey = "chipBank.sessionRoundsCompleted"
 
     /// 一副牌残局「强制全下」强调样式是否应出现（开局下注页；道具开启后亦可用于对局中）。
     /// - Note: `willReshuffle` 为 true 时本局会先重洗，剩余张数不再是开局牌况，故不展示。

@@ -447,6 +447,48 @@ struct ChipSettlementTests {
     }
 
     @MainActor
+    @Test func sessionRoundsCompletedPersistsAcrossRelaunch() {
+        let defaults = Self.makeEphemeralDefaults()
+        let bank = ChipBank(defaults: defaults)
+        #expect(bank.sessionRoundsCompleted == 0)
+        bank.recordRoundCompleted()
+        bank.recordRoundCompleted()
+        #expect(bank.sessionRoundsCompleted == 2)
+        #expect(defaults.integer(forKey: ChipRules.sessionRoundsStorageKey) == 2)
+
+        let restored = ChipBank(defaults: defaults)
+        #expect(restored.sessionRoundsCompleted == 2)
+        #expect(ChipRules.isPreDealAllInEnabled(
+            balance: restored.balance,
+            sessionRoundsCompleted: restored.sessionRoundsCompleted,
+            draftBet: 0,
+            unlockRounds: 2
+        ))
+    }
+
+    @MainActor
+    @Test func sessionRoundsSurviveOrphanBetRestoreAndClearOnAbandon() {
+        let defaults = Self.makeEphemeralDefaults()
+        defaults.set(500, forKey: ChipRules.balanceStorageKey)
+        defaults.set(ChipRules.dealerStartingBank, forKey: ChipRules.dealerBankStorageKey)
+        defaults.set(200, forKey: ChipRules.activeBetStorageKey)
+        defaults.set(4, forKey: ChipRules.sessionRoundsStorageKey)
+
+        let bank = ChipBank(defaults: defaults)
+        #expect(bank.didRestoreAfterInterrupt)
+        #expect(bank.balance == 700)
+        #expect(bank.sessionRoundsCompleted == 4)
+        #expect(ChipRules.restoreAfterInterruptHint.contains("全下解锁"))
+
+        bank.abandonSession()
+        #expect(bank.sessionRoundsCompleted == 0)
+        #expect(defaults.object(forKey: ChipRules.sessionRoundsStorageKey) == nil)
+
+        let fresh = ChipBank(defaults: defaults)
+        #expect(fresh.sessionRoundsCompleted == 0)
+    }
+
+    @MainActor
     @Test func placeBetAcceptsAllInOddBalance() {
         // UI 仅三档单选；全下仍可通过 placeBet(全部余额) 下非整档注码。
         let defaults = Self.makeEphemeralDefaults()

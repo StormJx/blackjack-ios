@@ -4,7 +4,7 @@
 > 成就：`docs/ACHIEVEMENTS.md` · 外观道具：`docs/COSMETICS_AND_PROPS.md`  
 > P8：`docs/P8_ORIENTATION_AND_A11Y.md` · 评审批次 backlog：`docs/ENGINEERING_REVIEW_BACKLOG.md`
 
-**基线：** `main` @ `d443bfa`（「修复换庄家牌堆穿透边界，并在战绩页展示关卡/阶梯进度。」；功能主体含此前 `c670180`；Tag `v1.10.0` 为上一正式里程碑）  
+**基线：** `main` @ `3d575d6`（检查点同步至 `d443bfa`；本批 Q1/P8-1/Q2 待推送）  
 **仓库：** https://github.com/StormJx/blackjack-ios  
 **平台：** iOS 17.0+；庄家小于 17 要牌、大于等于 17 停（软 17 同停）；音效基名 deal/flip/shuffle/win/lose/push
 
@@ -42,8 +42,13 @@
 - [x] `reshuffleDealerCard`：解锁 `practiceWins50`；每局限 1；随机含暗牌；窥视中禁用；牌面脉冲 +「已换庄家一张」；`shuffleHint`；**穿透净不变**；非空鞋不原样抽回
 - [x] F10：六基名 wav 为 44.1kHz 高质量程序合成（**仍非录音正片**；可替换 `Sounds/`）
 
+### 工程 / 无障碍（本批）
+- [x] **Q1**：`ChipBank.sessionRoundsCompleted` 与筹码同 suite 持久化；杀进程后全下解锁进度保留；恢复提示文案同步；主动退出清空；单测
+- [x] **P8-1** 无障碍第一切片：下注/局末可滚动 + 粘性主按钮；VoiceOver（点数/余额/注码/结果/要牌停牌/道具具体禁用原因）；欢迎标题动态字体；洗牌页尊重减弱动态效果；设置页去开发者音效文案
+- [x] **Q2**：`GameTiming` / `GameFeedbackServing` 注入；`SessionConfiguration`；`cancelPendingWork()`；天然 BJ / hit 爆牌 / 软 17 默认停与道具要 / 牌尽 fallback 单测
+
 ### 规划入库（效果未接线）
-- [x] P8 横竖屏 / 无障碍深化 → 见 `docs/P8_ORIENTATION_AND_A11Y.md`（第一切片清单已写）
+- [x] P8 横竖屏 → 见 `docs/P8_ORIENTATION_AND_A11Y.md`（横屏仍后置）
 - [x] 工程评审批次 backlog → `docs/ENGINEERING_REVIEW_BACKLOG.md`
 
 ---
@@ -52,9 +57,6 @@
 
 | 编号 | 内容 | 备注 |
 |------|------|------|
-| Q1 | 杀进程恢复与「本会话全下解锁局数」语义 | 见 backlog |
-| P8-1 | 无障碍第一切片 | 见 P8 文档；横屏后置 |
-| Q2 | 状态机可测化 + 核心单测 | 进入 P6 前建议完成 |
 | UX1–UX9 | 欢迎副文案、全下确认、成就 toast、道具分栏等 | 见 backlog |
 | P8 横竖屏 | 允许横屏与布局 | 见 P8 文档 |
 | F10 正片录音 | 录音级素材替换 | 基名不变 |
@@ -68,9 +70,9 @@
 
 ## 工程要点
 
-- `PlayStyle` / `PropStore` / `ChallengeProgress` / `EntertainmentProgress` / `CosmeticsStore` / `TableLimitPreset` / `CutCardMode` / `ActivePreDealAllInUnlock` / `HelpView` / `StatsView`
-- `ChipBank` 支持会话起始筹码；退出清空持久化键
-- `BlackjackGame` 只发牌；筹码 `ChipBank`；成就 `StatsStore`
+- `PlayStyle` / `PropStore` / `ChallengeProgress` / `EntertainmentProgress` / `CosmeticsStore` / `TableLimitPreset` / `CutCardMode` / `ActivePreDealAllInUnlock` / `SessionConfiguration` / `HelpView` / `StatsView`
+- `ChipBank`：会话起始筹码 + **本会话全下解锁局数**；退出清空持久化键
+- `BlackjackGame`：可注入 `GameTiming` / `GameFeedbackServing`；退出调用 `cancelPendingWork()`
 - `Deck.returnCardToShoe`：回退 `dealtCount`；非空鞋禁止立即原样抽回
 - 推送前：`./scripts/check-before-push.sh`；勿提交 `VERSION_ROADMAP.txt` / `.env` / 密钥
 
@@ -78,13 +80,11 @@
 
 ## 建议下一步（按优先级）
 
-1. **Q1**：杀进程恢复与全下解锁局数语义  
-2. **P8-1**：无障碍第一切片（见 P8 文档）  
-3. **Q2**：`BlackjackGame` 可测化 + 天然 BJ / 庄家回合 / hit-stand 单测  
-4. 讨论 **P6「加倍」** 规则后单切片；完整分牌 / C5 / F10 正片后置  
-5. 任选 UX1–UX9（见 `docs/ENGINEERING_REVIEW_BACKLOG.md`）
+1. 讨论 **P6「加倍」** 规则后单切片；完整分牌 / C5 / F10 正片后置  
+2. 任选 UX1–UX9（见 `docs/ENGINEERING_REVIEW_BACKLOG.md`）  
+3. P8 横竖屏（第一切片已完成后可评估）
 
-**本批已推送：** `d443bfa`（换庄家牌堆边界 + F2 战绩进度 + 评审 backlog / P8 第一切片文档）。
+**本批代码（待 commit/push）：** Q1 全下解锁局数持久化 + P8-1 无障碍第一切片 + Q2 状态机可测化与核心单测。
 
 ---
 
@@ -99,4 +99,5 @@
 | 2026-07-25 | P5 切牌三态 + F1 全下解锁可配置 + F10 44.1kHz 合成音增强 |
 | 2026-07-27 | 功能已推送 `c670180`；检查点基线同步 |
 | 2026-07-27 | 换庄家牌堆边界；F2 战绩关/阶进度；新增 `ENGINEERING_REVIEW_BACKLOG`；P8 第一切片清单 |
-| 2026-07-28 | 已推送 `d443bfa`；检查点基线同步 |
+| 2026-07-28 | 已推送 `d443bfa`；检查点基线同步 `3d575d6` |
+| 2026-07-28 | Q1 / P8-1 / Q2 落地（待推送） |

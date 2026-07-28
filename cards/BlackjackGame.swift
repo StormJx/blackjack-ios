@@ -67,13 +67,22 @@ final class BlackjackGame: ObservableObject {
     private var hitFrom20To21 = false
 
     private var deck: Deck
+    private let timing: any GameTiming
+    private let feedback: any GameFeedbackServing
     private var peekTask: Task<Void, Never>?
     private var propHintTask: Task<Void, Never>?
     private var reshufflePulseTask: Task<Void, Never>?
 
-    init(practiceMode: PracticeMode = .singleDeck, cutCardMode: CutCardMode = .real) {
+    init(
+        practiceMode: PracticeMode = .singleDeck,
+        cutCardMode: CutCardMode = .real,
+        timing: (any GameTiming)? = nil,
+        feedback: (any GameFeedbackServing)? = nil
+    ) {
         self.practiceMode = practiceMode
         self.cutCardMode = cutCardMode
+        self.timing = timing ?? LiveGameTiming()
+        self.feedback = feedback ?? GameFeedback.shared
         var initialDeck = Deck(
             numberOfDecks: practiceMode.numberOfDecks,
             cutCardMode: cutCardMode
@@ -154,6 +163,43 @@ final class BlackjackGame: ObservableObject {
             && dealerCards.count >= 2
     }
 
+    /// VoiceOver：窥视不可用时的具体原因。
+    var peekHoleDisabledReason: String? {
+        guard phase == .playerTurn else { return "仅玩家回合可用" }
+        if isAnimating { return "发牌动画进行中" }
+        if hasPeekedHoleThisRound { return "本局已用过窥视" }
+        if isPeekingHoleCard { return "窥视进行中" }
+        if dealerCards.count < 2 { return "庄家牌未齐" }
+        return nil
+    }
+
+    /// VoiceOver：换一张不可用时的具体原因。
+    var redrawOneDisabledReason: String? {
+        guard phase == .playerTurn else { return "仅玩家回合可用" }
+        if isAnimating { return "发牌动画进行中" }
+        if hasRedrawnThisRound { return "本局已用过换一张" }
+        if playerCards.count <= 2 { return "需先要牌后再换" }
+        return nil
+    }
+
+    /// VoiceOver：换庄家不可用时的具体原因。
+    var reshuffleDealerDisabledReason: String? {
+        guard phase == .playerTurn else { return "仅玩家回合可用" }
+        if isAnimating { return "发牌动画进行中" }
+        if isPeekingHoleCard { return "窥视中不可换庄家牌" }
+        if hasReshuffledDealerThisRound { return "本局已用过换庄家" }
+        if dealerCards.count < 2 { return "庄家牌未齐" }
+        return nil
+    }
+
+    /// VoiceOver：软 17 要牌不可用时的具体原因。
+    var soft17HitDisabledReason: String? {
+        guard phase == .playerTurn else { return "仅玩家回合可用" }
+        if isAnimating { return "发牌动画进行中" }
+        if dealerHitsSoft17ThisRound { return "本局已开启" }
+        return nil
+    }
+
     /// 牌桌副标题：共 N 张 + 剩余张数。
     var shoeStatusLine: String {
         "共 \(totalCardCount) 张，剩余 \(remainingCardCount) 张"
@@ -182,6 +228,19 @@ final class BlackjackGame: ObservableObject {
         return false
     }
 
+    /// 退出会话时取消窥视 / 提示 / 脉冲等挂起任务。
+    func cancelPendingWork() {
+        peekTask?.cancel()
+        peekTask = nil
+        propHintTask?.cancel()
+        propHintTask = nil
+        reshufflePulseTask?.cancel()
+        reshufflePulseTask = nil
+        isPeekingHoleCard = false
+        reshufflePulseIndex = nil
+        propActionHint = nil
+    }
+
     func startNewRound() async {
         guard !isAnimating else { return }
         isAnimating = true
@@ -197,7 +256,7 @@ final class BlackjackGame: ObservableObject {
                 handAreaOpacity = 0
                 handAreaScale = 0.9
             }
-            try? await Task.sleep(nanoseconds: delayClearFadeOut)
+            await timing.sleep(nanoseconds: delayClearFadeOut)
         }
 
         outcomeMessage = ""
@@ -215,7 +274,7 @@ final class BlackjackGame: ObservableObject {
                 handAreaOpacity = 1
                 handAreaScale = 1
             }
-            try? await Task.sleep(nanoseconds: delayClearFadeIn)
+            await timing.sleep(nanoseconds: delayClearFadeIn)
         }
 
         if deck.needsReshuffleBeforeNextRound {
@@ -228,38 +287,38 @@ final class BlackjackGame: ObservableObject {
         guard let c1 = deck.draw(), let c2 = deck.draw(), let c3 = deck.draw(), let c4 = deck.draw() else {
             outcomeMessage = "洗牌异常，请重试"
             phase = .finished
-            GameFeedback.shared.notifyError()
+            feedback.notifyError()
             isAnimating = false
             publishDeckCounts()
             return
         }
         publishDeckCounts()
 
-        try? await Task.sleep(nanoseconds: delayInitialDeal)
+        await timing.sleep(nanoseconds: delayInitialDeal)
 
         withAnimation(cardDealAnimation) {
             playerCards = [c1]
         }
-        GameFeedback.shared.cardDealt()
-        try? await Task.sleep(nanoseconds: delayAfterDealStep)
+        feedback.cardDealt()
+        await timing.sleep(nanoseconds: delayAfterDealStep)
 
         withAnimation(cardDealAnimation) {
             dealerCards = [c2]
         }
-        GameFeedback.shared.cardDealt()
-        try? await Task.sleep(nanoseconds: delayAfterDealStep)
+        feedback.cardDealt()
+        await timing.sleep(nanoseconds: delayAfterDealStep)
 
         withAnimation(cardDealAnimation) {
             playerCards = [c1, c3]
         }
-        GameFeedback.shared.cardDealt()
-        try? await Task.sleep(nanoseconds: delayAfterDealStep)
+        feedback.cardDealt()
+        await timing.sleep(nanoseconds: delayAfterDealStep)
 
         withAnimation(cardDealAnimation) {
             dealerCards = [c2, c4]
         }
-        GameFeedback.shared.cardDealt()
-        try? await Task.sleep(nanoseconds: delayAfterDealStep)
+        feedback.cardDealt()
+        await timing.sleep(nanoseconds: delayAfterDealStep)
 
         let playerHand = Hand(cards: playerCards)
         // 天然黑杰克见牌即结算，不进入玩家回合。默认全下在发牌前，故仍可吃到开局全下。
@@ -281,7 +340,7 @@ final class BlackjackGame: ObservableObject {
             if phase == .playerTurn { isAnimating = false }
         }
 
-        try? await Task.sleep(nanoseconds: delayAfterHit)
+        await timing.sleep(nanoseconds: delayAfterHit)
 
         let beforeBest = Hand(cards: playerCards).bestValue
 
@@ -296,8 +355,8 @@ final class BlackjackGame: ObservableObject {
         withAnimation(cardDealAnimation) {
             playerCards.append(card)
         }
-        GameFeedback.shared.cardDealt()
-        try? await Task.sleep(nanoseconds: delayAfterHit)
+        feedback.cardDealt()
+        await timing.sleep(nanoseconds: delayAfterHit)
 
         let hand = Hand(cards: playerCards)
         if hand.isBusted {
@@ -343,14 +402,13 @@ final class BlackjackGame: ObservableObject {
         guard canPeekHoleCard else { return }
         hasPeekedHoleThisRound = true
         isPeekingHoleCard = true
-        GameFeedback.shared.holeRevealed()
+        feedback.holeRevealed()
         peekTask?.cancel()
-        peekTask = Task {
-            try? await Task.sleep(nanoseconds: delayPeekHole)
+        peekTask = Task { [weak self] in
+            guard let self else { return }
+            await self.timing.sleep(nanoseconds: self.delayPeekHole)
             guard !Task.isCancelled else { return }
-            await MainActor.run {
-                isPeekingHoleCard = false
-            }
+            self.isPeekingHoleCard = false
         }
         await peekTask?.value
     }
@@ -377,8 +435,8 @@ final class BlackjackGame: ObservableObject {
         withAnimation(cardDealAnimation) {
             playerCards.append(card)
         }
-        GameFeedback.shared.cardDealt()
-        try? await Task.sleep(nanoseconds: delayAfterHit)
+        feedback.cardDealt()
+        await timing.sleep(nanoseconds: delayAfterHit)
 
         let hand = Hand(cards: playerCards)
         if hand.isBusted {
@@ -435,22 +493,17 @@ final class BlackjackGame: ObservableObject {
         withAnimation(cardDealAnimation) {
             dealerCards[index] = newCard
         }
-        GameFeedback.shared.shuffleHint()
+        feedback.shuffleHint()
         showReshufflePulse(at: index)
         showPropActionHint("已换庄家一张")
-        try? await Task.sleep(nanoseconds: delayAfterHit)
+        await timing.sleep(nanoseconds: delayAfterHit)
         return true
     }
 
     /// 单测用：跳过发牌动画，直接进入玩家回合并设定双方手牌；牌堆重洗以保证可再抽。
     func preparePlayerTurnForTesting(player: [Card], dealer: [Card]) {
         precondition(player.count >= 2 && dealer.count >= 2)
-        peekTask?.cancel()
-        peekTask = nil
-        propHintTask?.cancel()
-        propHintTask = nil
-        reshufflePulseTask?.cancel()
-        reshufflePulseTask = nil
+        cancelPendingWork()
 
         roundToken += 1
         outcomeMessage = ""
@@ -473,16 +526,44 @@ final class BlackjackGame: ObservableObject {
         publishDeckCounts()
     }
 
+    /// 单测用：装入队首顺序牌堆（先发），并重置桌面为空闲可发牌状态。
+    func installOrderedShoeForTesting(_ orderedFrontFirst: [Card]) {
+        cancelPendingWork()
+        deck.installOrderedShoeForTesting(orderedFrontFirst)
+        playerCards = []
+        dealerCards = []
+        phase = .idle
+        outcomeMessage = ""
+        lastOutcome = nil
+        isAnimating = false
+        isShowingShuffleScreen = false
+        handAreaOpacity = 1
+        handAreaScale = 1
+        resetRoundPropState()
+        publishDeckCounts()
+    }
+
+    /// 单测用：仅替换剩余牌堆，保持当前手牌与阶段（供 hit / 庄家补牌路径）。
+    func replaceRemainingShoeForTesting(_ orderedFrontFirst: [Card]) {
+        deck.installOrderedShoeForTesting(orderedFrontFirst)
+        publishDeckCounts()
+    }
+
+    /// 单测用：玩家回合且牌堆已尽（用于牌尽 fallback）。
+    func preparePlayerTurnWithEmptyShoeForTesting(player: [Card], dealer: [Card]) {
+        preparePlayerTurnForTesting(player: player, dealer: dealer)
+        replaceRemainingShoeForTesting([])
+    }
+
     private func showReshufflePulse(at index: Int) {
         reshufflePulseTask?.cancel()
         reshufflePulseIndex = index
-        reshufflePulseTask = Task {
-            try? await Task.sleep(nanoseconds: 700_000_000)
+        reshufflePulseTask = Task { [weak self] in
+            guard let self else { return }
+            await self.timing.sleep(nanoseconds: 700_000_000)
             guard !Task.isCancelled else { return }
-            await MainActor.run {
-                if reshufflePulseIndex == index {
-                    reshufflePulseIndex = nil
-                }
+            if self.reshufflePulseIndex == index {
+                self.reshufflePulseIndex = nil
             }
         }
     }
@@ -490,24 +571,18 @@ final class BlackjackGame: ObservableObject {
     private func showPropActionHint(_ text: String) {
         propHintTask?.cancel()
         propActionHint = text
-        propHintTask = Task {
-            try? await Task.sleep(nanoseconds: 1_600_000_000)
+        propHintTask = Task { [weak self] in
+            guard let self else { return }
+            await self.timing.sleep(nanoseconds: 1_600_000_000)
             guard !Task.isCancelled else { return }
-            await MainActor.run {
-                if propActionHint == text {
-                    propActionHint = nil
-                }
+            if self.propActionHint == text {
+                self.propActionHint = nil
             }
         }
     }
 
     private func resetRoundPropState() {
-        peekTask?.cancel()
-        peekTask = nil
-        propHintTask?.cancel()
-        propHintTask = nil
-        reshufflePulseTask?.cancel()
-        reshufflePulseTask = nil
+        cancelPendingWork()
         dealerHitsSoft17ThisRound = false
         isPeekingHoleCard = false
         hasPeekedHoleThisRound = false
@@ -551,13 +626,13 @@ final class BlackjackGame: ObservableObject {
         phase = .dealerTurn
         dealerHoleRevealed = false
 
-        try? await Task.sleep(nanoseconds: delayBeforeHoleFlip)
+        await timing.sleep(nanoseconds: delayBeforeHoleFlip)
 
         withAnimation(.easeInOut(duration: 0.35)) {
             dealerHoleRevealed = true
         }
-        GameFeedback.shared.holeRevealed()
-        try? await Task.sleep(nanoseconds: delayAfterHoleFlip)
+        feedback.holeRevealed()
+        await timing.sleep(nanoseconds: delayAfterHoleFlip)
 
         var hand = Hand(cards: dealerCards)
         while dealerShouldHit(hand) {
@@ -566,8 +641,8 @@ final class BlackjackGame: ObservableObject {
             withAnimation(cardDealAnimation) {
                 dealerCards.append(card)
             }
-            GameFeedback.shared.cardDealt()
-            try? await Task.sleep(nanoseconds: delayDealerHit)
+            feedback.cardDealt()
+            await timing.sleep(nanoseconds: delayDealerHit)
             hand = Hand(cards: dealerCards)
         }
 
@@ -581,15 +656,15 @@ final class BlackjackGame: ObservableObject {
             isShowingShuffleScreen = true
             dealingCaption = "洗牌中…"
         }
-        GameFeedback.shared.shuffleHint()
-        try? await Task.sleep(nanoseconds: delayShuffleScreen)
+        feedback.shuffleHint()
+        await timing.sleep(nanoseconds: delayShuffleScreen)
         deck.shuffleAndCut()
         publishDeckCounts()
         withAnimation(.easeInOut(duration: 0.28)) {
             isShowingShuffleScreen = false
             dealingCaption = nil
         }
-        try? await Task.sleep(nanoseconds: 120_000_000)
+        await timing.sleep(nanoseconds: 120_000_000)
     }
 
     private func publishDeckCounts() {
@@ -652,7 +727,6 @@ final class BlackjackGame: ObservableObject {
         outcomeMessage = message
         lastOutcome = outcome
         phase = .finished
-        GameFeedback.shared.roundOutcome(playerWon: playerWon, isPush: isPush)
+        feedback.roundOutcome(playerWon: playerWon, isPush: isPush)
     }
 }
-

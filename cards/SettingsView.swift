@@ -98,7 +98,7 @@ struct SettingsView: View {
                 Section("反馈") {
                     Toggle("音效", isOn: $settings.soundEnabled)
                     Toggle("触觉", isOn: $settings.hapticsEnabled)
-                    Text("音效来自 Sounds/ 六基名文件（当前为高质量程序合成；可替换为录音级 wav/mp3）；关闭开关后不播放；缺文件时静默跳过。")
+                    Text("关闭后不播放音效；未配置音效文件时会静默跳过。")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

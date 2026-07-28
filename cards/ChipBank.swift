@@ -3,6 +3,7 @@
 //  cards
 //
 //  阶段 3 / 3.5：筹码账户协调层。玩家余额 + 庄家池；结算委托 RoundSettlement。
+//  Q1：本会话全下解锁局数与筹码同 suite 持久化。
 //
 
 import Foundation
@@ -17,6 +18,8 @@ final class ChipBank: ObservableObject {
     @Published private(set) var lastSettlement: SettlementResult?
     /// 启动时因杀进程等退回了未结算注码；供 UI 提示一次（与主动「退出清空」相对）。
     @Published private(set) var didRestoreAfterInterrupt: Bool = false
+    /// 本会话已完成局数（开局全下解锁）；与筹码一并持久化，杀进程后保留。
+    @Published private(set) var sessionRoundsCompleted: Int = 0
     /// 当前 / 刚结束的一局注码是否为全下（开局梭哈或对局中追加至全部余额）。
     private(set) var activeBetWasAllIn: Bool = false
 
@@ -24,6 +27,7 @@ final class ChipBank: ObservableObject {
     private let storageKey: String
     private let dealerBankKey: String
     private let activeBetKey: String
+    private let sessionRoundsKey: String
     /// 本会话重置目标（闯关按关卡；娱乐用默认桌限）。
     private let sessionStartingBalance: Int
     private let sessionDealerStartingBank: Int
@@ -33,6 +37,7 @@ final class ChipBank: ObservableObject {
         storageKey: String = ChipRules.balanceStorageKey,
         dealerBankKey: String = ChipRules.dealerBankStorageKey,
         activeBetKey: String = ChipRules.activeBetStorageKey,
+        sessionRoundsKey: String = ChipRules.sessionRoundsStorageKey,
         startingBalance: Int = ChipRules.startingBalance,
         dealerStartingBank: Int = ChipRules.dealerStartingBank,
         forceFreshSession: Bool = false
@@ -41,6 +46,7 @@ final class ChipBank: ObservableObject {
         self.storageKey = storageKey
         self.dealerBankKey = dealerBankKey
         self.activeBetKey = activeBetKey
+        self.sessionRoundsKey = sessionRoundsKey
         self.sessionStartingBalance = startingBalance
         self.sessionDealerStartingBank = dealerStartingBank
 
@@ -48,6 +54,7 @@ final class ChipBank: ObservableObject {
             defaults.removeObject(forKey: storageKey)
             defaults.removeObject(forKey: dealerBankKey)
             defaults.removeObject(forKey: activeBetKey)
+            defaults.removeObject(forKey: sessionRoundsKey)
         }
 
         var loadedBalance: Int
@@ -77,15 +84,29 @@ final class ChipBank: ObservableObject {
             loadedDealer = dealerStartingBank
         }
 
+        let loadedRounds: Int
+        if defaults.object(forKey: sessionRoundsKey) != nil {
+            loadedRounds = max(0, defaults.integer(forKey: sessionRoundsKey))
+        } else {
+            loadedRounds = 0
+        }
+
         self.balance = loadedBalance
         self.dealerBank = loadedDealer
         self.activeBet = 0
+        self.sessionRoundsCompleted = loadedRounds
         self.didRestoreAfterInterrupt = restoredInterrupt
         persist()
     }
 
     func acknowledgeRestoreHint() {
         didRestoreAfterInterrupt = false
+    }
+
+    /// 一局结算完成后递增（含天然 BJ / 正常比点）；与筹码一并写入磁盘。
+    func recordRoundCompleted() {
+        sessionRoundsCompleted += 1
+        persist()
     }
 
     var isPlayerBroke: Bool {
@@ -164,10 +185,12 @@ final class ChipBank: ObservableObject {
         activeBet = 0
         activeBetWasAllIn = false
         lastSettlement = nil
+        sessionRoundsCompleted = 0
         // 清除持久化，便于下次按新关卡起始筹码建会话；杀进程中途恢复仍依赖未 clear 的键。
         defaults.removeObject(forKey: storageKey)
         defaults.removeObject(forKey: dealerBankKey)
         defaults.removeObject(forKey: activeBetKey)
+        defaults.removeObject(forKey: sessionRoundsKey)
     }
 
     func abandonSession() {
@@ -178,5 +201,6 @@ final class ChipBank: ObservableObject {
         defaults.set(balance, forKey: storageKey)
         defaults.set(dealerBank, forKey: dealerBankKey)
         defaults.set(activeBet, forKey: activeBetKey)
+        defaults.set(sessionRoundsCompleted, forKey: sessionRoundsKey)
     }
 }

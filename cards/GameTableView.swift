@@ -18,16 +18,21 @@ struct GameTableView: View {
     /// 娱乐模式 + 已解锁道具时为 true。
     let showsMidHandAllIn: Bool
     let canMidHandAllIn: Bool
+    var midHandAllInDisabledReason: String? = nil
     let emphasizeForcedAllIn: Bool
     let showsPeekHole: Bool
     let canPeekHole: Bool
+    var peekHoleDisabledReason: String? = nil
     let showsSoft17Hit: Bool
     let canSoft17Hit: Bool
     let soft17HitActive: Bool
+    var soft17HitDisabledReason: String? = nil
     let showsRedrawOne: Bool
     let canRedrawOne: Bool
+    var redrawOneDisabledReason: String? = nil
     let showsReshuffleDealerCard: Bool
     let canReshuffleDealerCard: Bool
+    var reshuffleDealerDisabledReason: String? = nil
     /// E4：确认下注后短暂放大余额行。
     let chipBalancePulse: Bool
     var cardBack: CardBackStyle = .classicNavy
@@ -67,10 +72,19 @@ struct GameTableView: View {
             VStack(spacing: 0) {
                 Divider()
                     .opacity(0.35)
-                controls
-                    .padding(.horizontal, 18)
-                    .padding(.top, 12)
-                    .padding(.bottom, 14)
+                ViewThatFits(in: .vertical) {
+                    controls
+                        .padding(.horizontal, 18)
+                        .padding(.top, 12)
+                        .padding(.bottom, 14)
+                    ScrollView {
+                        controls
+                            .padding(.horizontal, 18)
+                            .padding(.top, 12)
+                            .padding(.bottom, 14)
+                    }
+                    .frame(maxHeight: 260)
+                }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -119,6 +133,8 @@ struct GameTableView: View {
                     .foregroundStyle(.secondary)
                     .scaleEffect(chipBalancePulse ? 1.08 : 1)
                     .animation(.spring(response: 0.36, dampingFraction: 0.7), value: chipBalancePulse)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(chipBalanceAccessibilityLabel)
                 }
             }
             Spacer(minLength: 0)
@@ -170,11 +186,13 @@ struct GameTableView: View {
                         .font(.subheadline.weight(.medium))
                         .monospacedDigit()
                         .foregroundStyle(.primary.opacity(0.78))
+                        .accessibilityLabel("庄家点数 \(visibleDealerValueText)")
                 } else {
                     Text("明牌点数：\(dealerUpcardValueText)")
                         .font(.subheadline.weight(.medium))
                         .monospacedDigit()
                         .foregroundStyle(.primary.opacity(0.78))
+                        .accessibilityLabel("庄家明牌点数 \(dealerUpcardValueText)")
                 }
             }
         }
@@ -198,6 +216,7 @@ struct GameTableView: View {
                     .font(.subheadline.weight(.medium))
                     .monospacedDigit()
                     .foregroundStyle(.primary.opacity(0.78))
+                    .accessibilityLabel("玩家点数 \(playerPointsLabel)")
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -260,6 +279,7 @@ struct GameTableView: View {
                 .disabled(!canHit)
                 .opacity(canHit ? 1 : 0.55)
                 .saturation(canHit ? 1 : 0.2)
+                .accessibilityHint(canHit ? "再要一张牌" : "当前不可要牌")
 
                 Button("停牌") {
                     GameFeedback.shared.buttonTap()
@@ -272,6 +292,7 @@ struct GameTableView: View {
                 .disabled(!canStand)
                 .opacity(canStand ? 1 : 0.55)
                 .saturation(canStand ? 1 : 0.2)
+                .accessibilityHint(canStand ? "停止要牌，进入庄家回合" : "当前不可停牌")
 
                 // 持有道具「见牌后再全下」时显示（逻辑见 ChipBank.goAllIn / PropStore）。
                 if showsMidHandAllIn {
@@ -286,6 +307,12 @@ struct GameTableView: View {
                     .disabled(!canMidHandAllIn)
                     .opacity(canMidHandAllIn ? 1 : 0.55)
                     .saturation(canMidHandAllIn ? 1 : 0.2)
+                    .accessibilityLabel(emphasizeForcedAllIn ? "强制全下" : "全下")
+                    .accessibilityHint(
+                        canMidHandAllIn
+                            ? "追加剩余筹码为全下并停牌"
+                            : (midHandAllInDisabledReason ?? "当前不可用")
+                    )
                 }
             }
 
@@ -295,6 +322,8 @@ struct GameTableView: View {
                         propButton(
                             title: "窥视",
                             enabled: canPeekHole,
+                            disabledReason: peekHoleDisabledReason,
+                            enabledHint: "偷看庄家暗牌约一秒",
                             action: onPeekHole
                         )
                     }
@@ -302,6 +331,8 @@ struct GameTableView: View {
                         propButton(
                             title: soft17HitActive ? "软17已开" : "软17要牌",
                             enabled: canSoft17Hit,
+                            disabledReason: soft17HitDisabledReason,
+                            enabledHint: "本局庄家软十七必须要牌",
                             action: onSoft17Hit
                         )
                     }
@@ -309,6 +340,8 @@ struct GameTableView: View {
                         propButton(
                             title: "换一张",
                             enabled: canRedrawOne,
+                            disabledReason: redrawOneDisabledReason,
+                            enabledHint: "换掉最近一次要到的牌",
                             action: onRedrawOne
                         )
                     }
@@ -316,6 +349,8 @@ struct GameTableView: View {
                         propButton(
                             title: "换庄家",
                             enabled: canReshuffleDealerCard,
+                            disabledReason: reshuffleDealerDisabledReason,
+                            enabledHint: "随机替换庄家一张牌",
                             action: onReshuffleDealerCard
                         )
                     }
@@ -325,7 +360,13 @@ struct GameTableView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private func propButton(title: String, enabled: Bool, action: @escaping () -> Void) -> some View {
+    private func propButton(
+        title: String,
+        enabled: Bool,
+        disabledReason: String? = nil,
+        enabledHint: String = "可用",
+        action: @escaping () -> Void
+    ) -> some View {
         Button(title) {
             GameFeedback.shared.buttonTap()
             action()
@@ -336,7 +377,14 @@ struct GameTableView: View {
         .disabled(!enabled)
         .opacity(enabled ? 1 : 0.55)
         .accessibilityLabel(title)
-        .accessibilityHint(enabled ? "可用" : "当前不可用")
+        .accessibilityHint(enabled ? enabledHint : (disabledReason ?? "当前不可用"))
+    }
+
+    private var chipBalanceAccessibilityLabel: String {
+        if chipBank.activeBet > 0 {
+            return "你 \(chipBank.balance)，庄家 \(chipBank.dealerBank)，注 \(chipBank.activeBet)"
+        }
+        return "你 \(chipBank.balance)，庄家 \(chipBank.dealerBank)"
     }
 
     private var propButtonColumns: [GridItem] {

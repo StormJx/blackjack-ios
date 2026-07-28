@@ -3,6 +3,7 @@
 //  cards
 //
 //  D10 / E1：局末结果（挑战含筹码；快速含会话统计）。
+//  P8-1：可滚动 + VoiceOver + 大字体下主按钮可达。
 //
 
 import SwiftUI
@@ -25,91 +26,115 @@ struct SessionRoundEndPanel: View {
     let onContinue: () -> Void
 
     @State private var settlementPulse = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var statusColor: Color {
         outcome?.statusColor ?? .secondary
     }
 
+    private var primaryButtonTitle: String {
+        if playStyle.showsChips && isSessionOver {
+            return "返回主页"
+        }
+        return playStyle.continueButtonTitle
+    }
+
     var body: some View {
         VStack(spacing: 0) {
-            VStack(spacing: 12) {
-                Text(titleText)
-                    .font(.title2.weight(.semibold))
-                if let reason = sessionEndReason, isSessionOver {
-                    Text(reason.title)
-                        .font(.title3.weight(.bold))
-                        .foregroundStyle(reason == .dealerBroke ? .green : .red)
-                    Text(reason.detail)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+            ScrollView {
+                VStack(spacing: 12) {
+                    Text(titleText)
+                        .font(.title2.weight(.semibold))
+                        .accessibilityAddTraits(.isHeader)
+                    if let reason = sessionEndReason, isSessionOver {
+                        Text(reason.title)
+                            .font(.title3.weight(.bold))
+                            .foregroundStyle(reason == .dealerBroke ? .green : .red)
+                        Text(reason.detail)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                    }
+                    Text(outcomeMessage)
+                        .font(isSessionOver ? .body.weight(.semibold) : .title3.weight(.semibold))
+                        .foregroundStyle(statusColor)
                         .multilineTextAlignment(.center)
-                }
-                Text(outcomeMessage)
-                    .font(isSessionOver ? .body.weight(.semibold) : .title3.weight(.semibold))
-                    .foregroundStyle(statusColor)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(4)
-                    .fixedSize(horizontal: false, vertical: true)
+                        .lineLimit(4)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityLabel("本局结果：\(outcomeMessage)")
 
-                if let achievementToast {
-                    Text(achievementToast)
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.orange)
-                        .multilineTextAlignment(.center)
-                        .transition(.opacity.combined(with: .move(edge: .top)))
+                    if let achievementToast {
+                        Text(achievementToast)
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.orange)
+                            .multilineTextAlignment(.center)
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                            .accessibilityLabel(achievementToast)
+                    }
+
+                    VStack(spacing: 8) {
+                        if playStyle.showsChips {
+                            challengeSettlementBlock
+                        } else if let fastStats {
+                            Text(fastStats.summaryLine)
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                                .monospacedDigit()
+                                .multilineTextAlignment(.center)
+                        }
+                        Text(shoeStatusLine)
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                            .monospacedDigit()
+                            .accessibilityLabel(shoeStatusLine)
+                    }
+                    .padding(.top, 8)
+                    .scaleEffect((!reduceMotion && settlementPulse) ? 1.04 : 1)
+                    .animation(
+                        reduceMotion ? nil : .spring(response: 0.42, dampingFraction: 0.72),
+                        value: settlementPulse
+                    )
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 24)
+                .padding(.top, 16)
+                .padding(.bottom, 12)
+            }
+
+            Group {
+                if playStyle.showsChips && isSessionOver {
+                    Button {
+                        GameFeedback.shared.buttonTap()
+                        onReturnHome()
+                    } label: {
+                        Text("返回主页")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    .tint(.green)
+                } else {
+                    Button {
+                        GameFeedback.shared.buttonTap()
+                        onContinue()
+                    } label: {
+                        Text(playStyle.continueButtonTitle)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    .tint(.green)
                 }
             }
-            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 24)
             .padding(.top, 8)
-
-            VStack(spacing: 8) {
-                if playStyle.showsChips {
-                    challengeSettlementBlock
-                } else if let fastStats {
-                    Text(fastStats.summaryLine)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                        .monospacedDigit()
-                        .multilineTextAlignment(.center)
-                }
-                Text(shoeStatusLine)
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
-                    .monospacedDigit()
-            }
-            .padding(.top, 16)
-            .scaleEffect(settlementPulse ? 1.04 : 1)
-            .animation(.spring(response: 0.42, dampingFraction: 0.72), value: settlementPulse)
-
-            Spacer(minLength: 24)
-
-            if playStyle.showsChips && isSessionOver {
-                Button {
-                    GameFeedback.shared.buttonTap()
-                    onReturnHome()
-                } label: {
-                    Text("返回主页")
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .tint(.green)
-            } else {
-                Button {
-                    GameFeedback.shared.buttonTap()
-                    onContinue()
-                } label: {
-                    Text(playStyle.continueButtonTitle)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .tint(.green)
-            }
+            .padding(.bottom, 24)
+            .accessibilityHint(isSessionOver ? "结束本会话并返回欢迎页" : "进入下一局下注")
+            .accessibilityLabel(primaryButtonTitle)
         }
-        .padding(24)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .onAppear {
+            guard !reduceMotion else { return }
             settlementPulse = true
             Task {
                 try? await Task.sleep(nanoseconds: 280_000_000)
@@ -133,6 +158,7 @@ struct SessionRoundEndPanel: View {
                 .monospacedDigit()
                 .foregroundStyle(settlementNetColor(settlement.netChange))
                 .contentTransition(.numericText())
+                .accessibilityLabel("本局盈亏 \(settlement.netChangeLabel)")
             if let odds = settlement.oddsLabel {
                 Text(odds)
                     .font(.subheadline.weight(.semibold))
@@ -148,11 +174,15 @@ struct SessionRoundEndPanel: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .monospacedDigit()
+                .accessibilityLabel(
+                    "你的余额 \(settlement.balanceAfter)，庄家余额 \(settlement.dealerBankAfter)"
+                )
         } else {
             Text("你 \(balance) · 庄家 \(dealerBank)")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .monospacedDigit()
+                .accessibilityLabel("你的余额 \(balance)，庄家余额 \(dealerBank)")
         }
     }
 

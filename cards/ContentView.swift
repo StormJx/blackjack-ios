@@ -51,8 +51,10 @@ struct ContentView: View {
                             withAnimation(.easeInOut(duration: 0.28)) {
                                 session = nil
                             }
-                            ActiveTableLimits.apply(appSettings.tableLimitPreset)
-                            ActivePreDealAllInUnlock.apply(appSettings.preDealAllInUnlockRounds)
+                            SessionConfiguration.challenge(
+                                preset: appSettings.tableLimitPreset,
+                                unlockRounds: appSettings.preDealAllInUnlockRounds
+                            ).applyToProcessGlobals()
                             let leveledUp = challengeProgress.syncFromStats(
                                 dealerClears: statsStore.dealerBankClearCount,
                                 totalChipsWon: statsStore.totalChipsWon
@@ -109,8 +111,10 @@ struct ContentView: View {
             .onAppear {
                 guard !didApplyDefaults else { return }
                 didApplyDefaults = true
-                ActiveTableLimits.apply(appSettings.tableLimitPreset)
-                ActivePreDealAllInUnlock.apply(appSettings.preDealAllInUnlockRounds)
+                SessionConfiguration.challenge(
+                    preset: appSettings.tableLimitPreset,
+                    unlockRounds: appSettings.preDealAllInUnlockRounds
+                ).applyToProcessGlobals()
                 _ = challengeProgress.syncFromStats(
                     dealerClears: statsStore.dealerBankClearCount,
                     totalChipsWon: statsStore.totalChipsWon
@@ -169,7 +173,9 @@ struct ContentView: View {
 
             VStack(spacing: 28) {
                 Text("二十一点")
-                    .font(.system(size: 44, weight: .bold, design: .rounded))
+                    .font(.system(.largeTitle, design: .rounded).weight(.bold))
+                    .minimumScaleFactor(0.7)
+                    .lineLimit(1)
                     .foregroundStyle(.white)
                     .shadow(color: .black.opacity(0.25), radius: 8, y: 2)
                     .accessibilityAddTraits(.isHeader)
@@ -231,17 +237,20 @@ struct ContentView: View {
     private func startSession(style: PlayStyle) {
         GameFeedback.shared.buttonTap()
         clearWelcomeNotice()
-        ActivePreDealAllInUnlock.apply(appSettings.preDealAllInUnlockRounds)
+        let config: SessionConfiguration
         switch style {
         case .challenge:
-            ActiveTableLimits.apply(appSettings.tableLimitPreset)
+            config = .challenge(
+                preset: appSettings.tableLimitPreset,
+                unlockRounds: appSettings.preDealAllInUnlockRounds
+            )
         case .entertainment:
-            let stage = entertainmentProgress.currentStage
-            ActiveTableLimits.apply(
-                minimumBet: stage.minimumBet,
-                betChipValues: stage.betChipValues
+            config = .entertainment(
+                stage: entertainmentProgress.currentStage,
+                unlockRounds: appSettings.preDealAllInUnlockRounds
             )
         }
+        config.applyToProcessGlobals()
         withAnimation(.easeInOut(duration: 0.28)) {
             session = ActiveSession(
                 practiceMode: appSettings.defaultPracticeMode,
@@ -296,8 +305,6 @@ private struct GameSessionView: View {
     @State private var draftBet = 0
     /// P3：本会话上一局确认下注额（仅娱乐「同上局」）。
     @State private var lastConfirmedBet = 0
-    /// 本会话已完成局数；达设置解锁局数后开放开局全下。
-    @State private var sessionRoundsCompleted = 0
     @State private var chipBalancePulse = false
     @State private var achievementToast: String?
     @State private var achievementToastTask: Task<Void, Never>?
@@ -341,6 +348,7 @@ private struct GameSessionView: View {
                 storageKey: "entertainment.balance",
                 dealerBankKey: "entertainment.dealerBank",
                 activeBetKey: "entertainment.activeBet",
+                sessionRoundsKey: "entertainment.sessionRounds",
                 startingBalance: stage.playerStart,
                 dealerStartingBank: stage.dealerStart
             ))
@@ -443,9 +451,9 @@ private struct GameSessionView: View {
             draftBet: $draftBet,
             showRestoreHint: chipBank.didRestoreAfterInterrupt,
             canConfirm: canConfirmBet,
-            sessionRoundsCompleted: sessionRoundsCompleted,
+            sessionRoundsCompleted: chipBank.sessionRoundsCompleted,
             emphasizeForcedAllIn: game.isForcedAllInAvailable
-                && sessionRoundsCompleted >= ChipRules.preDealAllInUnlockCompletedRounds,
+                && chipBank.sessionRoundsCompleted >= ChipRules.preDealAllInUnlockCompletedRounds,
             showsRepeatLastBet: playStyle == .entertainment,
             lastBetAmount: lastConfirmedBet,
             canRepeatLastBet: canRepeatLastBet,
@@ -486,16 +494,33 @@ private struct GameSessionView: View {
             canStand: canStand,
             showsMidHandAllIn: propStore.canUse(.midHandAllIn, in: playStyle),
             canMidHandAllIn: canMidHandAllIn,
+            midHandAllInDisabledReason: midHandAllInDisabledReason,
             emphasizeForcedAllIn: emphasizeForcedAllIn,
             showsPeekHole: propStore.canUse(.peekHole, in: playStyle),
             canPeekHole: canPeekHole,
+            peekHoleDisabledReason: propDisabledReason(
+                canUse: canPeekHole,
+                base: game.peekHoleDisabledReason
+            ),
             showsSoft17Hit: propStore.canUse(.dealerSoft17Hit, in: playStyle),
             canSoft17Hit: canSoft17Hit,
             soft17HitActive: game.dealerHitsSoft17ThisRound,
+            soft17HitDisabledReason: propDisabledReason(
+                canUse: canSoft17Hit,
+                base: game.soft17HitDisabledReason
+            ),
             showsRedrawOne: propStore.canUse(.redrawOne, in: playStyle),
             canRedrawOne: canRedrawOne,
+            redrawOneDisabledReason: propDisabledReason(
+                canUse: canRedrawOne,
+                base: game.redrawOneDisabledReason
+            ),
             showsReshuffleDealerCard: propStore.canUse(.reshuffleDealerCard, in: playStyle),
             canReshuffleDealerCard: canReshuffleDealerCard,
+            reshuffleDealerDisabledReason: propDisabledReason(
+                canUse: canReshuffleDealerCard,
+                base: game.reshuffleDealerDisabledReason
+            ),
             chipBalancePulse: chipBalancePulse,
             cardBack: cosmeticsStore.selectedBack,
             onHit: { Task { await game.hit() } },
@@ -609,10 +634,27 @@ private struct GameSessionView: View {
     private func applyPreDealAllIn() {
         guard ChipRules.isPreDealAllInEnabled(
             balance: chipBank.balance,
-            sessionRoundsCompleted: sessionRoundsCompleted,
+            sessionRoundsCompleted: chipBank.sessionRoundsCompleted,
             draftBet: draftBet
         ) else { return }
         draftBet = chipBank.balance
+    }
+
+    private var midHandAllInDisabledReason: String? {
+        guard propStore.canUse(.midHandAllIn, in: playStyle) else { return nil }
+        if canMidHandAllIn { return nil }
+        if controlsLockedAfterAllIn { return "全下后等待结算" }
+        if game.phase != .playerTurn { return "仅玩家回合可用" }
+        if game.isAnimating { return "发牌动画进行中" }
+        if chipBank.activeBet == 0 { return "尚未下注" }
+        if chipBank.balance <= 0 { return "无剩余筹码可追加" }
+        return "当前不可用"
+    }
+
+    private func propDisabledReason(canUse: Bool, base: String?) -> String? {
+        if canUse { return nil }
+        if controlsLockedAfterAllIn { return "全下后等待结算" }
+        return base ?? "当前不可用"
     }
 
     private func performMidHandAllIn() {
@@ -648,7 +690,7 @@ private struct GameSessionView: View {
     private func handleRoundFinished() {
         settleCurrentRoundIfNeeded()
         if let outcome = game.lastOutcome {
-            sessionRoundsCompleted += 1
+            chipBank.recordRoundCompleted()
             if let snapshot = game.makeRoundSnapshot(
                 wasAllInBet: chipBank.activeBetWasAllIn
             ) {
@@ -764,6 +806,8 @@ private struct GameSessionView: View {
     private func returnToWelcomeAfterSessionEnd() {
         showBetSheet = false
         showRoundEndSheet = false
+        game.cancelPendingWork()
+        achievementToastTask?.cancel()
         chipBank.acknowledgeRestoreHint()
         chipBank.abandonSession()
         onEndSession(true)
@@ -772,6 +816,8 @@ private struct GameSessionView: View {
     private func abandonSessionToWelcome() {
         showBetSheet = false
         showRoundEndSheet = false
+        game.cancelPendingWork()
+        achievementToastTask?.cancel()
         chipBank.refundActiveBet()
         chipBank.acknowledgeRestoreHint()
         chipBank.abandonSession()
@@ -807,6 +853,7 @@ private struct AbandonConfirmModifier: ViewModifier {
 
 private struct ShuffleScreenOverlay: View {
     let cutCardMode: CutCardMode
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var pulse = false
     @State private var fan = false
 
@@ -834,18 +881,22 @@ private struct ShuffleScreenOverlay: View {
                                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                                     .strokeBorder(Color.white.opacity(0.22), lineWidth: 1)
                             )
-                            .rotationEffect(.degrees(fan ? Double(i - 2) * 14 : 0))
-                            .offset(x: fan ? CGFloat(i - 2) * 10 : 0)
+                            .rotationEffect(.degrees((!reduceMotion && fan) ? Double(i - 2) * 14 : Double(i - 2) * 6))
+                            .offset(x: (!reduceMotion && fan) ? CGFloat(i - 2) * 10 : CGFloat(i - 2) * 4)
                             .shadow(color: .black.opacity(0.25), radius: 8, y: 4)
                     }
                 }
-                .scaleEffect(pulse ? 1.06 : 0.96)
+                .scaleEffect((!reduceMotion && pulse) ? 1.06 : 1)
                 .animation(
-                    .easeInOut(duration: 0.55).repeatForever(autoreverses: true),
+                    reduceMotion
+                        ? nil
+                        : .easeInOut(duration: 0.55).repeatForever(autoreverses: true),
                     value: pulse
                 )
                 .animation(
-                    .easeInOut(duration: 0.7).repeatForever(autoreverses: true),
+                    reduceMotion
+                        ? nil
+                        : .easeInOut(duration: 0.7).repeatForever(autoreverses: true),
                     value: fan
                 )
 
@@ -866,8 +917,9 @@ private struct ShuffleScreenOverlay: View {
             .padding(.horizontal, 28)
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("洗牌中")
+        .accessibilityLabel("洗牌中，\(cutCardMode.shuffleOverlayDetail)")
         .onAppear {
+            guard !reduceMotion else { return }
             pulse = true
             fan = true
         }

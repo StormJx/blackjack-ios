@@ -116,6 +116,17 @@ struct Deck: Sendable {
         cards.insert(card, at: index)
     }
 
+    /// 单测：装入指定顺序牌堆（队首先发）；不洗牌。切牌点默认在队尾，避免局间强制重洗。
+    mutating func installOrderedShoeForTesting(
+        _ orderedFrontFirst: [Card],
+        cutPosition: Int? = nil
+    ) {
+        cards = orderedFrontFirst
+        totalCardCount = orderedFrontFirst.count
+        dealtCount = 0
+        self.cutPosition = cutPosition ?? max(totalCardCount, 0)
+    }
+
     private static func buildCards(numberOfDecks: Int) -> [Card] {
         var built: [Card] = []
         built.reserveCapacity(52 * numberOfDecks)

@@ -12,37 +12,15 @@
 |----|------|
 | 换庄家牌堆边界 | `returnCardToShoe` 回退 `dealtCount`；非空鞋禁止立即原样抽回 |
 | F2 战绩进度 | `StatsView` 展示闯关关 / 娱乐阶、起始筹码、下一门槛、娱乐累计 |
+| Q1 杀进程与全下解锁 | `ChipBank.sessionRoundsCompleted` 同 suite 持久化；恢复文案含「全下解锁进度」；退出清空；单测 |
+| P8-1 无障碍第一切片 | 下注/局末可滚动+粘性主按钮；VoiceOver；动态字体；洗牌 ReduceMotion；设置音效文案用户向 |
+| Q2 状态机可测化 | `GameTiming` / `GameFeedbackServing` / `SessionConfiguration`；`cancelPendingWork`；核心单测 |
 
 ---
 
 ## P0 / 高优先级（下一刀优先）
 
-### Q1 — 杀进程恢复与「本会话全下解锁局数」
-
-- **现状**：`ChipBank` 会恢复双方筹码；`sessionRoundsCompleted` 仅为 `GameSessionView` 的 `@State`，杀进程后归零。
-- **冲突**：`ChipRules.restoreAfterInterruptHint` 写「进度已保留」，但全下解锁局数未保留。
-- **方案（二选一，点名时锁定）**：
-  1. 与 `ChipBank` 同 suite 持久化 `sessionRoundsCompleted`；或
-  2. 文案明确「全下解锁计数不保留」，并保持现状。
-- **验收**：中断恢复后行为与文案一致；补 1–2 条单测。
-
-### P8 无障碍第一切片（横屏后置）
-
-详见 `docs/P8_ORIENTATION_AND_A11Y.md`「第一切片」。摘要：
-
-1. 下注 / 局末 overlay 可滚动，主按钮（确认并发牌 / 继续）大字体下仍可达。
-2. VoiceOver：点数、余额、注码、结果、要牌/停牌、道具（含具体禁用原因）。
-3. 动态字体抽查欢迎页与面板；固定 `size:` 改为可缩放或设上限。
-4. 洗牌 overlay 尊重 `accessibilityReduceMotion`。
-5. 设置页去掉面向开发者的 `Sounds/` 技术文案（可选同切片）。
-
-### Q2 — 进入 P6 前改善状态机可测性
-
-1. `BlackjackGame` 注入可控牌堆 / RNG / 延迟时钟 / 反馈接口（局部改造，勿全面 MVVM）。
-2. 桌限与全下门槛改为会话级不可变 `SessionConfiguration`，逐步替代 `ActiveTableLimits` / `ActivePreDealAllInUnlock` 进程全局。
-3. 补确定性单测：天然 BJ、hit/stand/爆牌、庄家软 17（默认停 / 道具要）、牌尽 fallback。
-4. 可选：抽出 `SessionProgressCoordinator`，降低 `handleRoundFinished` 编排风险。
-5. 退出会话时 `cancelPendingWork()`（peek / hint / pulse Task）。
+（本批 P0 三项已完成；下一刀见下方 P1 / P2。）
 
 ---
 
@@ -90,3 +68,4 @@
 |------|------|
 | 2026-07-27 | 初版：汇总架构 / UX / 质量评审；F2 与牌堆边界已落地 |
 | 2026-07-28 | 功能已推送 `d443bfa`；检查点基线同步 |
+| 2026-07-28 | Q1 / P8-1 / Q2 落地 |
