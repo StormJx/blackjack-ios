@@ -4,7 +4,7 @@
 > 成就：`docs/ACHIEVEMENTS.md` · 外观道具：`docs/COSMETICS_AND_PROPS.md`  
 > P8：`docs/P8_ORIENTATION_AND_A11Y.md` · 评审批次 backlog：`docs/ENGINEERING_REVIEW_BACKLOG.md`
 
-**基线：** `main` @ `7cb0e62`（「完成 Q1 全下解锁持久化、P8-1 无障碍第一切片与 Q2 状态机可测化。」；上一功能 `d443bfa`；Tag `v1.10.0` 为上一正式里程碑）  
+**基线：** `main` @ `c7901ff`（「完成 UX1–UX8…」；含此前 `7cb0e62` Q1/P8-1/Q2；Tag `v1.11.0`；上一正式里程碑 `v1.10.0`）  
 **仓库：** https://github.com/StormJx/blackjack-ios  
 **平台：** iOS 17.0+；庄家小于 17 要牌、大于等于 17 停（软 17 同停）；音效基名 deal/flip/shuffle/win/lose/push
 
@@ -94,7 +94,7 @@
 2. **UX9**（可选）设置变更全局提示  
 3. P8 横竖屏（第一切片已完成后可评估）
 
-**本批代码（待 commit/push）：** UX1–UX8 体验优化。
+**本批已推送：** `c7901ff`（UX1–UX8）；Tag `v1.11.0`。此前工程批：`7cb0e62`（Q1 / P8-1 / Q2）。
 
 ---
 
@@ -111,4 +111,4 @@
 | 2026-07-27 | 换庄家牌堆边界；F2 战绩关/阶进度；新增 `ENGINEERING_REVIEW_BACKLOG`；P8 第一切片清单 |
 | 2026-07-28 | 已推送 `d443bfa`；检查点基线同步 `3d575d6` |
 | 2026-07-28 | 已推送 `7cb0e62`（Q1 / P8-1 / Q2）；检查点基线同步 |
-| 2026-07-28 | UX1–UX8 落地（待推送） |
+| 2026-07-28 | 已推送 `c7901ff`（UX1–UX8）；Tag `v1.11.0`；检查点基线同步 |
