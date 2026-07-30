@@ -559,6 +559,8 @@ private struct GameSessionView: View {
             showRoundEndPanel: showRoundEndSheet,
             canHit: canHit,
             canStand: canStand,
+            canDoubleDown: canDoubleDown,
+            doubleDownDisabledReason: doubleDownDisabledReason,
             showsMidHandAllIn: propStore.canUse(.midHandAllIn, in: playStyle),
             canMidHandAllIn: canMidHandAllIn,
             midHandAllInDisabledReason: midHandAllInDisabledReason,
@@ -592,6 +594,7 @@ private struct GameSessionView: View {
             cardBack: cosmeticsStore.selectedBack,
             onHit: { Task { await game.hit() } },
             onStand: { Task { await game.stand() } },
+            onDoubleDown: executeDoubleDown,
             onAllIn: requestMidHandAllIn,
             onPeekHole: { Task { await game.peekHoleCard() } },
             onSoft17Hit: { _ = game.activateDealerSoft17Hit() },
@@ -633,6 +636,12 @@ private struct GameSessionView: View {
 
     private var canStand: Bool {
         game.phase == .playerTurn && !game.isAnimating && !controlsLockedAfterAllIn
+    }
+
+    private var canDoubleDown: Bool {
+        game.canDoubleDownHand
+            && !controlsLockedAfterAllIn
+            && chipBank.canAffordDoubleDown
     }
 
     private var canMidHandAllIn: Bool {
@@ -718,10 +727,28 @@ private struct GameSessionView: View {
         return "当前不可用"
     }
 
+    private var doubleDownDisabledReason: String? {
+        if canDoubleDown { return nil }
+        if controlsLockedAfterAllIn { return "全下后等待结算" }
+        if let handReason = game.doubleDownHandDisabledReason {
+            return handReason
+        }
+        if chipBank.activeBet == 0 { return "尚未下注" }
+        if !chipBank.canAffordDoubleDown { return "余额不足加倍" }
+        return "当前不可用"
+    }
+
     private func propDisabledReason(canUse: Bool, base: String?) -> String? {
         if canUse { return nil }
         if controlsLockedAfterAllIn { return "全下后等待结算" }
         return base ?? "当前不可用"
+    }
+
+    private func executeDoubleDown() {
+        guard canDoubleDown else { return }
+        guard chipBank.doubleDown() else { return }
+        pulseChipBalance()
+        Task { await game.doubleDown() }
     }
 
     private func requestMidHandAllIn() {

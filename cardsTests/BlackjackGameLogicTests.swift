@@ -114,6 +114,74 @@ struct BlackjackGameLogicTests {
         #expect(game.lastOutcome == .playerWin)
     }
 
+    @Test func doubleDownTakesOneCardThenDealerTurn() async {
+        let game = makeTestGame()
+        game.preparePlayerTurnForTesting(
+            player: [
+                Card(suit: .spades, rank: .five),
+                Card(suit: .hearts, rank: .six),
+            ],
+            dealer: [
+                Card(suit: .clubs, rank: .ten),
+                Card(suit: .diamonds, rank: .seven),
+            ]
+        )
+        #expect(game.canDoubleDownHand)
+        game.replaceRemainingShoeForTesting([
+            Card(suit: .spades, rank: .ten),
+        ])
+        await game.doubleDown()
+        #expect(game.phase == .finished)
+        #expect(game.playerCards.count == 3)
+        #expect(Hand(cards: game.playerCards).bestValue == 21)
+        #expect(game.lastOutcome == .playerWin)
+    }
+
+    @Test func doubleDownBustsResolvesImmediately() async {
+        let game = makeTestGame()
+        game.preparePlayerTurnForTesting(
+            player: [
+                Card(suit: .spades, rank: .ten),
+                Card(suit: .hearts, rank: .nine),
+            ],
+            dealer: [
+                Card(suit: .clubs, rank: .seven),
+                Card(suit: .diamonds, rank: .six),
+            ]
+        )
+        game.replaceRemainingShoeForTesting([
+            Card(suit: .spades, rank: .king),
+        ])
+        await game.doubleDown()
+        #expect(game.phase == .finished)
+        #expect(game.lastOutcome == .playerLose)
+        #expect(game.playerCards.count == 3)
+        #expect(Hand(cards: game.playerCards).isBusted)
+    }
+
+    @Test func doubleDownUnavailableAfterHit() async {
+        let game = makeTestGame()
+        game.preparePlayerTurnForTesting(
+            player: [
+                Card(suit: .spades, rank: .five),
+                Card(suit: .hearts, rank: .six),
+            ],
+            dealer: [
+                Card(suit: .clubs, rank: .ten),
+                Card(suit: .diamonds, rank: .seven),
+            ]
+        )
+        game.replaceRemainingShoeForTesting([
+            Card(suit: .diamonds, rank: .two),
+            Card(suit: .spades, rank: .three),
+        ])
+        await game.hit()
+        #expect(game.phase == .playerTurn)
+        #expect(game.playerCards.count == 3)
+        #expect(game.canDoubleDownHand == false)
+        #expect(game.doubleDownHandDisabledReason == "仅开局两张时可加倍")
+    }
+
     @Test func cancelPendingWorkClearsPeekAndHints() async {
         let game = makeTestGame()
         game.preparePlayerTurnForTesting(

@@ -153,6 +153,22 @@ final class ChipBank: ObservableObject {
         return amount
     }
 
+    /// 是否可足额加倍：须已有注码，且余额 ≥ 当前注（不足则禁用，不做不足额加倍）。
+    var canAffordDoubleDown: Bool {
+        activeBet > 0 && balance >= activeBet
+    }
+
+    /// P6：加倍——再押与当前注等额；余额归零也不记为全下（`activeBetWasAllIn` 不变）。
+    @discardableResult
+    func doubleDown() -> Bool {
+        guard canAffordDoubleDown else { return false }
+        let amount = activeBet
+        balance -= amount
+        activeBet += amount
+        persist()
+        return true
+    }
+
     @discardableResult
     func settle(outcome: RoundOutcome) -> SettlementResult? {
         guard activeBet > 0 else { return nil }

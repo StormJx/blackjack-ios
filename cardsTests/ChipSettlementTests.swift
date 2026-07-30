@@ -269,6 +269,51 @@ struct ChipSettlementTests {
         #expect(bank.goAllIn() == nil)
     }
 
+    @MainActor
+    @Test func doubleDownDoublesBetWithoutMarkingAllIn() {
+        let defaults = Self.makeEphemeralDefaults()
+        let bank = ChipBank(defaults: defaults)
+        #expect(bank.placeBet(100))
+        #expect(bank.canAffordDoubleDown)
+        #expect(bank.doubleDown())
+        #expect(bank.balance == 800)
+        #expect(bank.activeBet == 200)
+        #expect(bank.activeBetWasAllIn == false)
+    }
+
+    @MainActor
+    @Test func doubleDownThatZerosBalanceStillNotAllIn() {
+        let defaults = Self.makeEphemeralDefaults()
+        let bank = ChipBank(
+            defaults: defaults,
+            startingBalance: 200,
+            dealerStartingBank: 2000,
+            forceFreshSession: true
+        )
+        #expect(bank.placeBet(100))
+        #expect(bank.balance == 100)
+        #expect(bank.doubleDown())
+        #expect(bank.balance == 0)
+        #expect(bank.activeBet == 200)
+        #expect(bank.activeBetWasAllIn == false)
+    }
+
+    @MainActor
+    @Test func doubleDownFailsWhenBalanceInsufficient() {
+        let defaults = Self.makeEphemeralDefaults()
+        let bank = ChipBank(
+            defaults: defaults,
+            startingBalance: 150,
+            dealerStartingBank: 2000,
+            forceFreshSession: true
+        )
+        #expect(bank.placeBet(100))
+        #expect(bank.canAffordDoubleDown == false)
+        #expect(bank.doubleDown() == false)
+        #expect(bank.balance == 50)
+        #expect(bank.activeBet == 100)
+    }
+
     @Test func forcedAllInOnSingleDeckWhenRemainingAtMostThresholdAndNoReshuffle() {
         #expect(
             ChipRules.canUseForcedAllIn(

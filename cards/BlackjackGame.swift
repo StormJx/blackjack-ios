@@ -134,6 +134,19 @@ final class BlackjackGame: ObservableObject {
         Hand(cards: dealerCards).bestValue
     }
 
+    /// P6：手牌是否满足加倍时机（恰好两张、玩家回合、非动画中）。余额门控在 `ChipBank`。
+    var canDoubleDownHand: Bool {
+        phase == .playerTurn && !isAnimating && playerCards.count == 2
+    }
+
+    /// VoiceOver：加倍手牌侧不可用原因（不含余额）。
+    var doubleDownHandDisabledReason: String? {
+        guard phase == .playerTurn else { return "仅玩家回合可用" }
+        if isAnimating { return "发牌动画进行中" }
+        if playerCards.count != 2 { return "仅开局两张时可加倍" }
+        return nil
+    }
+
     /// 是否可换最近一次要牌得到的牌（须已要过至少一张）。
     var canRedrawLastHitCard: Bool {
         phase == .playerTurn && !isAnimating && playerCards.count > 2 && !hasRedrawnThisRound
@@ -386,6 +399,51 @@ final class BlackjackGame: ObservableObject {
 
     func stand() async {
         guard phase == .playerTurn, !isAnimating else { return }
+        await playDealerTurnAsync()
+    }
+
+    /// P6：加倍——仅前两张时补一张，随后进庄家回合（爆牌则直接结算）。
+    /// 注码加倍由调用方先执行 `ChipBank.doubleDown()`。
+    func doubleDown() async {
+        guard canDoubleDownHand else { return }
+        isAnimating = true
+
+        await timing.sleep(nanoseconds: delayAfterHit)
+
+        let beforeBest = Hand(cards: playerCards).bestValue
+
+        guard let card = deck.draw() else {
+            publishDeckCounts()
+            await playDealerTurnAsync()
+            return
+        }
+        publishDeckCounts()
+
+        withAnimation(cardDealAnimation) {
+            playerCards.append(card)
+        }
+        feedback.cardDealt()
+        await timing.sleep(nanoseconds: delayAfterHit)
+
+        let hand = Hand(cards: playerCards)
+        if hand.isBusted {
+            finishRound(
+                message: "爆牌，你输了",
+                outcome: .playerLose,
+                playerWon: false,
+                isPush: false
+            )
+            isAnimating = false
+            return
+        }
+
+        if beforeBest > 17 { hitSurvivedFromOver17 = true }
+        if beforeBest > 18 { hitSurvivedFromOver18 = true }
+        if beforeBest > 19 { hitSurvivedFromOver19 = true }
+        if beforeBest == 20 && hand.bestValue == 21 {
+            hitFrom20To21 = true
+        }
+
         await playDealerTurnAsync()
     }
 

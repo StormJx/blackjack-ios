@@ -46,6 +46,7 @@
 - [x] **UX5**：娱乐局末展示本会话 `FastSessionStats`
 - [x] **UX6**：窥视倒计时条 + 娱乐道具首次引导 alert
 - [x] **UX7**：局末可「查看牌面」收起，再「显示结果」
+- [x] **P6**：加倍（仅前两张 + 只补一张；闯关/娱乐；不足额禁用；不计入全下成就）
 
 ### 成就 / 体验
 - [x] **UX3**：局末解锁改为卡片队列（非长 toast）
@@ -71,7 +72,7 @@
 | P8 横竖屏 | 允许横屏与布局 | 见 P8 文档 |
 | F10 正片录音 | 录音级素材替换 | 基名不变 |
 | C5 | 对道具战模式 | 须先锁产品 |
-| P6 | 建议先「加倍」单切片；分牌/保险/投降更后 | 须锁规则 |
+| P6+ | 投降 → 保险 → 分牌（分牌最后） | 须锁规则；加倍已落地 |
 | 娱乐阶梯数值 | 试玩后再调 | 当前表保持 |
 
 **明确不做：** 闯关启用玩法道具；娱乐计入闯关成就；默认模式内独立「练习分」。
@@ -81,8 +82,8 @@
 ## 工程要点
 
 - `PlayStyle` / `PropStore` / `ChallengeProgress` / `EntertainmentProgress` / `CosmeticsStore` / `TableLimitPreset` / `CutCardMode` / `ActivePreDealAllInUnlock` / `SessionConfiguration` / `HelpView` / `StatsView`
-- `ChipBank`：会话起始筹码 + **本会话全下解锁局数**；退出清空持久化键
-- `BlackjackGame`：可注入 `GameTiming` / `GameFeedbackServing`；退出调用 `cancelPendingWork()`
+- `ChipBank`：会话起始筹码 + **本会话全下解锁局数**；退出清空；**P6** `doubleDown()`（足额再押；不置 `activeBetWasAllIn`）
+- `BlackjackGame`：可注入 `GameTiming` / `GameFeedbackServing`；退出调用 `cancelPendingWork()`；**P6** `doubleDown()`（仅两张补一张）
 - `Deck.returnCardToShoe`：回退 `dealtCount`；非空鞋禁止立即原样抽回
 - 推送前：`./scripts/check-before-push.sh`；勿提交 `VERSION_ROADMAP.txt` / `.env` / 密钥
 
@@ -90,11 +91,12 @@
 
 ## 建议下一步（按优先级）
 
-1. 讨论 **P6「加倍」** 规则后单切片；完整分牌 / C5 / F10 正片后置  
-2. **UX9**（可选）设置变更全局提示  
-3. P8 横竖屏（第一切片已完成后可评估）
+1. **UX9**（可选）设置变更全局提示  
+2. P8 横竖屏（第一切片已完成后可评估）  
+3. 讨论 **P6+** 投降 / 保险 / 分牌（须先锁规则）
 
-**本批已推送：** `c7901ff`（UX1–UX8）；Tag `v1.11.0`。此前工程批：`7cb0e62`（Q1 / P8-1 / Q2）。
+**本批已推送：** `c7901ff`（UX1–UX8）；Tag `v1.11.0`。此前工程批：`7cb0e62`（Q1 / P8-1 / Q2）。  
+**本会话增量：** P6 加倍（本提交推送后同步检查点基线）。
 
 ---
 
@@ -112,3 +114,4 @@
 | 2026-07-28 | 已推送 `d443bfa`；检查点基线同步 `3d575d6` |
 | 2026-07-28 | 已推送 `7cb0e62`（Q1 / P8-1 / Q2）；检查点基线同步 |
 | 2026-07-28 | 已推送 `c7901ff`（UX1–UX8）；Tag `v1.11.0`；检查点基线同步 |
+| 2026-07-31 | P6 加倍落地并推送 |

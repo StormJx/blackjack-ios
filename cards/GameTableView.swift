@@ -15,6 +15,8 @@ struct GameTableView: View {
     let showRoundEndPanel: Bool
     let canHit: Bool
     let canStand: Bool
+    let canDoubleDown: Bool
+    var doubleDownDisabledReason: String? = nil
     /// 娱乐模式 + 已解锁道具时为 true。
     let showsMidHandAllIn: Bool
     let canMidHandAllIn: Bool
@@ -38,6 +40,7 @@ struct GameTableView: View {
     var cardBack: CardBackStyle = .classicNavy
     let onHit: () -> Void
     let onStand: () -> Void
+    let onDoubleDown: () -> Void
     let onAllIn: () -> Void
     let onPeekHole: () -> Void
     let onSoft17Hit: () -> Void
@@ -98,7 +101,7 @@ struct GameTableView: View {
     }
 
     private var idleHint: String {
-        "确认下注后发牌；使用「要牌」「停牌」进行游戏。"
+        "确认下注后发牌；使用「要牌」「停牌」「加倍」进行游戏。"
     }
 
     private var tableTitle: some View {
@@ -305,6 +308,23 @@ struct GameTableView: View {
                 .opacity(canStand ? 1 : 0.55)
                 .saturation(canStand ? 1 : 0.2)
                 .accessibilityHint(canStand ? "停止要牌，进入庄家回合" : "当前不可停牌")
+
+                Button("加倍") {
+                    GameFeedback.shared.buttonTap()
+                    onDoubleDown()
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .frame(maxWidth: .infinity)
+                .tint(.green)
+                .disabled(!canDoubleDown)
+                .opacity(canDoubleDown ? 1 : 0.55)
+                .saturation(canDoubleDown ? 1 : 0.2)
+                .accessibilityHint(
+                    canDoubleDown
+                        ? "再押等额注码并只补一张牌"
+                        : (doubleDownDisabledReason ?? "当前不可加倍")
+                )
 
                 // 持有道具「见牌后再全下」时显示（逻辑见 ChipBank.goAllIn / PropStore）。
                 if showsMidHandAllIn {
