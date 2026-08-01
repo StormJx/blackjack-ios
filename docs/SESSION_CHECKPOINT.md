@@ -4,7 +4,7 @@
 > 成就：`docs/ACHIEVEMENTS.md` · 外观道具：`docs/COSMETICS_AND_PROPS.md`  
 > P8：`docs/P8_ORIENTATION_AND_A11Y.md` · 评审批次 backlog：`docs/ENGINEERING_REVIEW_BACKLOG.md`
 
-**基线：** `main` @（P6+ 保险功能提交；推送后以 `git log -1` 为准同步）  
+**基线：** `main` @ `ef95b0c`（「完成 P6+ 保险…」；含此前 `c5aa3ec` 投降；`cd32c31` P6 加倍；`c7901ff` UX1–UX8 / Tag `v1.11.0`；`7cb0e62` Q1/P8-1/Q2；上一正式里程碑 `v1.10.0`）  
 **仓库：** https://github.com/StormJx/blackjack-ios  
 **平台：** iOS 17.0+；庄家小于 17 要牌、大于等于 17 停（软 17 同停）；音效基名 deal/flip/shuffle/win/lose/push
 
@@ -106,7 +106,7 @@
 2. 广告上架方案后置专篇（已备案）  
 3. P6+ 分牌 / P8 横竖屏 / C5 / F10 正片更后
 
-**本批：** P6+ 保险（明 A / 半注 2:1 / Ace peek / 侧注结算）。此前已推送：`c5aa3ec`（投降）；`cd32c31`（加倍）；`c7901ff`（UX1–UX8；Tag `v1.11.0`）；`7cb0e62`（Q1 / P8-1 / Q2）。
+**本批已推送：** `ef95b0c`（P6+ 保险）。此前：`c5aa3ec`（投降）；`cd32c31`（加倍）；`c7901ff`（UX1–UX8；Tag `v1.11.0`）；`7cb0e62`（Q1 / P8-1 / Q2）。
 
 ---
 
@@ -127,4 +127,4 @@
 | 2026-07-31 | 已推送 `cd32c31`（P6 加倍）；检查点基线同步 |
 | 2026-08-01 | 产品方向备案：干净练习 + 免费可轻度广告（后置）；广告写入未完成表 |
 | 2026-08-01 | 已推送 `c5aa3ec`（P6+ 投降 + 主操作两行）；检查点基线同步 |
-| 2026-08-01 | 完成 P6+ 保险（明 A / 半注 2:1 / Ace peek / 侧注结算） |
+| 2026-08-01 | 已推送 `ef95b0c`（P6+ 保险）；检查点基线同步 |
