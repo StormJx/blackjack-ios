@@ -18,9 +18,9 @@ docs/P8_ORIENTATION_AND_A11Y.md。用中文回复。
 一、当前基线
 ================================================================================
 GitHub：https://github.com/StormJx/blackjack-ios
-分支 main（以 git log -1 为准；推送前可能仍 ahead of origin）
+分支 main @ `94d2ddb`（A1+A2；若尚未 push 则本地 ahead of origin）
   - 已推送里程碑：Tag `v1.11.1` @ `12234c5`（UX9 + OPTIMIZATION_GUIDE）
-  - 本批本地：A1 SessionCoordinator + A2 DataSchema（与检查点/本提示词同批提交）
+  - 本批：`94d2ddb` A1 SessionCoordinator + A2 DataSchema + 本提示词/检查点
   - 更早：`ef95b0c` 保险；`c5aa3ec` 投降；`cd32c31` 加倍；`c7901ff` UX1–UX8 / Tag `v1.11.0`
 iOS 最低 17.0；庄家 <17 要牌、≥17 停（软 17 同停）；GameFeedback 音效基名约定不变
   （deal/flip/shuffle/win/lose/push；缺文件静默跳过）。

@@ -5,8 +5,8 @@
 > P8：`docs/P8_ORIENTATION_AND_A11Y.md` · 评审批次 backlog：`docs/ENGINEERING_REVIEW_BACKLOG.md`  
 > 后续优化执行路线：`docs/OPTIMIZATION_GUIDE.md`（A 工程加固 / L 上架 / T 教学轨 / M 变现 / R 留存）
 
-**基线：** `main` @ `12234c5`（UX9 + `OPTIMIZATION_GUIDE`）/ Tag `v1.11.1`；此前功能主体含 `ef95b0c`（P6+ 保险）  
-含此前：`c5aa3ec` 投降；`cd32c31` 加倍；`c7901ff` UX1–UX8 / Tag `v1.11.0`；`7cb0e62` Q1/P8-1/Q2；更早 `v1.10.0`  
+**基线：** `main` @ `94d2ddb`（A1 SessionCoordinator + A2 DataSchema；本地 ahead，待 push）  
+已推送里程碑：Tag `v1.11.1` @ `12234c5`（UX9）；此前含 `ef95b0c` 保险 / `c5aa3ec` 投降 / `cd32c31` 加倍 / `c7901ff` UX1–UX8  
 **仓库：** https://github.com/StormJx/blackjack-ios  
 **平台：** iOS 17.0+；庄家小于 17 要牌、大于等于 17 停（软 17 同停）；音效基名 deal/flip/shuffle/win/lose/push  
 **新窗交接提示词：** `docs/NEXT_SESSION_PROMPT.md`（复制其中「提示词正文」到新 Agent 会话即可）
@@ -141,3 +141,4 @@
 | 2026-08-01 | 已推送 `12234c5` / Tag `v1.11.1`；检查点基线同步 |
 | 2026-08-01 | A1：`SessionCoordinator` + 单测；建议下一刀 A2 |
 | 2026-08-01 | A2：`DataSchema` + 单测；建议下一刀 A3；A1+A2 待统一提交 |
+| 2026-08-01 | A1+A2 统一提交；更新 `NEXT_SESSION_PROMPT.md` 新窗提示词 |
