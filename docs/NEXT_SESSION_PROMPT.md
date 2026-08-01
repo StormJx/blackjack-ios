@@ -16,9 +16,9 @@
 一、当前基线（已推送）
 ================================================================================
 GitHub：https://github.com/StormJx/blackjack-ios
-分支 main @ commit `9743d0c`（检查点同步至 ef95b0c）
-  - 功能主体：`ef95b0c`「完成 P6+ 保险：庄家明 A 半注 2:1，Ace peek 后结算。」
-  - 含：`c5aa3ec`（P6+ 投降）；`cd32c31`（P6 加倍）；`c7901ff`（UX1–UX8）；`7cb0e62`（Q1 / P8-1 / Q2）
+分支 main @ 功能主体 commit `ef95b0c`（「完成 P6+ 保险…」）+ 检查点 `9743d0c`
+  - 另有交接文档提交含本文件 `docs/NEXT_SESSION_PROMPT.md`（以当前 HEAD 为准）
+  - 含：`c5aa3ec`（投降）；`cd32c31`（加倍）；`c7901ff`（UX1–UX8）；`7cb0e62`（Q1 / P8-1 / Q2）
   - Tag `v1.11.0` 为上一正式里程碑（UX1–UX8）；`v1.10.0` 为更早正式里程碑
 iOS 最低 17.0；庄家 <17 要牌、≥17 停（软 17 同停）；GameFeedback 音效基名约定不变
   （deal/flip/shuffle/win/lose/push；缺文件静默跳过）。

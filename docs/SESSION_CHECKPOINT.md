@@ -4,11 +4,11 @@
 > 成就：`docs/ACHIEVEMENTS.md` · 外观道具：`docs/COSMETICS_AND_PROPS.md`  
 > P8：`docs/P8_ORIENTATION_AND_A11Y.md` · 评审批次 backlog：`docs/ENGINEERING_REVIEW_BACKLOG.md`
 
-**基线：** `main` @ `9743d0c`（检查点同步；功能主体 `ef95b0c`「完成 P6+ 保险…」）  
-含此前：`c5aa3ec` 投降；`cd32c31` P6 加倍；`c7901ff` UX1–UX8 / Tag `v1.11.0`；`7cb0e62` Q1/P8-1/Q2；更早正式里程碑 `v1.10.0`  
+**基线：** 功能主体 `main` @ `ef95b0c`（「完成 P6+ 保险…」）+ 检查点 `9743d0c`；交接文档见 `docs/NEXT_SESSION_PROMPT.md`（推送后以 `git log -1` 为准）  
+含此前：`c5aa3ec` 投降；`cd32c31` 加倍；`c7901ff` UX1–UX8 / Tag `v1.11.0`；`7cb0e62` Q1/P8-1/Q2；更早 `v1.10.0`  
 **仓库：** https://github.com/StormJx/blackjack-ios  
 **平台：** iOS 17.0+；庄家小于 17 要牌、大于等于 17 停（软 17 同停）；音效基名 deal/flip/shuffle/win/lose/push  
-**新窗交接提示词：** `docs/NEXT_SESSION_PROMPT.md`（复制整份到新 Agent 会话即可）
+**新窗交接提示词：** `docs/NEXT_SESSION_PROMPT.md`（复制其中「提示词正文」到新 Agent 会话即可）
 
 ---
 
@@ -110,7 +110,7 @@
 4. 广告上架方案专篇（插点/频控/ATT）— 后置；未点名不接 SDK  
 5. 更后：P6+ 分牌（须先锁多手状态机）/ P8 横屏 / C5 / F10 正片  
 
-**本批已推送：** `ef95b0c`（P6+ 保险）+ `9743d0c`（检查点同步）。此前：`c5aa3ec`（投降）；`cd32c31`（加倍）；`c7901ff`（UX1–UX8；Tag `v1.11.0`）；`7cb0e62`（Q1 / P8-1 / Q2）。
+**功能已推送：** `ef95b0c`（P6+ 保险）+ `9743d0c`（检查点）。**交接文档：** `NEXT_SESSION_PROMPT.md`（请 push 后开新窗）。此前：`c5aa3ec` / `cd32c31` / `c7901ff` / `7cb0e62`。
 
 ---
 
