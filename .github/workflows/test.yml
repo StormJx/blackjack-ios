@@ -1,0 +1,67 @@
+# A3: unit tests on push / PR. No secrets required.
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  unit-tests:
+    name: cardsTests (iOS Simulator)
+    runs-on: macos-15
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show Xcode
+        run: xcodebuild -version
+
+      - name: Resolve simulator destination
+        id: sim
+        run: |
+          set -euo pipefail
+          # Prefer names common on macos-15 runners; fall back to first available iPhone.
+          DESTINATION=""
+          for name in "iPhone 16" "iPhone 15" "iPhone 17" "iPhone SE (3rd generation)"; do
+            if xcrun simctl list devices available | grep -F "$name (" >/dev/null; then
+              DESTINATION="platform=iOS Simulator,name=${name}"
+              break
+            fi
+          done
+          if [ -z "$DESTINATION" ]; then
+            name="$(xcrun simctl list devices available \
+              | awk -F ' \\(' '/iPhone /{gsub(/^[[:space:]]+/, "", $1); print $1; exit}')"
+            if [ -n "$name" ]; then
+              DESTINATION="platform=iOS Simulator,name=${name}"
+            fi
+          fi
+          if [ -z "$DESTINATION" ]; then
+            echo "No iPhone simulator available" >&2
+            xcrun simctl list devices available >&2
+            exit 1
+          fi
+          echo "destination=${DESTINATION}" >> "$GITHUB_OUTPUT"
+          echo "Using: ${DESTINATION}"
+
+      - name: Run unit tests
+        run: |
+          set -euo pipefail
+          xcodebuild test \
+            -project cards.xcodeproj \
+            -scheme cards \
+            -destination "${{ steps.sim.outputs.destination }}" \
+            -only-testing:cardsTests \
+            -resultBundlePath TestResults.xcresult \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults
+          path: TestResults.xcresult
+          if-no-files-found: ignore

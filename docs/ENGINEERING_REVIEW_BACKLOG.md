@@ -30,13 +30,14 @@
 | P6+ 保险 | 明 A；半注 2:1；Ace peek；全下禁；侧注结算；不做 Even Money |
 | A1 | `SessionCoordinator`：局末结算/成就/进度同步可单测；欢迎页 sync 收敛 |
 | A2 | `DataSchema`：持久化版本号；Store 前迁移；改结构须升版本 |
+| A3 | GitHub Actions CI：`.github/workflows/test.yml` + 共享 `cards` scheme；仅跑 `cardsTests` |
 
 ---
 
 ## P0 / 高优先级（下一刀优先）
 
-（工程 P0、UX1–UX9、P6、P6+、A1、A2 已完成。）  
-**建议下一刀：A3**（GitHub Actions CI，见 `docs/OPTIMIZATION_GUIDE.md`）。交接提示：`docs/NEXT_SESSION_PROMPT.md`。
+（工程 P0、UX1–UX9、P6、P6+、A1–A3 已完成。）  
+**建议下一刀：** 可选保险实机抽查；或 A4（成就判定去重，可搭刀）/ L1 本地化（见 `docs/OPTIMIZATION_GUIDE.md`）。交接提示：`docs/NEXT_SESSION_PROMPT.md`。
 
 ---
 
@@ -92,3 +93,4 @@
 | 2026-08-01 | UX9 完成；建议下一刀 A1（见 OPTIMIZATION_GUIDE） |
 | 2026-08-01 | A1 完成；建议下一刀 A2 |
 | 2026-08-01 | A2 完成；建议下一刀 A3 |
+| 2026-08-01 | A3 完成：CI workflow + 共享 scheme；建议下一刀 A4 搭刀 / L1 / 保险抽查 |

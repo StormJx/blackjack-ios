@@ -5,7 +5,7 @@
 > P8：`docs/P8_ORIENTATION_AND_A11Y.md` · 评审批次 backlog：`docs/ENGINEERING_REVIEW_BACKLOG.md`  
 > 后续优化执行路线：`docs/OPTIMIZATION_GUIDE.md`（A 工程加固 / L 上架 / T 教学轨 / M 变现 / R 留存）
 
-**基线：** `main` @ `94d2ddb`（A1 SessionCoordinator + A2 DataSchema；本地 ahead，待 push）  
+**基线：** `main` @ `94d2ddb` + 本批未提交 A3（CI）；本地 ahead，待 commit/push  
 已推送里程碑：Tag `v1.11.1` @ `12234c5`（UX9）；此前含 `ef95b0c` 保险 / `c5aa3ec` 投降 / `cd32c31` 加倍 / `c7901ff` UX1–UX8  
 **仓库：** https://github.com/StormJx/blackjack-ios  
 **平台：** iOS 17.0+；庄家小于 17 要牌、大于等于 17 停（软 17 同停）；音效基名 deal/flip/shuffle/win/lose/push  
@@ -65,6 +65,7 @@
 - [x] **Q2**：`GameTiming` / `GameFeedbackServing` 注入；`SessionConfiguration`；`cancelPendingWork()`；天然 BJ / hit 爆牌 / 软 17 默认停与道具要 / 牌尽 fallback 单测
 - [x] **A1**：`SessionCoordinator` 抽取局末结算/成就/进度/卡背同步；欢迎页 `syncOnAppAppear` / `syncProgressAndCosmetics`；`SessionCoordinatorTests` 四类场景
 - [x] **A2**：`DataSchema` 持久化版本号（`currentVersion = 1`）；`cardsApp.init` 在 Store 之前 `migrateIfNeeded`；改持久化结构须升版本并写 `runMigrations`；`DataSchemaTests`
+- [x] **A3**：GitHub Actions CI（`.github/workflows/test.yml`：`macos-15`，push/PR 触发，动态解析 iPhone 模拟器，`-only-testing:cardsTests`）；补共享 scheme `cards.xcodeproj/xcshareddata/xcschemes/cards.xcscheme`；无 secrets；本地单测已绿
 
 ### 规划入库（效果未接线）
 - [x] P8 横竖屏 → 见 `docs/P8_ORIENTATION_AND_A11Y.md`（横屏仍后置）
@@ -103,19 +104,20 @@
 - `RoundSettlement`：投降退半注（向下取整）；保险侧注先于主注结算（2:1 / 未中）
 - `SessionInsurancePanel`：买保险 / 不买
 - `Deck.returnCardToShoe`：回退 `dealtCount`；非空鞋禁止立即原样抽回
+- CI：`.github/workflows/test.yml`（仅 `cardsTests`）；共享 scheme 须入库
 - 推送前：`./scripts/check-before-push.sh`；勿提交 `VERSION_ROADMAP.txt` / `.env` / 密钥
 
 ---
 
 ## 建议下一步（按优先级）
 
-1. **A3（推荐下一刀）**：GitHub Actions CI（见 `docs/OPTIMIZATION_GUIDE.md`）  
+1. **推送本批 A3** 后确认 GitHub Actions 跑绿（验收）  
 2. **保险实机抽查**（可选、不改代码）：明 A 买/不买、全下禁买、peek 后窥视、局末盈亏合计  
-3. 娱乐/闯关阶梯：试玩采样后再调数值（勿空改）  
-4. 广告上架方案专篇（插点/频控/ATT）— 后置；未点名不接 SDK  
-5. 更后：P6+ 分牌（须先锁多手状态机）/ P8 横屏 / C5 / F10 正片  
+3. **A4**（可搭刀）：成就「险中求胜」判定去重；或 **L1** 本地化底座（上架准备）  
+4. 娱乐/闯关阶梯：试玩采样后再调数值（勿空改）  
+5. 更后：L2 分牌（须先锁产品）/ T 教学轨 / 广告专篇 / P8 横屏 / C5 / F10 正片  
 
-**已推送里程碑：** `12234c5` / Tag `v1.11.1`（UX9）。**本批：** A1+A2（以 `git log -1` 为准；push 后更新基线）。**交接：** `NEXT_SESSION_PROMPT.md` · 路线：`OPTIMIZATION_GUIDE.md`。
+**本批待提交：** A3（CI workflow + 共享 scheme + 文档）。此前：`94d2ddb`（A1+A2，若尚未 push 一并推）。**已推送里程碑：** Tag `v1.11.1` @ `12234c5`。**交接：** `NEXT_SESSION_PROMPT.md` · 路线：`OPTIMIZATION_GUIDE.md`。
 
 ---
 
@@ -141,4 +143,5 @@
 | 2026-08-01 | 已推送 `12234c5` / Tag `v1.11.1`；检查点基线同步 |
 | 2026-08-01 | A1：`SessionCoordinator` + 单测；建议下一刀 A2 |
 | 2026-08-01 | A2：`DataSchema` + 单测；建议下一刀 A3；A1+A2 待统一提交 |
-| 2026-08-01 | A1+A2 统一提交；更新 `NEXT_SESSION_PROMPT.md` 新窗提示词 |
+| 2026-08-01 | A1+A2 统一提交 `94d2ddb`；更新 `NEXT_SESSION_PROMPT.md`；检查点基线同步 |
+| 2026-08-01 | A3：GitHub Actions CI + 共享 `cards` scheme；建议 push 后确认 Actions 绿 |

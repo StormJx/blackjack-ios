@@ -12,7 +12,7 @@
 | 顺序 | 阶段 | 内容 | 前置 |
 |------|------|------|------|
 | 0 | 既定 backlog | ~~UX9 设置提示统一~~ **已完成** | — |
-| 1 | A 工程加固 | ~~A1~~ ~~A2~~ **已完成** → A3（A4/A5 可穿插；A6 长线） | — |
+| 1 | A 工程加固 | ~~A1~~ ~~A2~~ ~~A3~~ **已完成** → A4/A5 可穿插；A6 长线 | — |
 | 2 | L 上架准备 | L1 本地化底座 → L2 分牌 → L3 合规 → L4 轻量统计 → L5 素材 | A2 建议先行 |
 | 3 | T 教学轨 | T1 策略引擎 → T2 局末复盘 → T3 正确率统计 → T4 实时提示 → T5 算牌训练 | A1（复盘挂局末编排） |
 | 4 | M 变现 | M1 广告 → M2 去广告 IAP → M3 外观 IAP | L3（ATT/隐私） |
@@ -66,7 +66,8 @@
 2. push / PR 触发；缓存 DerivedData 可后补。
 3. 确认工作流**不需要**任何 secrets（本工程无密钥依赖）；`VERSION_ROADMAP.txt` 已 gitignore，不会进 CI。
 
-**验收**：main 上跑绿一次。**规模**：小。**风险**：低。
+**验收**：main 上跑绿一次。**规模**：小。**风险**：低。  
+**状态：已完成（2026-08-01）** — `.github/workflows/test.yml`（`macos-15`，动态解析 iPhone 模拟器，`-only-testing:cardsTests`）；补共享 scheme `cards.xcodeproj/xcshareddata/xcschemes/cards.xcscheme`（原先仅用户态，CI 会找不到）；本地 `xcodebuild test` 已绿。推送后须确认 Actions 跑绿。
 
 ### A4 成就判定去重（顺手刀）
 
@@ -220,3 +221,4 @@ App 图标全尺寸、截图（6.7"/6.1" 必备）、副标题与关键词（结
 | 2026-08-01 | UX9 完成（`AppSettings.sessionLockedSettingsHint` + 设置页「生效时机」）；下一刀建议 A1 |
 | 2026-08-01 | A1 完成：`SessionCoordinator` + `SessionCoordinatorTests`；下一刀建议 A2 |
 | 2026-08-01 | A2 完成：`DataSchema` + `DataSchemaTests`；下一刀建议 A3 |
+| 2026-08-01 | A3 完成：GitHub Actions CI + 共享 `cards` scheme；下一刀建议 A4 搭刀或 L1 / 保险抽查 |
