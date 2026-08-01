@@ -1,7 +1,7 @@
 # 新会话交接提示词（复制下方「提示词正文」整段到新 Agent 窗口）
 
 > 维护说明：功能切片推送后请同步改本文件基线 / 已完成 / 建议下一刀。  
-> 配套：`docs/SESSION_CHECKPOINT.md` · `VERSION_ROADMAP.txt`（本地）· `docs/ENGINEERING_REVIEW_BACKLOG.md`
+> 配套：`docs/SESSION_CHECKPOINT.md` · `docs/OPTIMIZATION_GUIDE.md` · `VERSION_ROADMAP.txt`（本地）· `docs/ENGINEERING_REVIEW_BACKLOG.md`
 
 ---
 
@@ -10,20 +10,23 @@
 ```
 你是 iOS（SwiftUI + Swift）开发助手。工作区是 blackjack-ios 工程。
 仓库根目录有本地文件 VERSION_ROADMAP.txt（已 gitignore，勿推送 GitHub）。
-请先阅读：docs/SESSION_CHECKPOINT.md、VERSION_ROADMAP「当前检查点」、docs/ENGINEERING_REVIEW_BACKLOG.md、docs/ACHIEVEMENTS.md、docs/COSMETICS_AND_PROPS.md、docs/P8_ORIENTATION_AND_A11Y.md。用中文回复。
+请先阅读：docs/SESSION_CHECKPOINT.md、docs/OPTIMIZATION_GUIDE.md、VERSION_ROADMAP「当前检查点」、
+docs/ENGINEERING_REVIEW_BACKLOG.md、docs/ACHIEVEMENTS.md、docs/COSMETICS_AND_PROPS.md、
+docs/P8_ORIENTATION_AND_A11Y.md。用中文回复。
 
 ================================================================================
-一、当前基线（已推送）
+一、当前基线
 ================================================================================
 GitHub：https://github.com/StormJx/blackjack-ios
-分支 main @ 功能主体 commit `ef95b0c`（「完成 P6+ 保险…」）+ 检查点 `9743d0c`
-  - 另有交接文档提交含本文件 `docs/NEXT_SESSION_PROMPT.md`（以当前 HEAD 为准）
-  - 含：`c5aa3ec`（投降）；`cd32c31`（加倍）；`c7901ff`（UX1–UX8）；`7cb0e62`（Q1 / P8-1 / Q2）
-  - Tag `v1.11.0` 为上一正式里程碑（UX1–UX8）；`v1.10.0` 为更早正式里程碑
+分支 main（以 git log -1 为准；推送前可能仍 ahead of origin）
+  - 已推送里程碑：Tag `v1.11.1` @ `12234c5`（UX9 + OPTIMIZATION_GUIDE）
+  - 本批本地：A1 SessionCoordinator + A2 DataSchema（与检查点/本提示词同批提交）
+  - 更早：`ef95b0c` 保险；`c5aa3ec` 投降；`cd32c31` 加倍；`c7901ff` UX1–UX8 / Tag `v1.11.0`
 iOS 最低 17.0；庄家 <17 要牌、≥17 停（软 17 同停）；GameFeedback 音效基名约定不变
   （deal/flip/shuffle/win/lose/push；缺文件静默跳过）。
 推送前须跑 ./scripts/check-before-push.sh；禁止提交 VERSION_ROADMAP.txt / .env / 密钥。
 未点名勿擅自大改；可单测逻辑须补测。
+后续优化按 docs/OPTIMIZATION_GUIDE.md 路线执行（一次一刀）。
 
 --------------------------------------------------------------------------------
 产品方向（重要）
@@ -48,64 +51,68 @@ iOS 最低 17.0；庄家 <17 要牌、≥17 停（软 17 同停）；GameFeedbac
 - 关卡/阶梯进度在 StatsView（F2 已完成），勿塞回欢迎页。
 
 --------------------------------------------------------------------------------
-已完成（细节以 docs/SESSION_CHECKPOINT.md 为准）
+已完成（细节以 docs/SESSION_CHECKPOINT.md / OPTIMIZATION_GUIDE 为准）
 --------------------------------------------------------------------------------
-【至 v1.11 / UX1–UX8 / 工程批】核心玩法、筹码、音效骨架、道具、卡背、闯关/娱乐进阶、
-Q1/P8-1/Q2、UX1–UX8 等（见检查点）。
+【至 v1.11.1】核心玩法、筹码、道具、卡背、闯关/娱乐进阶、Q1/P8-1/Q2、UX1–UX9、
+P6 加倍、P6+ 投降/保险、OPTIMIZATION_GUIDE 入库。
 
-【P6 @ cd32c31】加倍：仅前两张 + 只补一张；闯关+娱乐；余额不足禁用；加倍归零不计入全下成就。
+【UX9 @ v1.11.1】设置页「生效时机」：对局中修改不生效，返回主页后新开局生效；
+牌副/切牌/桌限/全下解锁变更高亮同文案；音效/触觉/全下确认/卡背可立即生效。
 
-【P6+ 投降 @ c5aa3ec】
-- 仅玩家回合恰好两张；任意明牌可投降；退半注（向下取整）
-- 闯关+娱乐；局末文案「投降，退回半注」；统计记为输（断连胜；计入会话局数）
-- 全下（activeBetWasAllIn）禁用投降；已加倍/已要牌不可投降
-- RoundOutcome.playerSurrender；主操作两行：要牌|停牌 / 加倍|投降|[全下]
+【A1 SessionCoordinator】
+- cards/SessionCoordinator.swift：settleRound / recordRoundFinished / finishRound
+- syncProgressAndCosmetics / syncOnAppAppear（欢迎页 onAppear / onEndSession 收敛）
+- GameSessionView 局末改调 coordinator；行为与抽前一致
+- cardsTests/SessionCoordinatorTests：闯关赢局记账、大赢升关+卡背、娱乐打穿不碰闯关、
+  保险净盈亏 0、无 outcome 退注不记局
+- 注：GameSessionView UI 仍约 600 行；进一步拆面板见指南 A5，不在 A1 强行削行数
 
-【P6+ 保险 @ ef95b0c】（已锁定规则，勿擅自改）
-- 仅庄家明牌为 A 时提供；半注（向下取整）；赔率 2:1；闯关+娱乐
-- 全下不可买保险；余额不足禁用
-- 发牌后 phase.insuranceOffer → SessionInsurancePanel（买保险 / 不买）
-- 决策后 Ace peek：庄家 BJ 则直接结算主注为输；已买保险则 lastInsuranceWon=true（2:1）
-- 非 BJ：进入玩家回合；保险侧注局末按「未中」结算；窥视道具仅玩家回合可用
-- 不做 Even Money；不做「保险券」道具；分牌未做
-- ChipBank.activeInsurance（杀进程退回）；RoundSettlement 先保险后主注；局末合计盈亏
-- 关键文件：cards/SessionInsurancePanel.swift
+【A2 DataSchema】
+- cards/DataSchema.swift：currentVersion = 1；键 dataSchema.version
+- migrateIfNeeded → freshInstall / alreadyCurrent / migrated；runMigrations 分步钩子
+- cardsApp.init：先 DataSchema.migrateIfNeeded()，再创建各 Store（迁移须在读盘前）
+- 约定：改 UserDefaults 键/语义必须递增 currentVersion 并写 applyMigrationStep
+- cardsTests/DataSchemaTests：三路径 + runMigrations 安全
+
+【P6+ 保险 @ ef95b0c】（已锁定，勿擅自改）明 A；半注 2:1；Ace peek；全下禁；无 Even Money
 
 ================================================================================
-二、待后续完成（须用户点名后再做）
+二、待后续完成（须用户点名后再做）— 见 OPTIMIZATION_GUIDE
 ================================================================================
 优先建议：
-1. UX9 设置变更「对局中不生效」全局提示（推荐下一刀；小切片）
-2. 可选：保险路径实机抽查（明 A / 全下禁买 / 局末盈亏）；有 bug 再修
-3. 娱乐/闯关阶梯数值：试玩采样后再调（勿空改）
-4. 广告上架方案专篇（插点/频控/ATT）— 后置
-5. P6+ 分牌（多手状态机，须先锁产品）更后
-6. P8 横竖屏 / C5 对道具战 / F10 正片录音 — 更后
+1. A3 GitHub Actions CI（推荐下一刀；小切片）— .github/workflows/test.yml，xcodebuild test
+2. 可选：保险路径实机抽查；有 bug 再修
+3. A4 成就判定去重（可搭刀）/ A5 GameTableView 道具参数收敛（新道具或 C5 前）
+4. L1 本地化 String Catalog（上架准备）；L2 分牌须先锁产品
+5. T 教学轨（基础策略引擎等）— 差异化，但后置于工程 A3 / 上架准备讨论
+6. 广告专篇 / P8 横屏 / C5 / F10 正片 — 更后
 
-其它后置：见 docs/ENGINEERING_REVIEW_BACKLOG.md
+其它后置：见 docs/ENGINEERING_REVIEW_BACKLOG.md 与 docs/OPTIMIZATION_GUIDE.md
 
 已明确取消、勿再做：
   - 默认模式内独立「练习分」
   - 把娱乐对局计入闯关成就
   - 在闯关模式启用玩法道具
   - 本刀不做 Even Money（除非用户重新点名讨论）
+  - 卖筹码 / 广告换筹码
 
 ================================================================================
 三、本会话工作方式
 ================================================================================
-1. 先确认已读 SESSION_CHECKPOINT / ENGINEERING_REVIEW_BACKLOG / 路线图检查点 /
-   成就与道具 / P8，用简短中文复述基线与待做项。
-2. 与用户从第二节点名后再实现；未点名不改。
+1. 先确认已读 SESSION_CHECKPOINT / OPTIMIZATION_GUIDE / ENGINEERING_REVIEW_BACKLOG /
+   路线图检查点 / 成就与道具 / P8，用简短中文复述基线与待做项。
+2. 与用户从第二节点名后再实现；未点名不改；按 OPTIMIZATION_GUIDE 一次一刀。
 3. 若做道具：仅娱乐模式接线；闯关保持禁用。
 4. 若做卡背：只做外观选用/解锁，不改赔率与牌值。
-5. 改完：可单测补测 → check-before-push.sh → 用户要求才 commit/push；
+5. 改持久化结构：必须升 DataSchema.currentVersion 并写迁移。
+6. 改完：可单测补测 → check-before-push.sh → 用户要求才 commit/push；
    勿提交 VERSION_ROADMAP.txt。
-6. 额外体验优化单独罗列，便于验收。
-7. 欢迎页保持简洁：不要把大段规则/进度说明塞回主页；说明进 HelpView / StatsView。
-8. 一个功能切片结束后建议用户同步检查点；用户要求 push 前必须跑 check-before-push.sh。
+7. 额外体验优化单独罗列，便于验收。
+8. 欢迎页保持简洁；说明进 HelpView / StatsView。
+9. 一个功能切片结束后建议用户同步检查点；用户要求 push 前必须跑 check-before-push.sh。
 
 请先确认已读上述内容，然后等待我点名要讨论或要实现的项。
-（建议下一刀：UX9 设置「对局中不生效」全局提示；或先实机抽查保险再决定。）
+（建议下一刀：A3 GitHub Actions CI；见 docs/OPTIMIZATION_GUIDE.md。）
 ```
 
 ---
@@ -114,10 +121,11 @@ Q1/P8-1/Q2、UX1–UX8 等（见检查点）。
 
 | 优先级 | 项 | 为何现在做 | 步骤提纲 |
 |--------|----|------------|----------|
-| 1 | **A1** | `GameSessionView` 局末编排无单测；分牌前必须拆 | 见 `docs/OPTIMIZATION_GUIDE.md` A1 |
-| 2 | 保险实机抽查 | 刚上线，防回归 | 明 A 买/不买；全下禁买；peek 后才能窥视；庄家 BJ 盈亏约 0；未中后主注胜负合计 |
-| 3 | 阶梯采样 | 数值敏感，勿空改 | 试玩记录 → 再改 `ChallengeProgress` / `EntertainmentProgress` 表 |
-| 4 | 分牌 | 状态机大，须先产品锁 | 先讨论：同时两手 UI、注码、BJ/加倍/投降/保险与分牌顺序 → 再实现 |
-| 后置 | 广告专篇 / 横屏 / C5 / F10 | 产品或素材未齐 | 未点名不接 SDK、不改方向 |
+| 1 | **A3** | 无 CI，回归靠本地 | 见 `docs/OPTIMIZATION_GUIDE.md` A3；模拟器名以本机 `xcrun simctl` 为准（常用 iPhone 16） |
+| 2 | 保险实机抽查 | 防回归 | 明 A 买/不买；全下禁买；peek 后窥视；庄家 BJ 盈亏约 0 |
+| 3 | A4 / A5 | 小清理 / 参数收敛 | 可搭刀或 C5 前做 A5 |
+| 4 | L1 本地化 | 上架准备 | String Catalog 分批迁移 |
+| 5 | L2 分牌 | 须先产品锁 | 多手状态机；见 OPTIMIZATION_GUIDE L2 |
+| 后置 | T 教学轨 / 广告 / 横屏 / C5 / F10 | 产品或素材未齐 | 未点名不接 SDK |
 
-**明确不做：** 闯关开道具；娱乐进闯关成就；独立练习分；未讨论就做 Even Money / 分牌。
+**明确不做：** 闯关开道具；娱乐进闯关成就；独立练习分；未讨论就做 Even Money / 分牌；卖筹码。

@@ -5,7 +5,7 @@
 > P8：`docs/P8_ORIENTATION_AND_A11Y.md` · 评审批次 backlog：`docs/ENGINEERING_REVIEW_BACKLOG.md`  
 > 后续优化执行路线：`docs/OPTIMIZATION_GUIDE.md`（A 工程加固 / L 上架 / T 教学轨 / M 变现 / R 留存）
 
-**基线：** 功能主体 `main` @ `ef95b0c`（「完成 P6+ 保险…」）+ 检查点 `9743d0c`；交接文档见 `docs/NEXT_SESSION_PROMPT.md`（推送后以 `git log -1` 为准）  
+**基线：** `main` @ `12234c5`（UX9 + `OPTIMIZATION_GUIDE`）/ Tag `v1.11.1`；此前功能主体含 `ef95b0c`（P6+ 保险）  
 含此前：`c5aa3ec` 投降；`cd32c31` 加倍；`c7901ff` UX1–UX8 / Tag `v1.11.0`；`7cb0e62` Q1/P8-1/Q2；更早 `v1.10.0`  
 **仓库：** https://github.com/StormJx/blackjack-ios  
 **平台：** iOS 17.0+；庄家小于 17 要牌、大于等于 17 停（软 17 同停）；音效基名 deal/flip/shuffle/win/lose/push  
@@ -63,6 +63,8 @@
 - [x] **Q1**：`ChipBank.sessionRoundsCompleted` 与筹码同 suite 持久化；杀进程后全下解锁进度保留；恢复提示文案同步；主动退出清空；单测
 - [x] **P8-1** 无障碍第一切片：下注/局末可滚动 + 粘性主按钮；VoiceOver（点数/余额/注码/结果/要牌停牌/道具具体禁用原因）；欢迎标题动态字体；洗牌页尊重减弱动态效果；设置页去开发者音效文案
 - [x] **Q2**：`GameTiming` / `GameFeedbackServing` 注入；`SessionConfiguration`；`cancelPendingWork()`；天然 BJ / hit 爆牌 / 软 17 默认停与道具要 / 牌尽 fallback 单测
+- [x] **A1**：`SessionCoordinator` 抽取局末结算/成就/进度/卡背同步；欢迎页 `syncOnAppAppear` / `syncProgressAndCosmetics`；`SessionCoordinatorTests` 四类场景
+- [x] **A2**：`DataSchema` 持久化版本号（`currentVersion = 1`）；`cardsApp.init` 在 Store 之前 `migrateIfNeeded`；改持久化结构须升版本并写 `runMigrations`；`DataSchemaTests`
 
 ### 规划入库（效果未接线）
 - [x] P8 横竖屏 → 见 `docs/P8_ORIENTATION_AND_A11Y.md`（横屏仍后置）
@@ -94,7 +96,8 @@
 
 ## 工程要点
 
-- `PlayStyle` / `PropStore` / `ChallengeProgress` / `EntertainmentProgress` / `CosmeticsStore` / `TableLimitPreset` / `CutCardMode` / `ActivePreDealAllInUnlock` / `SessionConfiguration` / `HelpView` / `StatsView`
+- `PlayStyle` / `PropStore` / `ChallengeProgress` / `EntertainmentProgress` / `CosmeticsStore` / `TableLimitPreset` / `CutCardMode` / `ActivePreDealAllInUnlock` / `SessionConfiguration` / `SessionCoordinator` / `DataSchema` / `HelpView` / `StatsView`
+- **持久化约定：** 改 UserDefaults 键/语义时递增 `DataSchema.currentVersion` 并在 `runMigrations` 补迁移
 - `ChipBank`：会话起始筹码 + **本会话全下解锁局数**；退出清空；**P6** `doubleDown()`（足额再押；不置 `activeBetWasAllIn`）；**P6+** `placeInsurance()` / `activeInsurance`（中断退回）
 - `BlackjackGame`：可注入 `GameTiming` / `GameFeedbackServing`；退出调用 `cancelPendingWork()`；**P6** `doubleDown()`；**P6+** `surrender()` → `RoundOutcome.playerSurrender`；**P6+** `phase.insuranceOffer` + `resolveInsuranceDecision` + Ace peek → `lastInsuranceWon`
 - `RoundSettlement`：投降退半注（向下取整）；保险侧注先于主注结算（2:1 / 未中）
@@ -106,13 +109,13 @@
 
 ## 建议下一步（按优先级）
 
-1. **A1（推荐下一刀）**：抽取 `SessionCoordinator`（见 `docs/OPTIMIZATION_GUIDE.md`）  
+1. **A3（推荐下一刀）**：GitHub Actions CI（见 `docs/OPTIMIZATION_GUIDE.md`）  
 2. **保险实机抽查**（可选、不改代码）：明 A 买/不买、全下禁买、peek 后窥视、局末盈亏合计  
 3. 娱乐/闯关阶梯：试玩采样后再调数值（勿空改）  
 4. 广告上架方案专篇（插点/频控/ATT）— 后置；未点名不接 SDK  
 5. 更后：P6+ 分牌（须先锁多手状态机）/ P8 横屏 / C5 / F10 正片  
 
-**功能已推送：** `ef95b0c`（P6+ 保险）+ `9743d0c`（检查点）。**交接文档：** `NEXT_SESSION_PROMPT.md`（请 push 后开新窗）。此前：`c5aa3ec` / `cd32c31` / `c7901ff` / `7cb0e62`。
+**已推送里程碑：** `12234c5` / Tag `v1.11.1`（UX9）。**本批：** A1+A2（以 `git log -1` 为准；push 后更新基线）。**交接：** `NEXT_SESSION_PROMPT.md` · 路线：`OPTIMIZATION_GUIDE.md`。
 
 ---
 
@@ -135,3 +138,6 @@
 | 2026-08-01 | 已推送 `c5aa3ec`（P6+ 投降 + 主操作两行）；检查点基线同步 |
 | 2026-08-01 | 已推送 `ef95b0c`（P6+ 保险）+ `9743d0c`（检查点同步）；新增 `NEXT_SESSION_PROMPT.md` |
 | 2026-08-01 | UX9：设置「生效时机」统一提示；`OPTIMIZATION_GUIDE.md` 入库；建议下一刀 A1 |
+| 2026-08-01 | 已推送 `12234c5` / Tag `v1.11.1`；检查点基线同步 |
+| 2026-08-01 | A1：`SessionCoordinator` + 单测；建议下一刀 A2 |
+| 2026-08-01 | A2：`DataSchema` + 单测；建议下一刀 A3；A1+A2 待统一提交 |

@@ -55,20 +55,16 @@ struct ContentView: View {
                                 preset: appSettings.tableLimitPreset,
                                 unlockRounds: appSettings.preDealAllInUnlockRounds
                             ).applyToProcessGlobals()
-                            let leveledUp = challengeProgress.syncFromStats(
-                                dealerClears: statsStore.dealerBankClearCount,
-                                totalChipsWon: statsStore.totalChipsWon
-                            )
-                            let newlyBacks = cosmeticsStore.syncFromProgress(
-                                unlockedLevel: challengeProgress.unlockedLevel,
-                                dealerClears: statsStore.dealerBankClearCount,
-                                totalChipsWon: statsStore.totalChipsWon
+                            let sync = SessionCoordinator.syncProgressAndCosmetics(
+                                statsStore: statsStore,
+                                challengeProgress: challengeProgress,
+                                cosmeticsStore: cosmeticsStore
                             )
                             if showClearedHint {
                                 presentWelcomeNotice(ChipRules.sessionClearedReturnHomeHint)
-                            } else if leveledUp {
+                            } else if sync.leveledUp {
                                 presentWelcomeNotice("解锁\(challengeProgress.currentStage.title)")
-                            } else if let back = newlyBacks.first {
+                            } else if let back = sync.newlyUnlockedBacks.first {
                                 presentWelcomeNotice("卡背解锁：\(back.title)")
                             }
                         }
@@ -115,16 +111,12 @@ struct ContentView: View {
                     preset: appSettings.tableLimitPreset,
                     unlockRounds: appSettings.preDealAllInUnlockRounds
                 ).applyToProcessGlobals()
-                _ = challengeProgress.syncFromStats(
-                    dealerClears: statsStore.dealerBankClearCount,
-                    totalChipsWon: statsStore.totalChipsWon
+                SessionCoordinator.syncOnAppAppear(
+                    statsStore: statsStore,
+                    propStore: propStore,
+                    challengeProgress: challengeProgress,
+                    cosmeticsStore: cosmeticsStore
                 )
-                _ = cosmeticsStore.syncFromProgress(
-                    unlockedLevel: challengeProgress.unlockedLevel,
-                    dealerClears: statsStore.dealerBankClearCount,
-                    totalChipsWon: statsStore.totalChipsWon
-                )
-                _ = propStore.syncFromAchievements(statsStore.unlockedIDs)
             }
         }
     }
@@ -297,12 +289,10 @@ struct ContentView: View {
 private struct GameSessionView: View {
     @StateObject private var game: BlackjackGame
     @StateObject private var chipBank: ChipBank
+    @StateObject private var coordinator: SessionCoordinator
     let practiceMode: PracticeMode
     let playStyle: PlayStyle
-    @ObservedObject var statsStore: StatsStore
     @ObservedObject var propStore: PropStore
-    @ObservedObject var challengeProgress: ChallengeProgress
-    @ObservedObject var entertainmentProgress: EntertainmentProgress
     @ObservedObject var cosmeticsStore: CosmeticsStore
     /// `true`：破产「返回主页」后提示进度已清空；主动退出叉号则为 `false`。
     let onEndSession: (_ showClearedHint: Bool) -> Void
@@ -339,28 +329,26 @@ private struct GameSessionView: View {
     ) {
         self.practiceMode = practiceMode
         self.playStyle = playStyle
-        self.statsStore = statsStore
         self.propStore = propStore
-        self.challengeProgress = challengeProgress
-        self.entertainmentProgress = entertainmentProgress
         self.cosmeticsStore = cosmeticsStore
         self.onEndSession = onEndSession
         _game = StateObject(wrappedValue: BlackjackGame(
             practiceMode: practiceMode,
             cutCardMode: cutCardMode
         ))
+        let bank: ChipBank
         switch playStyle {
         case .challenge:
             let stage = challengeProgress.currentStage
-            _chipBank = StateObject(wrappedValue: ChipBank(
+            bank = ChipBank(
                 startingBalance: stage.playerStart,
                 dealerStartingBank: stage.dealerStart
-            ))
+            )
         case .entertainment:
             let stage = entertainmentProgress.currentStage
             let suiteName = "cards.chipBank.entertainment"
             let suite = UserDefaults(suiteName: suiteName) ?? .standard
-            _chipBank = StateObject(wrappedValue: ChipBank(
+            bank = ChipBank(
                 defaults: suite,
                 storageKey: "entertainment.balance",
                 dealerBankKey: "entertainment.dealerBank",
@@ -369,8 +357,18 @@ private struct GameSessionView: View {
                 sessionRoundsKey: "entertainment.sessionRounds",
                 startingBalance: stage.playerStart,
                 dealerStartingBank: stage.dealerStart
-            ))
+            )
         }
+        _chipBank = StateObject(wrappedValue: bank)
+        _coordinator = StateObject(wrappedValue: SessionCoordinator(
+            playStyle: playStyle,
+            chipBank: bank,
+            statsStore: statsStore,
+            propStore: propStore,
+            challengeProgress: challengeProgress,
+            entertainmentProgress: entertainmentProgress,
+            cosmeticsStore: cosmeticsStore
+        ))
     }
 
     var body: some View {
@@ -845,100 +843,19 @@ private struct GameSessionView: View {
     }
 
     private func handleRoundFinished() {
-        settleCurrentRoundIfNeeded()
-        unlockNotices = []
-        if let outcome = game.lastOutcome {
-            chipBank.recordRoundCompleted()
-            if playStyle == .entertainment {
-                entertainmentSessionStats.record(outcome)
+        let result = coordinator.finishRound(
+            outcome: game.lastOutcome,
+            insuranceWon: game.lastInsuranceWon,
+            makeSnapshot: { wasAllIn in
+                game.makeRoundSnapshot(wasAllInBet: wasAllIn)
             }
-            if let snapshot = game.makeRoundSnapshot(
-                wasAllInBet: chipBank.activeBetWasAllIn
-            ) {
-                let scope = playStyle.achievementScope
-                let newly = statsStore.recordRound(snapshot: snapshot, scope: scope)
-                var notices = newly.map(\.title)
-                if playStyle == .challenge, chipBank.sessionEndReason == .dealerBroke {
-                    let beforePending = statsStore.pendingUnlockTitles
-                    statsStore.recordDealerBankCleared()
-                    let afterPending = statsStore.pendingUnlockTitles
-                    let extra = afterPending.dropFirst(beforePending.count)
-                    notices.append(contentsOf: extra)
-                    if challengeProgress.syncFromStats(
-                        dealerClears: statsStore.dealerBankClearCount,
-                        totalChipsWon: statsStore.totalChipsWon
-                    ) {
-                        notices.append("闯关·\(challengeProgress.currentStage.title)")
-                    }
-                }
-                if playStyle == .entertainment, chipBank.sessionEndReason == .dealerBroke {
-                    if entertainmentProgress.recordDealerCleared() {
-                        notices.append(entertainmentProgress.currentStage.title)
-                    } else {
-                        notices.append("娱乐·打穿庄家")
-                    }
-                }
-                let newlyProps = propStore.syncFromAchievements(statsStore.unlockedIDs)
-                let newlyBacks = cosmeticsStore.syncFromProgress(
-                    unlockedLevel: challengeProgress.unlockedLevel,
-                    dealerClears: statsStore.dealerBankClearCount,
-                    totalChipsWon: statsStore.totalChipsWon
-                )
-                if playStyle == .entertainment {
-                    notices.append(contentsOf: newlyProps.map { "道具·\($0.title)" })
-                } else if !newlyProps.isEmpty {
-                    notices.append("道具已解锁（娱乐模式可用）")
-                }
-                notices.append(contentsOf: newlyBacks.map { "卡背·\($0.title)" })
-                unlockNotices = notices
-            } else if playStyle == .challenge, chipBank.sessionEndReason == .dealerBroke {
-                statsStore.recordDealerBankCleared()
-                _ = propStore.syncFromAchievements(statsStore.unlockedIDs)
-                if challengeProgress.syncFromStats(
-                    dealerClears: statsStore.dealerBankClearCount,
-                    totalChipsWon: statsStore.totalChipsWon
-                ) {
-                    unlockNotices = ["闯关·\(challengeProgress.currentStage.title)"]
-                }
-                _ = cosmeticsStore.syncFromProgress(
-                    unlockedLevel: challengeProgress.unlockedLevel,
-                    dealerClears: statsStore.dealerBankClearCount,
-                    totalChipsWon: statsStore.totalChipsWon
-                )
-            } else if playStyle == .entertainment, chipBank.sessionEndReason == .dealerBroke {
-                if entertainmentProgress.recordDealerCleared() {
-                    unlockNotices = [entertainmentProgress.currentStage.title]
-                }
-            }
-        } else if chipBank.activeBet > 0 || chipBank.activeInsurance > 0 {
-            chipBank.refundActiveBet()
+        )
+        unlockNotices = result.unlockNotices
+        if let outcome = result.recordedOutcome, playStyle == .entertainment {
+            entertainmentSessionStats.record(outcome)
         }
-    }
-
-    private func settleCurrentRoundIfNeeded() {
-        if let outcome = game.lastOutcome {
-            if let result = chipBank.settle(
-                outcome: outcome,
-                insuranceWon: game.lastInsuranceWon
-            ) {
-                if playStyle == .challenge {
-                    statsStore.recordChipSettlement(netChange: result.netChange)
-                    _ = challengeProgress.syncFromStats(
-                        dealerClears: statsStore.dealerBankClearCount,
-                        totalChipsWon: statsStore.totalChipsWon
-                    )
-                    _ = cosmeticsStore.syncFromProgress(
-                        unlockedLevel: challengeProgress.unlockedLevel,
-                        dealerClears: statsStore.dealerBankClearCount,
-                        totalChipsWon: statsStore.totalChipsWon
-                    )
-                } else if playStyle == .entertainment {
-                    entertainmentProgress.recordChipsWon(result.netChange)
-                }
-                pulseChipBalance()
-            }
-        } else if chipBank.activeBet > 0 || chipBank.activeInsurance > 0 {
-            chipBank.refundActiveBet()
+        if result.shouldPulseBalance {
+            pulseChipBalance()
         }
     }
 

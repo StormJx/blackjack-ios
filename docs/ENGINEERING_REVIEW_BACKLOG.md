@@ -28,13 +28,15 @@
 | P6 | 加倍：仅前两张 + 只补一张；闯关/娱乐；余额不足禁用；不计入全下成就 |
 | P6+ 投降 | 仅前两张；任意明牌；退半注；记为输；全下禁用；主操作两行（UX-P6-layout 一并落地） |
 | P6+ 保险 | 明 A；半注 2:1；Ace peek；全下禁；侧注结算；不做 Even Money |
+| A1 | `SessionCoordinator`：局末结算/成就/进度同步可单测；欢迎页 sync 收敛 |
+| A2 | `DataSchema`：持久化版本号；Store 前迁移；改结构须升版本 |
 
 ---
 
 ## P0 / 高优先级（下一刀优先）
 
-（工程 P0、UX1–UX9、P6 加倍、P6+ 投降/保险已完成。）  
-**建议下一刀：A1**（`SessionCoordinator`，见 `docs/OPTIMIZATION_GUIDE.md`）。交接提示：`docs/NEXT_SESSION_PROMPT.md`。
+（工程 P0、UX1–UX9、P6、P6+、A1、A2 已完成。）  
+**建议下一刀：A3**（GitHub Actions CI，见 `docs/OPTIMIZATION_GUIDE.md`）。交接提示：`docs/NEXT_SESSION_PROMPT.md`。
 
 ---
 
@@ -88,3 +90,5 @@
 | 2026-08-01 | P6+ 投降已推送 `c5aa3ec`；UX-P6-layout 随主操作两行完成 |
 | 2026-08-01 | P6+ 保险已推送 `ef95b0c`（检查点 `9743d0c`）；建议下一刀 UX9 |
 | 2026-08-01 | UX9 完成；建议下一刀 A1（见 OPTIMIZATION_GUIDE） |
+| 2026-08-01 | A1 完成；建议下一刀 A2 |
+| 2026-08-01 | A2 完成；建议下一刀 A3 |
