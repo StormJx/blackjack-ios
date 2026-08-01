@@ -11,6 +11,8 @@ final class BlackjackGame: ObservableObject {
     enum Phase: Equatable {
         case idle
         case dealing
+        /// P6+：庄家明牌为 A 时的保险决策（随后 Ace peek）。
+        case insuranceOffer
         case playerTurn
         case dealerTurn
         case finished
@@ -40,6 +42,8 @@ final class BlackjackGame: ObservableObject {
     @Published private(set) var totalCardCount: Int = 0
     /// 本局胜负类别（供筹码结算模块消费；不含金额）
     @Published private(set) var lastOutcome: RoundOutcome?
+    /// P6+：本局保险是否赔付（庄家黑杰克且已买保险）；供 `ChipBank.settle` 使用。
+    @Published private(set) var lastInsuranceWon: Bool = false
     /// 娱乐道具：本局已开启「庄家软 17 要牌」。
     @Published private(set) var dealerHitsSoft17ThisRound = false
     /// 娱乐道具：正在窥视暗牌（约 1 秒）。
@@ -245,13 +249,23 @@ final class BlackjackGame: ObservableObject {
         )
     }
 
-    /// 玩家回合或发牌中或庄家未翻暗牌时，第二张庄家牌盖着（窥视中除外）。
+    /// 玩家回合 / 保险窗 / 发牌中或庄家未翻暗牌时，第二张庄家牌盖着（窥视中除外）。
     var hideDealerHoleCard: Bool {
         if isPeekingHoleCard { return false }
         guard dealerCards.count >= 2 else { return false }
-        if phase == .playerTurn || phase == .dealing { return true }
+        if phase == .playerTurn || phase == .dealing || phase == .insuranceOffer { return true }
         if phase == .dealerTurn && !dealerHoleRevealed { return true }
         return false
+    }
+
+    /// 庄家明牌是否为 A（保险触发条件）。
+    var dealerUpcardIsAce: Bool {
+        dealerCards.first?.rank == .ace
+    }
+
+    /// 是否处于可点「买保险 / 不买」的窗口。
+    var canResolveInsuranceOffer: Bool {
+        phase == .insuranceOffer && !isAnimating
     }
 
     /// 退出会话时取消窥视 / 提示 / 脉冲等挂起任务。
@@ -287,6 +301,7 @@ final class BlackjackGame: ObservableObject {
 
         outcomeMessage = ""
         lastOutcome = nil
+        lastInsuranceWon = false
         playerCards = []
         dealerCards = []
         hitSurvivedFromOver17 = false
@@ -349,12 +364,56 @@ final class BlackjackGame: ObservableObject {
         let playerHand = Hand(cards: playerCards)
         // 天然黑杰克见牌即结算，不进入玩家回合。默认全下在发牌前，故仍可吃到开局全下。
         // 见牌后再全下由道具 `PropStore.owns(.midHandAllIn)` 门控。
+        // P6+：不做 Even Money；玩家 BJ 时不提供保险。
         if playerHand.isNaturalBlackjack {
             resolvePlayerNaturalBlackjack()
             isAnimating = false
             return
         }
 
+        // P6+：庄家明 A → 保险窗；决策后 Ace peek，有 BJ 则直接结算。
+        if dealerUpcardIsAce {
+            dealerHoleRevealed = false
+            phase = .insuranceOffer
+            isAnimating = false
+            return
+        }
+
+        phase = .playerTurn
+        isAnimating = false
+    }
+
+    /// P6+：保险决策完成（已买或已拒绝）后执行 Ace peek。
+    /// - Parameter didBuyInsurance: 调用方是否已成功 `ChipBank.placeInsurance()`。
+    func resolveInsuranceDecision(didBuyInsurance: Bool) async {
+        guard canResolveInsuranceOffer else { return }
+        isAnimating = true
+
+        await timing.sleep(nanoseconds: delayBeforeHoleFlip)
+
+        let dealerBJ = Hand(cards: dealerCards).isNaturalBlackjack
+        if dealerBJ {
+            withAnimation(.easeInOut(duration: 0.35)) {
+                dealerHoleRevealed = true
+            }
+            feedback.holeRevealed()
+            await timing.sleep(nanoseconds: delayAfterHoleFlip)
+            lastInsuranceWon = didBuyInsurance
+            finishRound(
+                message: didBuyInsurance
+                    ? "庄家黑杰克；保险已赔付"
+                    : "庄家黑杰克，你输了",
+                outcome: .playerLose,
+                playerWon: false,
+                isPush: false
+            )
+            isAnimating = false
+            return
+        }
+
+        // 非 BJ：暗牌保持盖着，进入玩家回合；保险侧注待局末按「未中」结算。
+        lastInsuranceWon = false
+        dealerHoleRevealed = false
         phase = .playerTurn
         isAnimating = false
     }
@@ -592,6 +651,7 @@ final class BlackjackGame: ObservableObject {
         roundToken += 1
         outcomeMessage = ""
         lastOutcome = nil
+        lastInsuranceWon = false
         dealingCaption = nil
         isShowingShuffleScreen = false
         handAreaOpacity = 1
@@ -610,6 +670,14 @@ final class BlackjackGame: ObservableObject {
         publishDeckCounts()
     }
 
+    /// 单测用：跳过发牌动画，直接进入保险窗（庄家明牌须为 A）。
+    func prepareInsuranceOfferForTesting(player: [Card], dealer: [Card]) {
+        precondition(player.count >= 2 && dealer.count >= 2)
+        precondition(dealer[0].rank == .ace)
+        preparePlayerTurnForTesting(player: player, dealer: dealer)
+        phase = .insuranceOffer
+    }
+
     /// 单测用：装入队首顺序牌堆（先发），并重置桌面为空闲可发牌状态。
     func installOrderedShoeForTesting(_ orderedFrontFirst: [Card]) {
         cancelPendingWork()
@@ -619,6 +687,7 @@ final class BlackjackGame: ObservableObject {
         phase = .idle
         outcomeMessage = ""
         lastOutcome = nil
+        lastInsuranceWon = false
         isAnimating = false
         isShowingShuffleScreen = false
         handAreaOpacity = 1

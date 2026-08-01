@@ -104,7 +104,7 @@ struct GameTableView: View {
     }
 
     private var idleHint: String {
-        "确认下注后发牌；使用「要牌」「停牌」「加倍」「投降」进行游戏。"
+        "确认下注后发牌；庄家明 A 可买保险；使用「要牌」「停牌」「加倍」「投降」进行游戏。"
     }
 
     private var tableTitle: some View {
@@ -131,6 +131,12 @@ struct GameTableView: View {
                             .monospacedDigit()
                         if chipBank.activeBet > 0 {
                             Text("注 \(chipBank.activeBet)")
+                                .font(.caption)
+                                .monospacedDigit()
+                                .foregroundStyle(.tertiary)
+                        }
+                        if chipBank.activeInsurance > 0 {
+                            Text("保险 \(chipBank.activeInsurance)")
                                 .font(.caption)
                                 .monospacedDigit()
                                 .foregroundStyle(.tertiary)
@@ -435,6 +441,9 @@ struct GameTableView: View {
 
     private var chipBalanceAccessibilityLabel: String {
         if chipBank.activeBet > 0 {
+            if chipBank.activeInsurance > 0 {
+                return "你 \(chipBank.balance)，庄家 \(chipBank.dealerBank)，注 \(chipBank.activeBet)，保险 \(chipBank.activeInsurance)"
+            }
             return "你 \(chipBank.balance)，庄家 \(chipBank.dealerBank)，注 \(chipBank.activeBet)"
         }
         return "你 \(chipBank.balance)，庄家 \(chipBank.dealerBank)"

@@ -182,6 +182,78 @@ struct BlackjackGameLogicTests {
         #expect(game.doubleDownHandDisabledReason == "仅开局两张时可加倍")
     }
 
+    @Test func dealerAceOffersInsuranceThenPeekNoBlackjack() async {
+        let game = makeTestGame()
+        // 发牌：玩家、庄家明 A、玩家、庄家暗牌（非 BJ）
+        game.installOrderedShoeForTesting([
+            Card(suit: .spades, rank: .ten),
+            Card(suit: .hearts, rank: .ace),
+            Card(suit: .diamonds, rank: .nine),
+            Card(suit: .clubs, rank: .five),
+        ])
+        await game.startNewRound()
+        #expect(game.phase == .insuranceOffer)
+        #expect(game.dealerUpcardIsAce)
+        #expect(game.canResolveInsuranceOffer)
+        await game.resolveInsuranceDecision(didBuyInsurance: false)
+        #expect(game.phase == .playerTurn)
+        #expect(game.lastInsuranceWon == false)
+        #expect(game.hideDealerHoleCard)
+        #expect(game.canPeekHoleCard)
+    }
+
+    @Test func dealerAcePeekBlackjackEndsRoundAndMarksInsuranceWin() async {
+        let game = makeTestGame()
+        game.prepareInsuranceOfferForTesting(
+            player: [
+                Card(suit: .spades, rank: .ten),
+                Card(suit: .hearts, rank: .nine),
+            ],
+            dealer: [
+                Card(suit: .clubs, rank: .ace),
+                Card(suit: .diamonds, rank: .king),
+            ]
+        )
+        await game.resolveInsuranceDecision(didBuyInsurance: true)
+        #expect(game.phase == .finished)
+        #expect(game.lastOutcome == .playerLose)
+        #expect(game.lastInsuranceWon)
+        #expect(game.dealerHoleRevealed)
+        #expect(game.outcomeMessage == "庄家黑杰克；保险已赔付")
+    }
+
+    @Test func dealerAcePeekBlackjackWithoutInsurance() async {
+        let game = makeTestGame()
+        game.prepareInsuranceOfferForTesting(
+            player: [
+                Card(suit: .spades, rank: .ten),
+                Card(suit: .hearts, rank: .eight),
+            ],
+            dealer: [
+                Card(suit: .clubs, rank: .ace),
+                Card(suit: .diamonds, rank: .queen),
+            ]
+        )
+        await game.resolveInsuranceDecision(didBuyInsurance: false)
+        #expect(game.phase == .finished)
+        #expect(game.lastOutcome == .playerLose)
+        #expect(game.lastInsuranceWon == false)
+        #expect(game.outcomeMessage == "庄家黑杰克，你输了")
+    }
+
+    @Test func nonAceUpcardSkipsInsuranceOffer() async {
+        let game = makeTestGame()
+        game.installOrderedShoeForTesting([
+            Card(suit: .spades, rank: .ten),
+            Card(suit: .hearts, rank: .nine),
+            Card(suit: .diamonds, rank: .eight),
+            Card(suit: .clubs, rank: .seven),
+        ])
+        await game.startNewRound()
+        #expect(game.phase == .playerTurn)
+        #expect(game.dealerUpcardIsAce == false)
+    }
+
     @Test func surrenderEndsRoundWithSurrenderOutcome() {
         let game = makeTestGame()
         game.preparePlayerTurnForTesting(

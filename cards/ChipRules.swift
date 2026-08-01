@@ -137,8 +137,27 @@ enum ChipRules {
     /// 投降结算说明。
     static let surrenderOddsLabel = "投降退半注"
 
+    /// P6+ 保险：赔率说明（庄家黑杰克时保险 2:1）。
+    static let insuranceOddsLabel = "保险赔率 2:1"
+
+    /// P6+ 保险：未中说明（庄家非黑杰克）。
+    static let insuranceLostLabel = "保险未中"
+
     /// 庄家筹码不足、只赔剩余时的说明。
     static let partialPayoutLabel = "庄家筹码不足，已赔付全部剩余"
+
+    /// UserDefaults 键：尚未结算的保险侧注。
+    static let activeInsuranceStorageKey = "chipBank.activeInsurance"
+
+    /// 保险注码：主注一半（向下取整）。
+    static func insuranceBetAmount(forMainBet bet: Int) -> Int {
+        max(0, bet / 2)
+    }
+
+    /// 保险足额利润（2:1，不含退还保险本金）。
+    static func insuranceProfit(forInsuranceBet bet: Int) -> Int {
+        bet * 2
+    }
 
     /// 黑杰克净赢：下注 × 3/2（整数向下取整）。本金另计退还。
     static func blackjackProfit(forBet bet: Int) -> Int {

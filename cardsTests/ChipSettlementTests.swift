@@ -60,6 +60,49 @@ struct ChipSettlementTests {
         #expect(result.balanceAfter == 949)
     }
 
+    @Test func insuranceWinWithDealerBlackjackNetsZeroAgainstMainLoss() {
+        // 起始 1000；主注 100 + 保险 50 → balanceAfterBet 850；庄家 BJ。
+        let result = RoundSettlement.settle(
+            balanceAfterBet: 850,
+            betAmount: 100,
+            dealerBank: ChipRules.dealerStartingBank,
+            outcome: .playerLose,
+            insuranceBet: 50,
+            insuranceWon: true
+        )
+        #expect(result.insuranceBet == 50)
+        #expect(result.insuranceNetChange == 100)
+        #expect(result.insuranceProfitPaid == 100)
+        #expect(result.netChange == 0)
+        #expect(result.balanceAfter == 1000)
+        #expect(result.dealerBankAfter == ChipRules.dealerStartingBank)
+        #expect(result.insuranceLabel == ChipRules.insuranceOddsLabel)
+        #expect(result.netChangeLabel == "0")
+    }
+
+    @Test func insuranceLossThenMainWinCombinesNet() {
+        let result = RoundSettlement.settle(
+            balanceAfterBet: 850,
+            betAmount: 100,
+            dealerBank: ChipRules.dealerStartingBank,
+            outcome: .playerWin,
+            insuranceBet: 50,
+            insuranceWon: false
+        )
+        #expect(result.insuranceNetChange == -50)
+        #expect(result.netChange == 50)
+        #expect(result.balanceAfter == 1050)
+        #expect(result.dealerBankAfter == 1950)
+        #expect(result.insuranceLabel == ChipRules.insuranceLostLabel)
+        #expect(result.oddsLabel == ChipRules.evenMoneyOddsLabel)
+    }
+
+    @Test func insuranceAmountFloorsHalfMainBet() {
+        #expect(ChipRules.insuranceBetAmount(forMainBet: 100) == 50)
+        #expect(ChipRules.insuranceBetAmount(forMainBet: 101) == 50)
+        #expect(ChipRules.insuranceProfit(forInsuranceBet: 50) == 100)
+    }
+
     @Test func evenMoneyPaysOneToOne() {
         let result = RoundSettlement.settle(
             balanceAfterBet: 900,
@@ -340,6 +383,44 @@ struct ChipSettlementTests {
         #expect(bank.doubleDown() == false)
         #expect(bank.balance == 50)
         #expect(bank.activeBet == 100)
+    }
+
+    @MainActor
+    @Test func placeInsuranceDeductsHalfBet() {
+        let defaults = Self.makeEphemeralDefaults()
+        let bank = ChipBank(defaults: defaults)
+        #expect(bank.placeBet(100))
+        #expect(bank.canAffordInsurance)
+        #expect(bank.placeInsurance())
+        #expect(bank.balance == 850)
+        #expect(bank.activeInsurance == 50)
+        #expect(bank.placeInsurance() == false)
+    }
+
+    @MainActor
+    @Test func allInCannotBuyInsurance() {
+        let defaults = Self.makeEphemeralDefaults()
+        let bank = ChipBank(defaults: defaults)
+        let stake = bank.balance
+        #expect(bank.placeBet(stake))
+        #expect(bank.activeBetWasAllIn)
+        #expect(bank.canAffordInsurance == false)
+        #expect(bank.insuranceDisabledReason == "全下不可买保险")
+        #expect(bank.placeInsurance() == false)
+    }
+
+    @MainActor
+    @Test func restoreRefundsOrphanInsurance() {
+        let defaults = Self.makeEphemeralDefaults()
+        defaults.set(850, forKey: ChipRules.balanceStorageKey)
+        defaults.set(2000, forKey: ChipRules.dealerBankStorageKey)
+        defaults.set(100, forKey: ChipRules.activeBetStorageKey)
+        defaults.set(50, forKey: ChipRules.activeInsuranceStorageKey)
+        let bank = ChipBank(defaults: defaults)
+        #expect(bank.didRestoreAfterInterrupt)
+        #expect(bank.balance == 1000)
+        #expect(bank.activeBet == 0)
+        #expect(bank.activeInsurance == 0)
     }
 
     @Test func forcedAllInOnSingleDeckWhenRemainingAtMostThresholdAndNoReshuffle() {

@@ -4,7 +4,7 @@
 > 成就：`docs/ACHIEVEMENTS.md` · 外观道具：`docs/COSMETICS_AND_PROPS.md`  
 > P8：`docs/P8_ORIENTATION_AND_A11Y.md` · 评审批次 backlog：`docs/ENGINEERING_REVIEW_BACKLOG.md`
 
-**基线：** `main` @ `c5aa3ec`（「完成 P6+ 投降…」；含此前 `cd32c31` P6 加倍；`c7901ff` UX1–UX8 / Tag `v1.11.0`；`7cb0e62` Q1/P8-1/Q2；上一正式里程碑 `v1.10.0`）  
+**基线：** `main` @（P6+ 保险功能提交；推送后以 `git log -1` 为准同步）  
 **仓库：** https://github.com/StormJx/blackjack-ios  
 **平台：** iOS 17.0+；庄家小于 17 要牌、大于等于 17 停（软 17 同停）；音效基名 deal/flip/shuffle/win/lose/push
 
@@ -48,6 +48,7 @@
 - [x] **UX7**：局末可「查看牌面」收起，再「显示结果」
 - [x] **P6**：加倍（仅前两张 + 只补一张；闯关/娱乐；不足额禁用；不计入全下成就）
 - [x] **P6+ 投降**：仅前两张；任意明牌；退半注（向下取整）；闯关/娱乐；记为输；全下禁用；主操作两行布局
+- [x] **P6+ 保险**：仅庄家明 A；半注（向下取整）2:1；闯关/娱乐；全下禁；独立保险面板；Ace peek（有 BJ 直接结）；不做 Even Money；窥视仅玩家回合；侧注进 `SettlementResult` 合计盈亏
 
 ### 成就 / 体验
 - [x] **UX3**：局末解锁改为卡片队列（非长 toast）
@@ -73,7 +74,7 @@
 | P8 横竖屏 | 允许横屏与布局 | 见 P8 文档 |
 | F10 正片录音 | 录音级素材替换 | 基名不变 |
 | C5 | 对道具战模式 | 须先锁产品 |
-| P6+ | 保险 → 分牌（分牌最后） | 投降已落地；须锁规则 |
+| P6+ | 分牌（多手状态机） | 投降+保险已落地；分牌最后 |
 | 娱乐阶梯数值 | 试玩后再调 | 当前表保持 |
 | 广告（上架） | 免费 + 轻度广告 | **仅备案**；插点/频控须另点名；见 backlog「产品方向」 |
 
@@ -90,9 +91,10 @@
 ## 工程要点
 
 - `PlayStyle` / `PropStore` / `ChallengeProgress` / `EntertainmentProgress` / `CosmeticsStore` / `TableLimitPreset` / `CutCardMode` / `ActivePreDealAllInUnlock` / `SessionConfiguration` / `HelpView` / `StatsView`
-- `ChipBank`：会话起始筹码 + **本会话全下解锁局数**；退出清空；**P6** `doubleDown()`（足额再押；不置 `activeBetWasAllIn`）
-- `BlackjackGame`：可注入 `GameTiming` / `GameFeedbackServing`；退出调用 `cancelPendingWork()`；**P6** `doubleDown()`；**P6+** `surrender()` → `RoundOutcome.playerSurrender`
-- `RoundSettlement`：投降退半注（向下取整）
+- `ChipBank`：会话起始筹码 + **本会话全下解锁局数**；退出清空；**P6** `doubleDown()`（足额再押；不置 `activeBetWasAllIn`）；**P6+** `placeInsurance()` / `activeInsurance`（中断退回）
+- `BlackjackGame`：可注入 `GameTiming` / `GameFeedbackServing`；退出调用 `cancelPendingWork()`；**P6** `doubleDown()`；**P6+** `surrender()` → `RoundOutcome.playerSurrender`；**P6+** `phase.insuranceOffer` + `resolveInsuranceDecision` + Ace peek → `lastInsuranceWon`
+- `RoundSettlement`：投降退半注（向下取整）；保险侧注先于主注结算（2:1 / 未中）
+- `SessionInsurancePanel`：买保险 / 不买
 - `Deck.returnCardToShoe`：回退 `dealtCount`；非空鞋禁止立即原样抽回
 - 推送前：`./scripts/check-before-push.sh`；勿提交 `VERSION_ROADMAP.txt` / `.env` / 密钥
 
@@ -100,12 +102,11 @@
 
 ## 建议下一步（按优先级）
 
-1. 讨论 **P6+「保险」** 规则后单切片（分牌更后）  
-2. **UX9**；或试玩后再调阶梯数值  
-3. 广告上架方案后置专篇（已备案）  
-4. P8 横竖屏 / C5 / F10 正片更后
+1. **UX9**；或试玩后再调阶梯数值  
+2. 广告上架方案后置专篇（已备案）  
+3. P6+ 分牌 / P8 横竖屏 / C5 / F10 正片更后
 
-**本批已推送：** `c5aa3ec`（P6+ 投降 + 主操作两行）。此前：`cd32c31`（P6 加倍）；`c7901ff`（UX1–UX8；Tag `v1.11.0`）；`7cb0e62`（Q1 / P8-1 / Q2）。
+**本批：** P6+ 保险（明 A / 半注 2:1 / Ace peek / 侧注结算）。此前已推送：`c5aa3ec`（投降）；`cd32c31`（加倍）；`c7901ff`（UX1–UX8；Tag `v1.11.0`）；`7cb0e62`（Q1 / P8-1 / Q2）。
 
 ---
 
@@ -126,3 +127,4 @@
 | 2026-07-31 | 已推送 `cd32c31`（P6 加倍）；检查点基线同步 |
 | 2026-08-01 | 产品方向备案：干净练习 + 免费可轻度广告（后置）；广告写入未完成表 |
 | 2026-08-01 | 已推送 `c5aa3ec`（P6+ 投降 + 主操作两行）；检查点基线同步 |
+| 2026-08-01 | 完成 P6+ 保险（明 A / 半注 2:1 / Ace peek / 侧注结算） |

@@ -309,6 +309,7 @@ private struct GameSessionView: View {
 
     @State private var didPresentInitialFlow = false
     @State private var showBetSheet = false
+    @State private var showInsuranceSheet = false
     @State private var showRoundEndSheet = false
     @State private var roundEndPanelCollapsed = false
     @State private var showAbandonConfirm = false
@@ -364,6 +365,7 @@ private struct GameSessionView: View {
                 storageKey: "entertainment.balance",
                 dealerBankKey: "entertainment.dealerBank",
                 activeBetKey: "entertainment.activeBet",
+                activeInsuranceKey: "entertainment.activeInsurance",
                 sessionRoundsKey: "entertainment.sessionRounds",
                 startingBalance: stage.playerStart,
                 dealerStartingBank: stage.dealerStart
@@ -377,6 +379,12 @@ private struct GameSessionView: View {
 
             if showBetSheet {
                 sessionPanelOverlay { betPanelContent }
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .zIndex(2)
+            }
+
+            if showInsuranceSheet {
+                sessionPanelOverlay { insurancePanelContent }
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                     .zIndex(2)
             }
@@ -428,6 +436,7 @@ private struct GameSessionView: View {
         }
         .animation(.easeInOut(duration: 0.28), value: game.isShowingShuffleScreen)
         .animation(.easeInOut(duration: 0.28), value: showBetSheet)
+        .animation(.easeInOut(duration: 0.28), value: showInsuranceSheet)
         .animation(.easeInOut(duration: 0.28), value: showRoundEndSheet)
         .modifier(AbandonConfirmModifier(
             isPresented: $showAbandonConfirm,
@@ -457,6 +466,7 @@ private struct GameSessionView: View {
             if newPhase != .playerTurn {
                 controlsLockedAfterAllIn = false
             }
+            showInsuranceSheet = (newPhase == .insuranceOffer)
             if newPhase == .finished {
                 handleRoundFinished()
                 roundEndPanelCollapsed = false
@@ -524,6 +534,24 @@ private struct GameSessionView: View {
             onAllIn: applyPreDealAllIn,
             onRepeatLastBet: applyRepeatLastBet,
             onConfirm: confirmBetAndDeal
+        )
+    }
+
+    private var insurancePanelContent: some View {
+        SessionInsurancePanel(
+            balance: chipBank.balance,
+            mainBet: chipBank.activeBet,
+            insuranceAmount: ChipRules.insuranceBetAmount(forMainBet: chipBank.activeBet),
+            canBuy: chipBank.canAffordInsurance && game.canResolveInsuranceOffer,
+            buyDisabledReason: chipBank.insuranceDisabledReason,
+            onBuy: {
+                guard chipBank.placeInsurance() else { return }
+                pulseChipBalance()
+                Task { await game.resolveInsuranceDecision(didBuyInsurance: true) }
+            },
+            onDecline: {
+                Task { await game.resolveInsuranceDecision(didBuyInsurance: false) }
+            }
         )
     }
 
@@ -882,14 +910,17 @@ private struct GameSessionView: View {
                     unlockNotices = [entertainmentProgress.currentStage.title]
                 }
             }
-        } else if chipBank.activeBet > 0 {
+        } else if chipBank.activeBet > 0 || chipBank.activeInsurance > 0 {
             chipBank.refundActiveBet()
         }
     }
 
     private func settleCurrentRoundIfNeeded() {
         if let outcome = game.lastOutcome {
-            if let result = chipBank.settle(outcome: outcome) {
+            if let result = chipBank.settle(
+                outcome: outcome,
+                insuranceWon: game.lastInsuranceWon
+            ) {
                 if playStyle == .challenge {
                     statsStore.recordChipSettlement(netChange: result.netChange)
                     _ = challengeProgress.syncFromStats(
@@ -906,13 +937,14 @@ private struct GameSessionView: View {
                 }
                 pulseChipBalance()
             }
-        } else if chipBank.activeBet > 0 {
+        } else if chipBank.activeBet > 0 || chipBank.activeInsurance > 0 {
             chipBank.refundActiveBet()
         }
     }
 
     private func continueAfterRound() {
         showRoundEndSheet = false
+        showInsuranceSheet = false
         roundEndPanelCollapsed = false
         unlockNotices = []
         prepareBetDraft()
@@ -921,6 +953,7 @@ private struct GameSessionView: View {
 
     private func returnToWelcomeAfterSessionEnd() {
         showBetSheet = false
+        showInsuranceSheet = false
         showRoundEndSheet = false
         roundEndPanelCollapsed = false
         game.cancelPendingWork()
@@ -932,6 +965,7 @@ private struct GameSessionView: View {
 
     private func abandonSessionToWelcome() {
         showBetSheet = false
+        showInsuranceSheet = false
         showRoundEndSheet = false
         roundEndPanelCollapsed = false
         game.cancelPendingWork()

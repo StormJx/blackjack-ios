@@ -208,6 +208,12 @@ struct SessionRoundEndPanel: View {
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.secondary)
             }
+            if let insurance = settlement.insuranceLabel {
+                Text(insurance)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .accessibilityLabel(insurance)
+            }
             if let partial = settlement.partialPayoutLabel {
                 Text(partial)
                     .font(.subheadline.weight(.semibold))
