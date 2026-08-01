@@ -17,8 +17,10 @@ enum RoundOutcome: Equatable, Sendable {
     case playerLose
     /// 平局（含双方黑杰克）→ 退回本金。
     case push
+    /// P6+：投降 → 退回半注（向下取整）；统计上视为输。
+    case playerSurrender
 
-    /// 双方停牌后的比点（不含天然黑杰克、玩家中途爆牌）。
+    /// 双方停牌后的比点（不含天然黑杰克、玩家中途爆牌、投降）。
     static func fromFinalPoints(playerBest: Int, dealerBest: Int) -> RoundOutcome {
         if dealerBest > 21 { return .playerWin }
         if playerBest > dealerBest { return .playerWin }
@@ -31,7 +33,7 @@ enum RoundOutcome: Equatable, Sendable {
         switch self {
         case .playerBlackjack, .playerWin:
             return "checkmark.circle.fill"
-        case .playerLose:
+        case .playerLose, .playerSurrender:
             return "xmark.circle.fill"
         case .push:
             return "equal.circle.fill"

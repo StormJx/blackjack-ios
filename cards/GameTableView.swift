@@ -17,6 +17,8 @@ struct GameTableView: View {
     let canStand: Bool
     let canDoubleDown: Bool
     var doubleDownDisabledReason: String? = nil
+    let canSurrender: Bool
+    var surrenderDisabledReason: String? = nil
     /// 娱乐模式 + 已解锁道具时为 true。
     let showsMidHandAllIn: Bool
     let canMidHandAllIn: Bool
@@ -41,6 +43,7 @@ struct GameTableView: View {
     let onHit: () -> Void
     let onStand: () -> Void
     let onDoubleDown: () -> Void
+    let onSurrender: () -> Void
     let onAllIn: () -> Void
     let onPeekHole: () -> Void
     let onSoft17Hit: () -> Void
@@ -101,7 +104,7 @@ struct GameTableView: View {
     }
 
     private var idleHint: String {
-        "确认下注后发牌；使用「要牌」「停牌」「加倍」进行游戏。"
+        "确认下注后发牌；使用「要牌」「停牌」「加倍」「投降」进行游戏。"
     }
 
     private var tableTitle: some View {
@@ -308,7 +311,9 @@ struct GameTableView: View {
                 .opacity(canStand ? 1 : 0.55)
                 .saturation(canStand ? 1 : 0.2)
                 .accessibilityHint(canStand ? "停止要牌，进入庄家回合" : "当前不可停牌")
+            }
 
+            HStack(spacing: 12) {
                 Button("加倍") {
                     GameFeedback.shared.buttonTap()
                     onDoubleDown()
@@ -326,7 +331,23 @@ struct GameTableView: View {
                         : (doubleDownDisabledReason ?? "当前不可加倍")
                 )
 
-                // 持有道具「见牌后再全下」时显示（逻辑见 ChipBank.goAllIn / PropStore）。
+                Button("投降") {
+                    GameFeedback.shared.buttonTap()
+                    onSurrender()
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .frame(maxWidth: .infinity)
+                .tint(.gray)
+                .disabled(!canSurrender)
+                .opacity(canSurrender ? 1 : 0.55)
+                .saturation(canSurrender ? 1 : 0.2)
+                .accessibilityHint(
+                    canSurrender
+                        ? "结束本局并退回一半注码"
+                        : (surrenderDisabledReason ?? "当前不可投降")
+                )
+
                 if showsMidHandAllIn {
                     Button(emphasizeForcedAllIn ? "强制全下" : "全下") {
                         GameFeedback.shared.buttonTap()

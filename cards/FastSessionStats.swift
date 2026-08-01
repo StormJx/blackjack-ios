@@ -27,7 +27,7 @@ struct FastSessionStats: Equatable, Sendable {
         case .playerBlackjack, .playerWin:
             wins += 1
             currentWinStreak += 1
-        case .playerLose:
+        case .playerLose, .playerSurrender:
             losses += 1
             currentWinStreak = 0
         case .push:

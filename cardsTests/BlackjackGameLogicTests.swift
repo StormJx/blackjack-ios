@@ -182,6 +182,48 @@ struct BlackjackGameLogicTests {
         #expect(game.doubleDownHandDisabledReason == "仅开局两张时可加倍")
     }
 
+    @Test func surrenderEndsRoundWithSurrenderOutcome() {
+        let game = makeTestGame()
+        game.preparePlayerTurnForTesting(
+            player: [
+                Card(suit: .spades, rank: .ten),
+                Card(suit: .hearts, rank: .six),
+            ],
+            dealer: [
+                Card(suit: .clubs, rank: .nine),
+                Card(suit: .diamonds, rank: .five),
+            ]
+        )
+        #expect(game.canSurrenderHand)
+        game.surrender()
+        #expect(game.phase == .finished)
+        #expect(game.lastOutcome == .playerSurrender)
+        #expect(game.outcomeMessage == "投降，退回半注")
+        #expect(game.dealerHoleRevealed)
+        #expect(game.playerCards.count == 2)
+    }
+
+    @Test func surrenderUnavailableAfterHit() async {
+        let game = makeTestGame()
+        game.preparePlayerTurnForTesting(
+            player: [
+                Card(suit: .spades, rank: .five),
+                Card(suit: .hearts, rank: .six),
+            ],
+            dealer: [
+                Card(suit: .clubs, rank: .ten),
+                Card(suit: .diamonds, rank: .seven),
+            ]
+        )
+        game.replaceRemainingShoeForTesting([
+            Card(suit: .diamonds, rank: .two),
+        ])
+        await game.hit()
+        #expect(game.phase == .playerTurn)
+        #expect(game.canSurrenderHand == false)
+        #expect(game.surrenderHandDisabledReason == "仅开局两张时可投降")
+    }
+
     @Test func cancelPendingWorkClearsPeekAndHints() async {
         let game = makeTestGame()
         game.preparePlayerTurnForTesting(

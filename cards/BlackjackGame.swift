@@ -147,6 +147,19 @@ final class BlackjackGame: ObservableObject {
         return nil
     }
 
+    /// P6+：手牌是否满足投降时机（恰好两张、玩家回合、非动画中）。全下门控在 UI / ChipBank。
+    var canSurrenderHand: Bool {
+        phase == .playerTurn && !isAnimating && playerCards.count == 2
+    }
+
+    /// VoiceOver：投降手牌侧不可用原因（不含全下）。
+    var surrenderHandDisabledReason: String? {
+        guard phase == .playerTurn else { return "仅玩家回合可用" }
+        if isAnimating { return "发牌动画进行中" }
+        if playerCards.count != 2 { return "仅开局两张时可投降" }
+        return nil
+    }
+
     /// 是否可换最近一次要牌得到的牌（须已要过至少一张）。
     var canRedrawLastHitCard: Bool {
         phase == .playerTurn && !isAnimating && playerCards.count > 2 && !hasRedrawnThisRound
@@ -445,6 +458,19 @@ final class BlackjackGame: ObservableObject {
         }
 
         await playDealerTurnAsync()
+    }
+
+    /// P6+：投降——仅前两张时结束本局；半注结算由 `ChipBank` / `RoundSettlement` 完成。
+    /// 全下门控由调用方检查 `activeBetWasAllIn`。
+    func surrender() {
+        guard canSurrenderHand else { return }
+        dealerHoleRevealed = true
+        finishRound(
+            message: "投降，退回半注",
+            outcome: .playerSurrender,
+            playerWon: false,
+            isPush: false
+        )
     }
 
     /// 娱乐道具：本局开启庄家软 17 要牌。
@@ -772,6 +798,9 @@ final class BlackjackGame: ObservableObject {
                 playerWon: true,
                 isPush: false
             )
+        case .playerSurrender:
+            // 投降由 `surrender()` 直接 finish，不经比点。
+            break
         }
     }
 

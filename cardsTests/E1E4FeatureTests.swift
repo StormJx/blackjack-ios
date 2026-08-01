@@ -34,6 +34,15 @@ struct E1E4FeatureTests {
         #expect(stats.pushes == 1)
     }
 
+    @Test func fastStatsSurrenderCountsAsLoss() {
+        var stats = FastSessionStats()
+        stats.record(.playerWin)
+        stats.record(.playerSurrender)
+        #expect(stats.wins == 1)
+        #expect(stats.losses == 1)
+        #expect(stats.currentWinStreak == 0)
+    }
+
     // MARK: - E2 AppSettings + Deck cut
 
     @Test @MainActor

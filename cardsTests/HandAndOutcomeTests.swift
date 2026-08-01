@@ -83,6 +83,7 @@ struct HandAndOutcomeTests {
         #expect(RoundOutcome.playerWin.statusIconName == "checkmark.circle.fill")
         #expect(RoundOutcome.playerBlackjack.statusIconName == "checkmark.circle.fill")
         #expect(RoundOutcome.playerLose.statusIconName == "xmark.circle.fill")
+        #expect(RoundOutcome.playerSurrender.statusIconName == "xmark.circle.fill")
         #expect(RoundOutcome.push.statusIconName == "equal.circle.fill")
     }
 }

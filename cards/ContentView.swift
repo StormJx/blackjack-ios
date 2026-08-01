@@ -561,6 +561,8 @@ private struct GameSessionView: View {
             canStand: canStand,
             canDoubleDown: canDoubleDown,
             doubleDownDisabledReason: doubleDownDisabledReason,
+            canSurrender: canSurrender,
+            surrenderDisabledReason: surrenderDisabledReason,
             showsMidHandAllIn: propStore.canUse(.midHandAllIn, in: playStyle),
             canMidHandAllIn: canMidHandAllIn,
             midHandAllInDisabledReason: midHandAllInDisabledReason,
@@ -595,6 +597,7 @@ private struct GameSessionView: View {
             onHit: { Task { await game.hit() } },
             onStand: { Task { await game.stand() } },
             onDoubleDown: executeDoubleDown,
+            onSurrender: executeSurrender,
             onAllIn: requestMidHandAllIn,
             onPeekHole: { Task { await game.peekHoleCard() } },
             onSoft17Hit: { _ = game.activateDealerSoft17Hit() },
@@ -642,6 +645,13 @@ private struct GameSessionView: View {
         game.canDoubleDownHand
             && !controlsLockedAfterAllIn
             && chipBank.canAffordDoubleDown
+    }
+
+    private var canSurrender: Bool {
+        game.canSurrenderHand
+            && !controlsLockedAfterAllIn
+            && chipBank.activeBet > 0
+            && !chipBank.activeBetWasAllIn
     }
 
     private var canMidHandAllIn: Bool {
@@ -738,6 +748,17 @@ private struct GameSessionView: View {
         return "当前不可用"
     }
 
+    private var surrenderDisabledReason: String? {
+        if canSurrender { return nil }
+        if controlsLockedAfterAllIn { return "全下后等待结算" }
+        if chipBank.activeBetWasAllIn { return "全下不可投降" }
+        if let handReason = game.surrenderHandDisabledReason {
+            return handReason
+        }
+        if chipBank.activeBet == 0 { return "尚未下注" }
+        return "当前不可用"
+    }
+
     private func propDisabledReason(canUse: Bool, base: String?) -> String? {
         if canUse { return nil }
         if controlsLockedAfterAllIn { return "全下后等待结算" }
@@ -749,6 +770,11 @@ private struct GameSessionView: View {
         guard chipBank.doubleDown() else { return }
         pulseChipBalance()
         Task { await game.doubleDown() }
+    }
+
+    private func executeSurrender() {
+        guard canSurrender else { return }
+        game.surrender()
     }
 
     private func requestMidHandAllIn() {

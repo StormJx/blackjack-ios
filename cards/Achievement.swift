@@ -69,7 +69,7 @@ struct RoundSnapshot: Equatable, Sendable {
     var playerWon: Bool {
         switch outcome {
         case .playerBlackjack, .playerWin: return true
-        case .playerLose, .push: return false
+        case .playerLose, .push, .playerSurrender: return false
         }
     }
 
@@ -363,7 +363,7 @@ enum AchievementEvaluator {
             progress.mode.wins += 1
             progress.mode.currentWinStreak += 1
             progress.mode.bestWinStreak = max(progress.mode.bestWinStreak, progress.mode.currentWinStreak)
-        case .playerLose:
+        case .playerLose, .playerSurrender:
             progress.mode.losses += 1
             progress.mode.currentWinStreak = 0
         case .push:

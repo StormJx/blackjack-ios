@@ -32,6 +32,34 @@ struct ChipSettlementTests {
         #expect(result.netChangeLabel == "+150")
     }
 
+    @Test func surrenderRefundsHalfBetFloored() {
+        let result = RoundSettlement.settle(
+            balanceAfterBet: 900,
+            betAmount: 100,
+            dealerBank: ChipRules.dealerStartingBank,
+            outcome: .playerSurrender
+        )
+        #expect(result.netChange == -50)
+        #expect(result.amountReturned == 50)
+        #expect(result.balanceAfter == 950)
+        #expect(result.dealerBankAfter == 2050)
+        #expect(result.oddsLabel == ChipRules.surrenderOddsLabel)
+        #expect(result.wasPartialPayout == false)
+    }
+
+    @Test func surrenderOddBetFloorsRefund() {
+        let result = RoundSettlement.settle(
+            balanceAfterBet: 899,
+            betAmount: 101,
+            dealerBank: ChipRules.dealerStartingBank,
+            outcome: .playerSurrender
+        )
+        #expect(result.amountReturned == 50)
+        #expect(result.netChange == -50)
+        #expect(result.dealerBankAfter == ChipRules.dealerStartingBank + 51)
+        #expect(result.balanceAfter == 949)
+    }
+
     @Test func evenMoneyPaysOneToOne() {
         let result = RoundSettlement.settle(
             balanceAfterBet: 900,

@@ -47,6 +47,7 @@
 - [x] **UX6**：窥视倒计时条 + 娱乐道具首次引导 alert
 - [x] **UX7**：局末可「查看牌面」收起，再「显示结果」
 - [x] **P6**：加倍（仅前两张 + 只补一张；闯关/娱乐；不足额禁用；不计入全下成就）
+- [x] **P6+ 投降**：仅前两张；任意明牌；退半注（向下取整）；闯关/娱乐；记为输；全下禁用；主操作两行布局
 
 ### 成就 / 体验
 - [x] **UX3**：局末解锁改为卡片队列（非长 toast）
@@ -72,10 +73,17 @@
 | P8 横竖屏 | 允许横屏与布局 | 见 P8 文档 |
 | F10 正片录音 | 录音级素材替换 | 基名不变 |
 | C5 | 对道具战模式 | 须先锁产品 |
-| P6+ | 投降 → 保险 → 分牌（分牌最后） | 须锁规则；加倍已落地 |
+| P6+ | 保险 → 分牌（分牌最后） | 投降已落地；须锁规则 |
 | 娱乐阶梯数值 | 试玩后再调 | 当前表保持 |
+| 广告（上架） | 免费 + 轻度广告 | **仅备案**；插点/频控须另点名；见 backlog「产品方向」 |
 
 **明确不做：** 闯关启用玩法道具；娱乐计入闯关成就；默认模式内独立「练习分」。
+
+---
+
+## 产品方向（简）
+
+干净练习游戏；免费上 iOS 可轻度广告（后置）。广告不对局中打断；细则见 `ENGINEERING_REVIEW_BACKLOG.md`。
 
 ---
 
@@ -83,7 +91,8 @@
 
 - `PlayStyle` / `PropStore` / `ChallengeProgress` / `EntertainmentProgress` / `CosmeticsStore` / `TableLimitPreset` / `CutCardMode` / `ActivePreDealAllInUnlock` / `SessionConfiguration` / `HelpView` / `StatsView`
 - `ChipBank`：会话起始筹码 + **本会话全下解锁局数**；退出清空；**P6** `doubleDown()`（足额再押；不置 `activeBetWasAllIn`）
-- `BlackjackGame`：可注入 `GameTiming` / `GameFeedbackServing`；退出调用 `cancelPendingWork()`；**P6** `doubleDown()`（仅两张补一张）
+- `BlackjackGame`：可注入 `GameTiming` / `GameFeedbackServing`；退出调用 `cancelPendingWork()`；**P6** `doubleDown()`；**P6+** `surrender()` → `RoundOutcome.playerSurrender`
+- `RoundSettlement`：投降退半注（向下取整）
 - `Deck.returnCardToShoe`：回退 `dealtCount`；非空鞋禁止立即原样抽回
 - 推送前：`./scripts/check-before-push.sh`；勿提交 `VERSION_ROADMAP.txt` / `.env` / 密钥
 
@@ -91,11 +100,13 @@
 
 ## 建议下一步（按优先级）
 
-1. **UX9**（可选）设置变更全局提示  
-2. P8 横竖屏（第一切片已完成后可评估）  
-3. 讨论 **P6+** 投降 / 保险 / 分牌（须先锁规则）
+1. 讨论 **P6+「保险」** 规则后单切片（分牌更后）  
+2. **UX9**；或试玩后再调阶梯数值  
+3. 广告上架方案后置专篇（已备案）  
+4. P8 横竖屏 / C5 / F10 正片更后
 
-**本批已推送：** `cd32c31`（P6 加倍）。此前：`c7901ff`（UX1–UX8；Tag `v1.11.0`）；`7cb0e62`（Q1 / P8-1 / Q2）。
+**本批已推送：** `cd32c31`（P6 加倍）。此前：`c7901ff`（UX1–UX8；Tag `v1.11.0`）；`7cb0e62`（Q1 / P8-1 / Q2）。  
+**本会话增量：** P6+ 投降（待推送；含主操作两行）。
 
 ---
 
@@ -114,3 +125,5 @@
 | 2026-07-28 | 已推送 `7cb0e62`（Q1 / P8-1 / Q2）；检查点基线同步 |
 | 2026-07-28 | 已推送 `c7901ff`（UX1–UX8）；Tag `v1.11.0`；检查点基线同步 |
 | 2026-07-31 | 已推送 `cd32c31`（P6 加倍）；检查点基线同步 |
+| 2026-08-01 | 产品方向备案：干净练习 + 免费可轻度广告（后置）；广告写入未完成表 |
+| 2026-08-01 | P6+ 投降落地（待推送）；主操作两行；全下禁用投降 |

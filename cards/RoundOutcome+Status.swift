@@ -12,7 +12,7 @@ extension RoundOutcome {
         switch self {
         case .playerBlackjack, .playerWin:
             return .green
-        case .playerLose:
+        case .playerLose, .playerSurrender:
             return .red
         case .push:
             return .orange

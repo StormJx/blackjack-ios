@@ -32,7 +32,7 @@ struct SettlementResult: Equatable, Sendable {
         switch outcome {
         case .playerBlackjack, .playerWin:
             return profitPaid < idealProfit
-        case .playerLose, .push:
+        case .playerLose, .push, .playerSurrender:
             return false
         }
     }
@@ -44,13 +44,15 @@ struct SettlementResult: Equatable, Sendable {
         return "0（平局退注）"
     }
 
-    /// 赔率说明：黑杰克写明 3:2；普通胜写明 1:1；其余为 nil。
+    /// 赔率说明：黑杰克写明 3:2；普通胜写明 1:1；投降写明退半注；其余为 nil。
     var oddsLabel: String? {
         switch outcome {
         case .playerBlackjack:
             return ChipRules.blackjackOddsLabel
         case .playerWin:
             return ChipRules.evenMoneyOddsLabel
+        case .playerSurrender:
+            return ChipRules.surrenderOddsLabel
         case .playerLose, .push:
             return nil
         }
@@ -97,6 +99,13 @@ enum RoundSettlement {
             amountReturned = 0
             dealerBankAfter = dealerBank + betAmount
             netChange = -betAmount
+        case .playerSurrender:
+            // 退半注（向下取整）；另一半进庄家池。
+            profitPaid = 0
+            let refund = betAmount / 2
+            amountReturned = refund
+            dealerBankAfter = dealerBank + (betAmount - refund)
+            netChange = -refund
         case .push:
             profitPaid = 0
             amountReturned = betAmount

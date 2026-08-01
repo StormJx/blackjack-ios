@@ -134,6 +134,9 @@ enum ChipRules {
     /// 普通获胜赔率文案。
     static let evenMoneyOddsLabel = "普通胜负 1:1"
 
+    /// 投降结算说明。
+    static let surrenderOddsLabel = "投降退半注"
+
     /// 庄家筹码不足、只赔剩余时的说明。
     static let partialPayoutLabel = "庄家筹码不足，已赔付全部剩余"
 
@@ -147,14 +150,14 @@ enum ChipRules {
         bet
     }
 
-    /// 某结局在庄家资金充足时应付的利润（不含退本；输/平为 0）。
+    /// 某结局在庄家资金充足时应付的利润（不含退本；输/平/投降为 0）。
     static func idealProfit(forBet bet: Int, outcome: RoundOutcome) -> Int {
         switch outcome {
         case .playerBlackjack:
             return blackjackProfit(forBet: bet)
         case .playerWin:
             return evenMoneyProfit(forBet: bet)
-        case .playerLose, .push:
+        case .playerLose, .push, .playerSurrender:
             return 0
         }
     }
