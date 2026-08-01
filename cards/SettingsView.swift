@@ -2,7 +2,7 @@
 //  SettingsView.swift
 //  cards
 //
-//  E2 / P4 / C1 / P5 / F1：设置页（牌副 / 切牌三态 / 桌限 / 全下解锁 / 卡背 / 音效触觉）。
+//  E2 / P4 / C1 / P5 / F1 / UX9：设置页（牌副 / 切牌三态 / 桌限 / 全下解锁 / 卡背 / 音效触觉）。
 //
 
 import SwiftUI
@@ -10,11 +10,30 @@ import SwiftUI
 struct SettingsView: View {
     @ObservedObject var settings: AppSettings
     @ObservedObject var cosmetics: CosmeticsStore
-    @State private var changeHint: String?
+    /// UX9：会话级设置刚被改动时短暂高亮「生效时机」提示。
+    @State private var highlightSessionLockedHint = false
+    @State private var hintClearTask: Task<Void, Never>?
 
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    Label {
+                        Text(AppSettings.sessionLockedSettingsHint)
+                            .font(.footnote)
+                            .foregroundStyle(highlightSessionLockedHint ? Color.orange : .secondary)
+                            .accessibilityLabel(AppSettings.sessionLockedSettingsHint)
+                    } icon: {
+                        Image(systemName: "info.circle")
+                            .foregroundStyle(highlightSessionLockedHint ? Color.orange : .secondary)
+                    }
+                    .accessibilityElement(children: .combine)
+                } header: {
+                    Text("生效时机")
+                } footer: {
+                    Text("音效、触觉、局内全下确认与卡背选用可立即生效。")
+                }
+
                 Section {
                     Picker("默认牌副", selection: $settings.defaultPracticeMode) {
                         ForEach(PracticeMode.allCases) { mode in
@@ -22,7 +41,7 @@ struct SettingsView: View {
                         }
                     }
                     .onChange(of: settings.defaultPracticeMode) { _, _ in
-                        flashHint(AppSettings.appliesNextRoundHint)
+                        flashSessionLockedHint()
                     }
 
                     Picker("切牌（闯关）", selection: $settings.cutCardMode) {
@@ -31,7 +50,7 @@ struct SettingsView: View {
                         }
                     }
                     .onChange(of: settings.cutCardMode) { _, _ in
-                        flashHint(AppSettings.appliesNextRoundHint)
+                        flashSessionLockedHint()
                     }
                     Text(settings.cutCardMode.settingsDetail)
                         .font(.caption)
@@ -42,12 +61,7 @@ struct SettingsView: View {
                 } header: {
                     Text("牌局")
                 } footer: {
-                    if let changeHint {
-                        Text(changeHint)
-                            .foregroundStyle(.orange)
-                    } else {
-                        Text("默认牌副用于主页开局；\(AppSettings.appliesNextRoundHint)")
-                    }
+                    Text("默认牌副用于主页开局；切牌仅影响闯关。")
                 }
 
                 Section {
@@ -57,9 +71,9 @@ struct SettingsView: View {
                         }
                     }
                     .onChange(of: settings.tableLimitPreset) { _, _ in
-                        flashHint(AppSettings.tableLimitsApplyNextSessionHint)
+                        flashSessionLockedHint()
                     }
-                    Text("闯关模式采用此桌限；娱乐模式注码随娱乐阶梯自动提升，不受本项影响。改后须返回主页再开闯关新局才生效。详情见主页「帮助说明」。")
+                    Text("闯关模式采用此桌限；娱乐模式注码随娱乐阶梯自动提升，不受本项影响。详情见主页「帮助说明」。")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } header: {
@@ -74,7 +88,7 @@ struct SettingsView: View {
                         Text("全下解锁局数：\(settings.preDealAllInUnlockRounds)")
                     }
                     .onChange(of: settings.preDealAllInUnlockRounds) { _, _ in
-                        flashHint(AppSettings.allInUnlockAppliesNextSessionHint)
+                        flashSessionLockedHint()
                     }
                     Text(settings.preDealAllInUnlockRounds == 0
                          ? "开局下注页即可使用「全下」（闯关与娱乐共用）。"
@@ -106,6 +120,11 @@ struct SettingsView: View {
             }
             .navigationTitle("设置")
             .navigationBarTitleDisplayMode(.inline)
+            .animation(.easeInOut(duration: 0.2), value: highlightSessionLockedHint)
+            .onDisappear {
+                hintClearTask?.cancel()
+                hintClearTask = nil
+            }
         }
     }
 
@@ -151,16 +170,14 @@ struct SettingsView: View {
         .accessibilityLabel("\(style.title)，\(owned ? (selected ? "使用中" : "已解锁") : "未解锁")")
     }
 
-    private func flashHint(_ text: String) {
-        withAnimation(.easeInOut(duration: 0.2)) {
-            changeHint = text
-        }
-        Task {
+    private func flashSessionLockedHint() {
+        hintClearTask?.cancel()
+        highlightSessionLockedHint = true
+        hintClearTask = Task {
             try? await Task.sleep(nanoseconds: 2_000_000_000)
+            guard !Task.isCancelled else { return }
             await MainActor.run {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    changeHint = nil
-                }
+                highlightSessionLockedHint = false
             }
         }
     }

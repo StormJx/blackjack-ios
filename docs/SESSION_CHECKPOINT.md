@@ -2,7 +2,8 @@
 
 > 本地另有 `VERSION_ROADMAP.txt`（gitignore，勿推送）。两边请同步维护。  
 > 成就：`docs/ACHIEVEMENTS.md` · 外观道具：`docs/COSMETICS_AND_PROPS.md`  
-> P8：`docs/P8_ORIENTATION_AND_A11Y.md` · 评审批次 backlog：`docs/ENGINEERING_REVIEW_BACKLOG.md`
+> P8：`docs/P8_ORIENTATION_AND_A11Y.md` · 评审批次 backlog：`docs/ENGINEERING_REVIEW_BACKLOG.md`  
+> 后续优化执行路线：`docs/OPTIMIZATION_GUIDE.md`（A 工程加固 / L 上架 / T 教学轨 / M 变现 / R 留存）
 
 **基线：** 功能主体 `main` @ `ef95b0c`（「完成 P6+ 保险…」）+ 检查点 `9743d0c`；交接文档见 `docs/NEXT_SESSION_PROMPT.md`（推送后以 `git log -1` 为准）  
 含此前：`c5aa3ec` 投降；`cd32c31` 加倍；`c7901ff` UX1–UX8 / Tag `v1.11.0`；`7cb0e62` Q1/P8-1/Q2；更早 `v1.10.0`  
@@ -56,6 +57,7 @@
 - [x] **UX3**：局末解锁改为卡片队列（非长 toast）
 - [x] **UX4**：成就页道具仅「娱乐」tab；闯关解锁道具标「去闯关解锁」
 - [x] **UX8**：娱乐成就标题「练习」→「娱乐」
+- [x] **UX9**：设置页「生效时机」统一提示——牌副 / 切牌 / 桌限 / 全下解锁对局中不生效，须返回主页再开新局；变更时顶部高亮同文案；音效/触觉/全下确认/卡背可立即生效；HelpView 对齐
 
 ### 工程 / 无障碍
 - [x] **Q1**：`ChipBank.sessionRoundsCompleted` 与筹码同 suite 持久化；杀进程后全下解锁进度保留；恢复提示文案同步；主动退出清空；单测
@@ -72,7 +74,7 @@
 
 | 编号 | 内容 | 备注 |
 |------|------|------|
-| UX9 | 设置「对局中不生效」全局提示再统一 | 见 backlog |
+| ~~UX9~~ | ~~设置「对局中不生效」全局提示再统一~~ | **已完成**（见已完成节） |
 | P8 横竖屏 | 允许横屏与布局 | 见 P8 文档 |
 | F10 正片录音 | 录音级素材替换 | 基名不变 |
 | C5 | 对道具战模式 | 须先锁产品 |
@@ -104,7 +106,7 @@
 
 ## 建议下一步（按优先级）
 
-1. **UX9（推荐下一刀）**：设置页统一「对局中改了不生效」提示（牌副 / 桌限 / 全下解锁局数等已有局部文案，可收成一致 hint；小切片、低风险）  
+1. **A1（推荐下一刀）**：抽取 `SessionCoordinator`（见 `docs/OPTIMIZATION_GUIDE.md`）  
 2. **保险实机抽查**（可选、不改代码）：明 A 买/不买、全下禁买、peek 后窥视、局末盈亏合计  
 3. 娱乐/闯关阶梯：试玩采样后再调数值（勿空改）  
 4. 广告上架方案专篇（插点/频控/ATT）— 后置；未点名不接 SDK  
@@ -132,3 +134,4 @@
 | 2026-08-01 | 产品方向备案：干净练习 + 免费可轻度广告（后置）；广告写入未完成表 |
 | 2026-08-01 | 已推送 `c5aa3ec`（P6+ 投降 + 主操作两行）；检查点基线同步 |
 | 2026-08-01 | 已推送 `ef95b0c`（P6+ 保险）+ `9743d0c`（检查点同步）；新增 `NEXT_SESSION_PROMPT.md` |
+| 2026-08-01 | UX9：设置「生效时机」统一提示；`OPTIMIZATION_GUIDE.md` 入库；建议下一刀 A1 |

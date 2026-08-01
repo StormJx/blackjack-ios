@@ -130,14 +130,12 @@ final class AppSettings: ObservableObject {
         tableLimitPreset.summary
     }
 
-    /// 设置变更后提示：牌副 / 切牌对下一局生效。
-    static let appliesNextRoundHint = "对下一局生效"
+    /// UX9：牌副 / 切牌 / 桌限 / 全下解锁等会话级设置的统一提示。
+    /// 上述项在开局时锁定，对局中修改须返回主页再开新局才生效。
+    static let sessionLockedSettingsHint = "对局中修改不生效，返回主页后新开局生效"
 
-    /// 桌限变更提示：须回主页再开新会话。
-    static let tableLimitsApplyNextSessionHint = "返回主页后新开局生效"
-
-    /// 全下解锁局数：新开局会话生效。
-    static let allInUnlockAppliesNextSessionHint = "返回主页后新开局生效"
+    /// 设置变更闪示（与 `sessionLockedSettingsHint` 同文，便于调用点语义区分）。
+    static let sessionLockedSettingsChangeFlash = sessionLockedSettingsHint
 
     private func persist() {
         defaults.set(defaultPracticeMode.rawValue, forKey: Keys.practiceMode)

@@ -95,6 +95,15 @@ struct E1E4FeatureTests {
         #expect(realSettings.cutCardMode == .real)
     }
 
+    /// UX9：会话级设置统一提示文案（牌副 / 切牌 / 桌限 / 全下解锁）。
+    @Test func ux9SessionLockedSettingsHintIsUnified() {
+        let hint = AppSettings.sessionLockedSettingsHint
+        #expect(hint == AppSettings.sessionLockedSettingsChangeFlash)
+        #expect(hint.contains("对局中修改不生效"))
+        #expect(hint.contains("返回主页后新开局生效"))
+        #expect(!hint.contains("对下一局生效"))
+    }
+
     @Test func deckCutDisabledRequiresReshuffleAfterAnyDeal() {
         var d = Deck(numberOfDecks: 1, cutCardMode: .off)
         var rng = SeededRNG(state: 11)
