@@ -456,12 +456,7 @@ final class BlackjackGame: ObservableObject {
         }
 
         // 成就：高点要牌未爆（本局内累计；最终是否解锁看是否获胜）。
-        if beforeBest > 17 { hitSurvivedFromOver17 = true }
-        if beforeBest > 18 { hitSurvivedFromOver18 = true }
-        if beforeBest > 19 { hitSurvivedFromOver19 = true }
-        if beforeBest == 20 && hand.bestValue == 21 {
-            hitFrom20To21 = true
-        }
+        recordBraveHitProgress(beforeBest: beforeBest, currentBest: hand.bestValue)
 
         if hand.bestValue == 21 {
             await playDealerTurnAsync()
@@ -509,12 +504,7 @@ final class BlackjackGame: ObservableObject {
             return
         }
 
-        if beforeBest > 17 { hitSurvivedFromOver17 = true }
-        if beforeBest > 18 { hitSurvivedFromOver18 = true }
-        if beforeBest > 19 { hitSurvivedFromOver19 = true }
-        if beforeBest == 20 && hand.bestValue == 21 {
-            hitFrom20To21 = true
-        }
+        recordBraveHitProgress(beforeBest: beforeBest, currentBest: hand.bestValue)
 
         await playDealerTurnAsync()
     }
@@ -593,12 +583,7 @@ final class BlackjackGame: ObservableObject {
             return
         }
 
-        if beforeBest > 17 { hitSurvivedFromOver17 = true }
-        if beforeBest > 18 { hitSurvivedFromOver18 = true }
-        if beforeBest > 19 { hitSurvivedFromOver19 = true }
-        if beforeBest == 20 && hand.bestValue == 21 {
-            hitFrom20To21 = true
-        }
+        recordBraveHitProgress(beforeBest: beforeBest, currentBest: hand.bestValue)
 
         if hand.bestValue == 21 {
             await playDealerTurnAsync()
@@ -706,6 +691,16 @@ final class BlackjackGame: ObservableObject {
     func preparePlayerTurnWithEmptyShoeForTesting(player: [Card], dealer: [Card]) {
         preparePlayerTurnForTesting(player: player, dealer: dealer)
         replaceRemainingShoeForTesting([])
+    }
+
+    /// 成就：高点要牌未爆进度（本局累计；最终解锁仍看是否获胜）。
+    private func recordBraveHitProgress(beforeBest: Int, currentBest: Int) {
+        if beforeBest > 17 { hitSurvivedFromOver17 = true }
+        if beforeBest > 18 { hitSurvivedFromOver18 = true }
+        if beforeBest > 19 { hitSurvivedFromOver19 = true }
+        if beforeBest == 20 && currentBest == 21 {
+            hitFrom20To21 = true
+        }
     }
 
     private func showReshufflePulse(at index: Int) {

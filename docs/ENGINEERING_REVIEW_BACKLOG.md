@@ -31,13 +31,14 @@
 | A1 | `SessionCoordinator`：局末结算/成就/进度同步可单测；欢迎页 sync 收敛 |
 | A2 | `DataSchema`：持久化版本号；Store 前迁移；改结构须升版本 |
 | A3 | GitHub Actions CI：`.github/workflows/test.yml` + 共享 `cards` scheme；仅跑 `cardsTests` |
+| A4 | 「险中求胜」判定去重：`recordBraveHitProgress`；hit / 加倍 / 换一张共用 |
 
 ---
 
 ## P0 / 高优先级（下一刀优先）
 
-（工程 P0、UX1–UX9、P6、P6+、A1–A3 已完成。）  
-**建议下一刀：** 可选保险实机抽查；或 A4（成就判定去重，可搭刀）/ L1 本地化（见 `docs/OPTIMIZATION_GUIDE.md`）。交接提示：`docs/NEXT_SESSION_PROMPT.md`。
+（工程 P0、UX1–UX9、P6、P6+、A1–A4 已完成。）  
+**建议下一刀：** 讨论 **L1 本地化**；或可选保险实机抽查。A5 延后至 C5/新道具前。交接提示：`docs/NEXT_SESSION_PROMPT.md`。
 
 ---
 
@@ -94,3 +95,4 @@
 | 2026-08-01 | A1 完成；建议下一刀 A2 |
 | 2026-08-01 | A2 完成；建议下一刀 A3 |
 | 2026-08-01 | A3 完成：CI workflow + 共享 scheme；建议下一刀 A4 搭刀 / L1 / 保险抽查 |
+| 2026-08-02 | A4 完成：险中求胜判定去重；建议下一刀讨论 L1 / 保险抽查 |

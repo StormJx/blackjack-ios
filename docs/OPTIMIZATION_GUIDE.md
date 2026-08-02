@@ -12,7 +12,7 @@
 | 顺序 | 阶段 | 内容 | 前置 |
 |------|------|------|------|
 | 0 | 既定 backlog | ~~UX9 设置提示统一~~ **已完成** | — |
-| 1 | A 工程加固 | ~~A1~~ ~~A2~~ ~~A3~~ **已完成** → A4/A5 可穿插；A6 长线 | — |
+| 1 | A 工程加固 | ~~A1~~ ~~A2~~ ~~A3~~ ~~A4~~ **已完成** → A5 可穿插（C5/新道具前）；A6 长线 | — |
 | 2 | L 上架准备 | L1 本地化底座 → L2 分牌 → L3 合规 → L4 轻量统计 → L5 素材 | A2 建议先行 |
 | 3 | T 教学轨 | T1 策略引擎 → T2 局末复盘 → T3 正确率统计 → T4 实时提示 → T5 算牌训练 | A1（复盘挂局末编排） |
 | 4 | M 变现 | M1 广告 → M2 去广告 IAP → M3 外观 IAP | L3（ATT/隐私） |
@@ -71,7 +71,8 @@
 
 ### A4 成就判定去重（顺手刀）
 
-`BlackjackGame.hit()` / `doubleDown()` / `redrawLastHitCard()` 三处重复的「险中求胜」判定（`beforeBest > 17/18/19`、`20→21`）抽成私有 `recordBraveHitProgress(beforeBest:currentBest:)`。既有单测保护，无需新增。**规模**：极小，可搭任意一刀。
+`BlackjackGame.hit()` / `doubleDown()` / `redrawLastHitCard()` 三处重复的「险中求胜」判定（`beforeBest > 17/18/19`、`20→21`）抽成私有 `recordBraveHitProgress(beforeBest:currentBest:)`。既有单测保护，无需新增。**规模**：极小，可搭任意一刀。  
+**状态：已完成（2026-08-02）** — 三处改为调用 `recordBraveHitProgress`；`braveHitLadderRequiresWin` + `BlackjackGameLogicTests` 已绿。
 
 ### A5 `GameTableView` 道具参数收敛
 
@@ -222,3 +223,4 @@ App 图标全尺寸、截图（6.7"/6.1" 必备）、副标题与关键词（结
 | 2026-08-01 | A1 完成：`SessionCoordinator` + `SessionCoordinatorTests`；下一刀建议 A2 |
 | 2026-08-01 | A2 完成：`DataSchema` + `DataSchemaTests`；下一刀建议 A3 |
 | 2026-08-01 | A3 完成：GitHub Actions CI + 共享 `cards` scheme；下一刀建议 A4 搭刀或 L1 / 保险抽查 |
+| 2026-08-02 | A4 完成：`recordBraveHitProgress` 去重；可谈 L1 本地化；A5 仍延后至 C5/新道具前 |

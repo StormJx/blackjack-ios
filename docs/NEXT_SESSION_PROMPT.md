@@ -18,10 +18,10 @@ docs/P8_ORIENTATION_AND_A11Y.md。用中文回复。
 一、当前基线
 ================================================================================
 GitHub：https://github.com/StormJx/blackjack-ios
-分支 main @ `91f1f4c`（A3 CI；若尚未 push 则本地 ahead；push 后确认 Actions 绿）
+分支 main @ `8c2db15`（A3 已推送且 Actions 绿）+ A4（若尚未 commit/push 则本地有改动）
   - 已推送里程碑：Tag `v1.11.1` @ `12234c5`（UX9 + OPTIMIZATION_GUIDE）
-  - 本批：`91f1f4c` A3 GitHub Actions CI + 共享 cards scheme
-  - 更早：`94d2ddb` A1+A2；`ef95b0c` 保险；`c5aa3ec` 投降；`cd32c31` 加倍；UX1–UX8 / Tag `v1.11.0`
+  - 本批：A4 `recordBraveHitProgress` 险中求胜判定去重
+  - 更早：`91f1f4c`/`8c2db15` A3 CI；`94d2ddb` A1+A2；保险/投降/加倍；UX1–UX8 / Tag `v1.11.0`
 iOS 最低 17.0；庄家 <17 要牌、≥17 停（软 17 同停）；GameFeedback 音效基名约定不变
   （deal/flip/shuffle/win/lose/push；缺文件静默跳过）。
 推送前须跑 ./scripts/check-before-push.sh；禁止提交 VERSION_ROADMAP.txt / .env / 密钥。
@@ -58,11 +58,8 @@ P6 加倍、P6+ 投降/保险、OPTIMIZATION_GUIDE 入库。
 
 【A1 SessionCoordinator】局末结算/成就/进度可单测；欢迎页 sync 收敛。
 【A2 DataSchema】currentVersion=1；Store 前迁移；改持久化须升版本。
-【A3 GitHub Actions CI】
-- .github/workflows/test.yml：macos-15；push/PR 触发；动态解析 iPhone 模拟器
-- -only-testing:cardsTests；失败上传 xcresult；无 secrets
-- 共享 scheme：cards.xcodeproj/xcshareddata/xcschemes/cards.xcscheme
-- 本地 xcodebuild test 已绿；push 后须确认 Actions 跑绿（验收）
+【A3 GitHub Actions CI】macos-15；仅 cardsTests；共享 scheme；Actions 已绿。
+【A4】`recordBraveHitProgress`：hit / doubleDown / redrawLastHitCard 险中求胜判定去重。
 
 【P6+ 保险 @ ef95b0c】（已锁定，勿擅自改）明 A；半注 2:1；Ace peek；全下禁；无 Even Money
 
@@ -70,10 +67,10 @@ P6 加倍、P6+ 投降/保险、OPTIMIZATION_GUIDE 入库。
 二、待后续完成（须用户点名后再做）— 见 OPTIMIZATION_GUIDE
 ================================================================================
 优先建议：
-1. 确认 CI 在 main 上跑绿（A3 验收；若未 push 先 commit/push）
+1. L1 本地化 String Catalog（上架准备；推荐下一讨论/实现）
 2. 可选：保险路径实机抽查；有 bug 再修
-3. A4 成就判定去重（可搭刀）/ A5 GameTableView 道具参数收敛（新道具或 C5 前）
-4. L1 本地化 String Catalog（上架准备）；L2 分牌须先锁产品
+3. A5 GameTableView 道具参数收敛（新道具或 C5 前；现延后）
+4. L2 分牌须先锁产品
 5. T 教学轨（基础策略引擎等）— 差异化，后置于上架准备讨论
 6. 广告专篇 / P8 横屏 / C5 / F10 正片 — 更后
 
@@ -102,7 +99,7 @@ P6 加倍、P6+ 投降/保险、OPTIMIZATION_GUIDE 入库。
 9. 一个功能切片结束后建议用户同步检查点；用户要求 push 前必须跑 check-before-push.sh。
 
 请先确认已读上述内容，然后等待我点名要讨论或要实现的项。
-（建议下一刀：确认 CI 绿后做 A4 搭刀，或讨论 L1 本地化；见 docs/OPTIMIZATION_GUIDE.md。）
+（建议下一刀：讨论并分批实施 L1 本地化；见 docs/OPTIMIZATION_GUIDE.md。）
 ```
 
 ---
@@ -111,11 +108,10 @@ P6 加倍、P6+ 投降/保险、OPTIMIZATION_GUIDE 入库。
 
 | 优先级 | 项 | 为何现在做 | 步骤提纲 |
 |--------|----|------------|----------|
-| 1 | **确认 CI 绿** | A3 验收 | push 后看 Actions；失败修 destination/Xcode |
+| 1 | **L1 本地化** | 上架准备；越晚成本越高 | String Catalog；欢迎/设置/帮助 → 牌桌 → 成就/战绩 |
 | 2 | 保险实机抽查 | 防回归 | 明 A 买/不买；全下禁买；peek 后窥视；庄家 BJ 盈亏约 0 |
-| 3 | A4 / A5 | 小清理 / 参数收敛 | 可搭刀或 C5 前做 A5 |
-| 4 | L1 本地化 | 上架准备 | String Catalog 分批迁移 |
-| 5 | L2 分牌 | 须先产品锁 | 多手状态机；见 OPTIMIZATION_GUIDE L2 |
+| 3 | A5 | 参数收敛 | C5/新道具前做；现延后 |
+| 4 | L2 分牌 | 须先产品锁 | 多手状态机；见 OPTIMIZATION_GUIDE L2 |
 | 后置 | T 教学轨 / 广告 / 横屏 / C5 / F10 | 产品或素材未齐 | 未点名不接 SDK |
 
 **明确不做：** 闯关开道具；娱乐进闯关成就；独立练习分；未讨论就做 Even Money / 分牌；卖筹码。
