@@ -5,8 +5,9 @@
 > P8：`docs/P8_ORIENTATION_AND_A11Y.md` · 评审批次 backlog：`docs/ENGINEERING_REVIEW_BACKLOG.md`  
 > 后续优化执行路线：`docs/OPTIMIZATION_GUIDE.md`（A 工程加固 / L 上架 / T 教学轨 / M 变现 / R 留存）
 
-**基线：** `main` @ `8c2db15`（A3 已推送且 Actions 绿）+ 本批未提交 A4  
-已推送里程碑：Tag `v1.11.1` @ `12234c5`（UX9）；A3 @ `91f1f4c` / 检查点 `8c2db15`；此前含 `94d2ddb` A1+A2 / 保险/投降/加倍 / UX1–UX8  
+**基线：** `main` @ `0385e2a`（A4 险中求胜去重；待 push）  
+已推送里程碑：Tag `v1.11.1` @ `12234c5`（UX9）；A3 @ `91f1f4c` / `8c2db15`；此前含 `94d2ddb` A1+A2 / 保险/投降/加倍 / UX1–UX8  
+
 **仓库：** https://github.com/StormJx/blackjack-ios  
 **平台：** iOS 17.0+；庄家小于 17 要牌、大于等于 17 停（软 17 同停）；音效基名 deal/flip/shuffle/win/lose/push  
 **新窗交接提示词：** `docs/NEXT_SESSION_PROMPT.md`（复制其中「提示词正文」到新 Agent 会话即可）
@@ -118,7 +119,7 @@
 4. 娱乐/闯关阶梯：试玩采样后再调数值（勿空改）  
 5. 更后：L2 分牌（须先锁产品）/ T 教学轨 / 广告专篇 / P8 横屏 / C5 / F10 正片  
 
-**本批待提交：** A4（险中求胜去重 + 文档）。**已推送：** `8c2db15`（A3）。**交接：** `NEXT_SESSION_PROMPT.md` · 路线：`OPTIMIZATION_GUIDE.md`。
+**本批提交：** `0385e2a`（A4）。**已推送里程碑：** Tag `v1.11.1` @ `12234c5`；A3 @ `8c2db15`。**交接：** `NEXT_SESSION_PROMPT.md` · 路线：`OPTIMIZATION_GUIDE.md`。
 
 ---
 
@@ -146,4 +147,4 @@
 | 2026-08-01 | A2：`DataSchema` + 单测；建议下一刀 A3；A1+A2 待统一提交 |
 | 2026-08-01 | A1+A2 统一提交 `94d2ddb`；更新 `NEXT_SESSION_PROMPT.md`；检查点基线同步 |
 | 2026-08-01 | A3：GitHub Actions CI + 共享 `cards` scheme @ `91f1f4c`；push 后确认 Actions 绿 |
-| 2026-08-02 | A4：`recordBraveHitProgress` 去重；建议下一刀讨论 L1 |
+| 2026-08-02 | A4：`recordBraveHitProgress` 去重 @ `0385e2a`；建议下一刀讨论 L1 |
