@@ -5,7 +5,7 @@
 > P8：`docs/P8_ORIENTATION_AND_A11Y.md` · 评审批次 backlog：`docs/ENGINEERING_REVIEW_BACKLOG.md`  
 > 后续优化执行路线：`docs/OPTIMIZATION_GUIDE.md`（A 工程加固 / L 上架 / T 教学轨 / M 变现 / R 留存）
 
-**基线：** `main` @ `6829d42`（A4 已推送）+ 本批未提交 L1 本地化  
+**基线：** `main` @ `398dc74`（L1 本地化；待 push）  
 已推送里程碑：Tag `v1.11.1` @ `12234c5`（UX9）；A4 @ `0385e2a` / `6829d42`；A3 @ `8c2db15`  
 
 **仓库：** https://github.com/StormJx/blackjack-ios  
@@ -114,13 +114,13 @@
 
 ## 建议下一步（按优先级）
 
-1. **提交/推送 L1** 后，可按系统语言抽查欢迎页英文  
+1. **系统语言抽查欢迎页英文**（L1 验收）  
 2. **保险实机抽查**（可选、不改代码）：明 A 买/不买、全下禁买、peek 后窥视、局末盈亏合计  
 3. **A5**（延后）：道具参数收敛；C5/新道具立项前再做  
 4. 娱乐/闯关阶梯：试玩采样后再调数值（勿空改）  
 5. 更后：L2 分牌（须先锁产品）/ T 教学轨 / 广告专篇 / P8 横屏 / C5 / F10 正片  
 
-**本批待提交：** L1 本地化。**已推送：** `6829d42`（A4）。**交接：** `NEXT_SESSION_PROMPT.md` · 路线：`OPTIMIZATION_GUIDE.md`。
+**本批提交：** `398dc74`（L1）。**已推送里程碑：** Tag `v1.11.1` @ `12234c5`；A4 @ `6829d42`。**交接：** `NEXT_SESSION_PROMPT.md` · 路线：`OPTIMIZATION_GUIDE.md`。
 
 ---
 
@@ -149,4 +149,4 @@
 | 2026-08-01 | A1+A2 统一提交 `94d2ddb`；更新 `NEXT_SESSION_PROMPT.md`；检查点基线同步 |
 | 2026-08-01 | A3：GitHub Actions CI + 共享 `cards` scheme @ `91f1f4c`；push 后确认 Actions 绿 |
 | 2026-08-02 | A4：`recordBraveHitProgress` 去重 @ `0385e2a`；建议下一刀讨论 L1 |
-| 2026-08-04 | L1：String Catalog + 三刀迁移；修复动态 key（`L10n.key`）；单测绿 |
+| 2026-08-04 | L1：String Catalog + 三刀迁移 @ `398dc74`；动态 key 用 `L10n.key`；单测绿 |
