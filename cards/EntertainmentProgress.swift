@@ -15,13 +15,16 @@ struct EntertainmentStage: Equatable, Sendable, Identifiable {
     let dealerStart: Int
     let minimumBet: Int
     let betChipValues: [Int]
-    let title: String
 
     var id: Int { level }
 
+    var title: String {
+        L10n.key("entertainment.stage.\(level).title")
+    }
+
     var tableLimitsSummary: String {
         let chips = betChipValues.map(String.init).joined(separator: " / ")
-        return "最小注 \(minimumBet)；筹码档 \(chips)"
+        return L10n.format("entertainment.tableLimitsFormat", minimumBet, chips)
     }
 }
 
@@ -32,40 +35,35 @@ enum EntertainmentRules {
             playerStart: 1000,
             dealerStart: 2000,
             minimumBet: 100,
-            betChipValues: [100, 200, 500],
-            title: "娱乐一阶"
+            betChipValues: [100, 200, 500]
         ),
         EntertainmentStage(
             level: 2,
             playerStart: 2000,
             dealerStart: 5000,
             minimumBet: 100,
-            betChipValues: [200, 400, 800],
-            title: "娱乐二阶"
+            betChipValues: [200, 400, 800]
         ),
         EntertainmentStage(
             level: 3,
             playerStart: 3500,
             dealerStart: 9000,
             minimumBet: 200,
-            betChipValues: [200, 500, 1000],
-            title: "娱乐三阶"
+            betChipValues: [200, 500, 1000]
         ),
         EntertainmentStage(
             level: 4,
             playerStart: 5500,
             dealerStart: 16_000,
             minimumBet: 250,
-            betChipValues: [250, 750, 1500],
-            title: "娱乐四阶"
+            betChipValues: [250, 750, 1500]
         ),
         EntertainmentStage(
             level: 5,
             playerStart: 8000,
             dealerStart: 25_000,
             minimumBet: 500,
-            betChipValues: [500, 1000, 2000],
-            title: "娱乐终阶"
+            betChipValues: [500, 1000, 2000]
         ),
     ]
 
@@ -98,7 +96,12 @@ enum EntertainmentRules {
     /// 战绩页：当前阶起始筹码摘要。
     static func stageBankSummary(level: Int) -> String {
         let stage = stage(level: level)
-        return "\(stage.title)：你 \(stage.playerStart) · 庄家 \(stage.dealerStart)"
+        return L10n.format(
+            "entertainment.summaryFormat",
+            stage.title,
+            stage.playerStart,
+            stage.dealerStart
+        )
     }
 
     /// 战绩 / 帮助：当前阶 + 距下一阶差额（F2）。
@@ -109,11 +112,11 @@ enum EntertainmentRules {
     ) -> String {
         let stage = stage(level: unlockedLevel)
         guard let next = nextStageThreshold(afterLevel: unlockedLevel) else {
-            return "\(stage.title)：已通关全部阶梯"
+            return L10n.format("entertainment.progress.maxFormat", stage.title)
         }
         let clearsLeft = max(0, next.clears - dealerClears)
         let chipsLeft = max(0, next.chipsWon - totalChipsWon)
-        return "\(stage.title)：下一阶再打穿 \(clearsLeft) 次，或再赢 \(chipsLeft) 筹码"
+        return L10n.format("entertainment.progress.nextFormat", stage.title, clearsLeft, chipsLeft)
     }
 }
 
@@ -149,7 +152,7 @@ final class EntertainmentProgress: ObservableObject {
 
     /// 战绩页娱乐累计摘要。
     var chipsSummaryLine: String {
-        "累计赢 \(totalChipsWon) · 打穿庄家 \(dealerClearCount) 次"
+        L10n.format("stats.chipsLineFormat", totalChipsWon, dealerClearCount)
     }
 
     /// 结算净赢计入娱乐累计（仅正数）。

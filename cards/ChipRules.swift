@@ -69,31 +69,29 @@ enum ChipRules {
     ) -> String? {
         guard sessionRoundsCompleted < unlockRounds else { return nil }
         let left = unlockRounds - sessionRoundsCompleted
-        return "再玩 \(left) 局后解锁全下"
+        return L10n.format("chips.preDealAllInLockFormat", left)
     }
 
     /// 破产回主页后欢迎页短提示。
-    static let sessionClearedReturnHomeHint = "进度已清空，可重新开始。"
+    static var sessionClearedReturnHomeHint: String { L10n.t("chips.sessionClearedHint") }
 
     /// 产品锁定：天然黑杰克开局见牌即结算，不进入玩家回合。
     /// 默认全下在发牌前完成，故天然 BJ 仍可吃到开局全下；对局中见牌后再全下由 `PropStore.owns(.midHandAllIn)` 门控。
     static let naturalBlackjackResolvesBeforePlayerTurn = true
 
     /// 杀进程恢复后下注页提示（未结算注已退回；筹码与全下解锁局数保留）。
-    static let restoreAfterInterruptHint =
-        "上次对局未完成，未结算注码已退回；双方筹码与本会话全下解锁进度已保留。"
+    static var restoreAfterInterruptHint: String { L10n.t("chips.restoreAfterInterrupt") }
 
     /// 主动退出确认说明（与杀进程自动恢复相对）。
-    static let abandonSessionConfirmDetail =
-        "将清空双方筹码并返回主页（与杀进程后自动恢复进度不同）。当前进度不记入历史。"
+    static var abandonSessionConfirmDetail: String { L10n.t("chips.abandonConfirmDetail") }
 
     /// 闯关欢迎页规则说明。
     static var challengeWelcomeSummary: String {
         let need = preDealAllInUnlockCompletedRounds
         let allInNote = need == 0
-            ? "开局即可全下"
-            : "开局全下需本会话打满 \(need) 局"
-        return "闯关挑战：打穿庄家或累计赢码可解锁更高关卡。注码三档单选；\(allInNote)。玩法道具仅娱乐模式可用。"
+            ? L10n.t("chips.challengeWelcome.allInZero")
+            : L10n.format("chips.challengeWelcome.allInRoundsFormat", need)
+        return L10n.format("chips.challengeWelcomeFormat", allInNote)
     }
 
     /// 兼容旧调用。
@@ -129,22 +127,22 @@ enum ChipRules {
     }
 
     /// 黑杰克赔率文案（结算 UI 与结果区共用）。
-    static let blackjackOddsLabel = "黑杰克赔率 3:2"
+    static var blackjackOddsLabel: String { L10n.t("chips.odds.blackjack") }
 
     /// 普通获胜赔率文案。
-    static let evenMoneyOddsLabel = "普通胜负 1:1"
+    static var evenMoneyOddsLabel: String { L10n.t("chips.odds.normal") }
 
     /// 投降结算说明。
-    static let surrenderOddsLabel = "投降退半注"
+    static var surrenderOddsLabel: String { L10n.t("chips.odds.surrender") }
 
     /// P6+ 保险：赔率说明（庄家黑杰克时保险 2:1）。
-    static let insuranceOddsLabel = "保险赔率 2:1"
+    static var insuranceOddsLabel: String { L10n.t("chips.odds.insurance") }
 
     /// P6+ 保险：未中说明（庄家非黑杰克）。
-    static let insuranceLostLabel = "保险未中"
+    static var insuranceLostLabel: String { L10n.t("chips.odds.insuranceMiss") }
 
     /// 庄家筹码不足、只赔剩余时的说明。
-    static let partialPayoutLabel = "庄家筹码不足，已赔付全部剩余"
+    static var partialPayoutLabel: String { L10n.t("chips.partialPayout") }
 
     /// UserDefaults 键：尚未结算的保险侧注。
     static let activeInsuranceStorageKey = "chipBank.activeInsurance"
@@ -200,17 +198,15 @@ enum SessionEndReason: Equatable, Sendable {
 
     var title: String {
         switch self {
-        case .playerBroke: return "你已破产"
-        case .dealerBroke: return "庄家已破产"
+        case .playerBroke: return L10n.t("sessionEnd.playerBroke")
+        case .dealerBroke: return L10n.t("sessionEnd.dealerBroke")
         }
     }
 
     var detail: String {
         switch self {
-        case .playerBroke:
-            return "余额不足以继续下注，本局游戏结束。请返回主页后再开启新的一局。"
-        case .dealerBroke:
-            return "庄家筹码已全部赔出。若满足条件将解锁更高闯关关卡；请返回主页后再开启新一局。"
+        case .playerBroke: return L10n.t("sessionEnd.playerBroke.detail")
+        case .dealerBroke: return L10n.t("sessionEnd.dealerBroke.detail")
         }
     }
 }

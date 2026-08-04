@@ -141,14 +141,24 @@ final class SessionCoordinator: ObservableObject {
                     dealerClears: statsStore.dealerBankClearCount,
                     totalChipsWon: statsStore.totalChipsWon
                 ) {
-                    notices.append("闯关·\(challengeProgress.currentStage.title)")
+                    notices.append(
+                        L10n.format(
+                            "unlock.challengePrefixFormat",
+                            challengeProgress.currentStage.title
+                        )
+                    )
                 }
             }
             if playStyle == .entertainment, sessionEndReason == .dealerBroke {
                 if entertainmentProgress.recordDealerCleared() {
-                    notices.append(entertainmentProgress.currentStage.title)
+                    notices.append(
+                        L10n.format(
+                            "unlock.entertainmentStageFormat",
+                            entertainmentProgress.currentStage.title
+                        )
+                    )
                 } else {
-                    notices.append("娱乐·打穿庄家")
+                    notices.append(L10n.t("unlock.entertainmentClear"))
                 }
             }
             let newlyProps = propStore.syncFromAchievements(statsStore.unlockedIDs)
@@ -158,11 +168,15 @@ final class SessionCoordinator: ObservableObject {
                 totalChipsWon: statsStore.totalChipsWon
             )
             if playStyle == .entertainment {
-                notices.append(contentsOf: newlyProps.map { "道具·\($0.title)" })
+                notices.append(
+                    contentsOf: newlyProps.map { L10n.format("unlock.propFormat", $0.title) }
+                )
             } else if !newlyProps.isEmpty {
-                notices.append("道具已解锁（娱乐模式可用）")
+                notices.append(L10n.t("unlock.propsUnlockedChallengeNote"))
             }
-            notices.append(contentsOf: newlyBacks.map { "卡背·\($0.title)" })
+            notices.append(
+                contentsOf: newlyBacks.map { L10n.format("unlock.cardBackFormat", $0.title) }
+            )
             return notices
         }
 
@@ -174,7 +188,12 @@ final class SessionCoordinator: ObservableObject {
                 dealerClears: statsStore.dealerBankClearCount,
                 totalChipsWon: statsStore.totalChipsWon
             ) {
-                notices = ["闯关·\(challengeProgress.currentStage.title)"]
+                notices = [
+                    L10n.format(
+                        "unlock.challengePrefixFormat",
+                        challengeProgress.currentStage.title
+                    ),
+                ]
             }
             _ = cosmeticsStore.syncFromProgress(
                 unlockedLevel: challengeProgress.unlockedLevel,
@@ -186,7 +205,12 @@ final class SessionCoordinator: ObservableObject {
 
         if playStyle == .entertainment, sessionEndReason == .dealerBroke {
             if entertainmentProgress.recordDealerCleared() {
-                return [entertainmentProgress.currentStage.title]
+                return [
+                    L10n.format(
+                        "unlock.entertainmentStageFormat",
+                        entertainmentProgress.currentStage.title
+                    ),
+                ]
             }
             return []
         }

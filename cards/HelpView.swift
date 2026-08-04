@@ -14,43 +14,43 @@ struct HelpView: View {
         NavigationStack {
             List {
                 Section {
-                    Text("比点数接近 21 且不爆牌。庄家点数小于 17 必须要牌，大于等于 17 停牌（软 17 同停）。玩家回合开局两张时可「加倍」（再押等额、只补一张）或「投降」（退回半注；本局全下时不可投降）。庄家明牌为 A 时可买半注「保险」（2:1；全下不可买）；随后庄家查看是否黑杰克，有则直接结算。天然黑杰克赔率 3:2，普通获胜 1:1，平局退注。")
+                    Text(L10n.t("help.body.rules"))
                 } header: {
-                    Text("基本规则")
+                    Text(L10n.t("help.section.rules"))
                 }
 
                 Section {
-                    Text("有筹码与庄家资金池。打穿庄家或累计赢码可解锁更高关卡，新会话双方起始筹码随关提升。注码三档单选；开局全下需本会话打满设置中的解锁局数（可配置，默认 5；设为 0 则开局可用）。玩法道具在闯关中不可用。")
-                    Text("当前关卡、起始筹码与距下一关差额见「战绩」；成就与道具兑换见「成就」。卡背解锁也主要看闯关表现。")
+                    Text(L10n.t("help.body.challenge1"))
+                    Text(L10n.t("help.body.challenge2"))
                 } header: {
-                    Text("闯关挑战")
+                    Text(L10n.t("help.section.challenge"))
                 }
 
                 Section {
-                    Text("独立娱乐阶梯：打穿或累计赢码升阶，本阶起始筹码与注码随之提升。已解锁的玩法道具仅在此模式可用（见牌后再全下、软 17 要牌、窥视、换一张、换庄家一张等）。支持「同上局」下注；切牌固定为真实渗透（不受设置页切牌选项影响）。")
-                    Text("娱乐对局计入娱乐成就轨，不计入闯关成就。当前阶、注码与距下一阶差额见「战绩」。")
+                    Text(L10n.t("help.body.entertainment1"))
+                    Text(L10n.t("help.body.entertainment2"))
                 } header: {
-                    Text("娱乐模式")
+                    Text(L10n.t("help.section.entertainment"))
                 }
 
                 Section {
-                    Text("默认牌副、闯关切牌三态（每局重洗 / 仪式感 / 真实）、闯关桌限、全下解锁局数、卡背、音效与触觉：均在「设置」中调整。牌副、切牌、桌限与全下解锁局数对局中修改不生效，须返回主页再开新局；音效、触觉、局内全下确认与卡背可立即生效。")
-                    Text("「战绩」展示关卡/阶梯进度与胜负摘要；「成就」展示成就与道具兑换。")
+                    Text(L10n.t("help.body.meta1"))
+                    Text(L10n.t("help.body.meta2"))
                 } header: {
-                    Text("设置 · 成就 · 战绩")
+                    Text(L10n.t("help.section.meta"))
                 }
 
                 Section {
-                    Text("本应用面向练习与娱乐，规则为简化版赌场二十一点，不等同于线下赌场全部选项（如分牌尚未开放）。")
+                    Text(L10n.t("help.body.note"))
                 } header: {
-                    Text("说明")
+                    Text(L10n.t("help.section.note"))
                 }
             }
-            .navigationTitle("帮助说明")
+            .navigationTitle(L10n.t("help.navTitle"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("完成") {
+                    Button(L10n.t("help.done")) {
                         dismiss()
                     }
                 }

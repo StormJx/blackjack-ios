@@ -18,10 +18,10 @@ docs/P8_ORIENTATION_AND_A11Y.md。用中文回复。
 一、当前基线
 ================================================================================
 GitHub：https://github.com/StormJx/blackjack-ios
-分支 main @ `0385e2a`（A4；若尚未 push 则本地 ahead）
+分支 main @ L1 本地化（push 后以 `git log -1` 为准；此前 A4 @ `6829d42`）
   - 已推送里程碑：Tag `v1.11.1` @ `12234c5`（UX9 + OPTIMIZATION_GUIDE）
-  - 本批：`0385e2a` A4 `recordBraveHitProgress` 险中求胜判定去重
-  - 更早：`91f1f4c`/`8c2db15` A3 CI；`94d2ddb` A1+A2；保险/投降/加倍；UX1–UX8 / Tag `v1.11.0`
+  - 本批：L1 String Catalog（zh-Hans）+ 欢迎页 en；`L10n.t` / `L10n.key` / `L10n.format`
+  - 更早：`0385e2a`/`6829d42` A4；`8c2db15` A3；A1+A2；保险/投降/加倍；UX1–UX8 / Tag `v1.11.0`
 iOS 最低 17.0；庄家 <17 要牌、≥17 停（软 17 同停）；GameFeedback 音效基名约定不变
   （deal/flip/shuffle/win/lose/push；缺文件静默跳过）。
 推送前须跑 ./scripts/check-before-push.sh；禁止提交 VERSION_ROADMAP.txt / .env / 密钥。
@@ -60,6 +60,7 @@ P6 加倍、P6+ 投降/保险、OPTIMIZATION_GUIDE 入库。
 【A2 DataSchema】currentVersion=1；Store 前迁移；改持久化须升版本。
 【A3 GitHub Actions CI】macos-15；仅 cardsTests；共享 scheme；Actions 已绿。
 【A4】`recordBraveHitProgress`：hit / doubleDown / redrawLastHitCard 险中求胜判定去重。
+【L1】`Localizable.xcstrings`（zh-Hans）+ `L10n`；欢迎页含 en；动态 key 用 `L10n.key`（勿 LocalizationValue 插值）。
 
 【P6+ 保险 @ ef95b0c】（已锁定，勿擅自改）明 A；半注 2:1；Ace peek；全下禁；无 Even Money
 
@@ -67,12 +68,11 @@ P6 加倍、P6+ 投降/保险、OPTIMIZATION_GUIDE 入库。
 二、待后续完成（须用户点名后再做）— 见 OPTIMIZATION_GUIDE
 ================================================================================
 优先建议：
-1. L1 本地化 String Catalog（上架准备；推荐下一讨论/实现）
-2. 可选：保险路径实机抽查；有 bug 再修
-3. A5 GameTableView 道具参数收敛（新道具或 C5 前；现延后）
-4. L2 分牌须先锁产品
-5. T 教学轨（基础策略引擎等）— 差异化，后置于上架准备讨论
-6. 广告专篇 / P8 横屏 / C5 / F10 正片 — 更后
+1. 可选：保险路径实机抽查；有 bug 再修
+2. A5 GameTableView 道具参数收敛（新道具或 C5 前；现延后）
+3. L2 分牌须先锁产品；扩英文：只改 xcstrings 的 en
+4. T 教学轨（基础策略引擎等）— 差异化，后置于上架准备讨论
+5. 广告专篇 / P8 横屏 / C5 / F10 正片 — 更后
 
 其它后置：见 docs/ENGINEERING_REVIEW_BACKLOG.md 与 docs/OPTIMIZATION_GUIDE.md
 
@@ -99,7 +99,7 @@ P6 加倍、P6+ 投降/保险、OPTIMIZATION_GUIDE 入库。
 9. 一个功能切片结束后建议用户同步检查点；用户要求 push 前必须跑 check-before-push.sh。
 
 请先确认已读上述内容，然后等待我点名要讨论或要实现的项。
-（建议下一刀：讨论并分批实施 L1 本地化；见 docs/OPTIMIZATION_GUIDE.md。）
+（建议下一刀：保险实机抽查，或讨论 L2 / T；见 docs/OPTIMIZATION_GUIDE.md。）
 ```
 
 ---
@@ -108,8 +108,8 @@ P6 加倍、P6+ 投降/保险、OPTIMIZATION_GUIDE 入库。
 
 | 优先级 | 项 | 为何现在做 | 步骤提纲 |
 |--------|----|------------|----------|
-| 1 | **L1 本地化** | 上架准备；越晚成本越高 | String Catalog；欢迎/设置/帮助 → 牌桌 → 成就/战绩 |
-| 2 | 保险实机抽查 | 防回归 | 明 A 买/不买；全下禁买；peek 后窥视；庄家 BJ 盈亏约 0 |
+| 1 | 保险实机抽查 | 防回归 | 明 A 买/不买；全下禁买；peek 后窥视；庄家 BJ 盈亏约 0 |
+| 2 | 扩英文 | 按屏补 xcstrings `en` | 欢迎页已有；其它页加 en 即可 |
 | 3 | A5 | 参数收敛 | C5/新道具前做；现延后 |
 | 4 | L2 分牌 | 须先产品锁 | 多手状态机；见 OPTIMIZATION_GUIDE L2 |
 | 后置 | T 教学轨 / 广告 / 横屏 / C5 / F10 | 产品或素材未齐 | 未点名不接 SDK |

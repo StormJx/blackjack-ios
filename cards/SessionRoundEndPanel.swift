@@ -35,7 +35,7 @@ struct SessionRoundEndPanel: View {
 
     private var primaryButtonTitle: String {
         if playStyle.showsChips && isSessionOver {
-            return "返回主页"
+            return L10n.t("roundEnd.returnHome")
         }
         return playStyle.continueButtonTitle
     }
@@ -50,12 +50,12 @@ struct SessionRoundEndPanel: View {
                             .accessibilityAddTraits(.isHeader)
                         Spacer(minLength: 0)
                         if onPeekTable != nil, !isSessionOver {
-                            Button("查看牌面") {
+                            Button(L10n.t("roundEnd.viewTable")) {
                                 GameFeedback.shared.buttonTap()
                                 onPeekTable?()
                             }
                             .font(.subheadline.weight(.semibold))
-                            .accessibilityHint("暂时收起结果，查看桌上牌面")
+                            .accessibilityHint(L10n.t("roundEnd.a11y.peekHint"))
                         }
                     }
 
@@ -74,7 +74,7 @@ struct SessionRoundEndPanel: View {
                         .multilineTextAlignment(.center)
                         .lineLimit(4)
                         .fixedSize(horizontal: false, vertical: true)
-                        .accessibilityLabel("本局结果：\(outcomeMessage)")
+                        .accessibilityLabel(L10n.format("roundEnd.a11y.outcomeFormat", outcomeMessage))
 
                     if !unlockNotices.isEmpty {
                         unlockCardsBlock
@@ -117,7 +117,7 @@ struct SessionRoundEndPanel: View {
                         GameFeedback.shared.buttonTap()
                         onReturnHome()
                     } label: {
-                        Text("返回主页")
+                        Text(L10n.t("roundEnd.returnHome"))
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
@@ -139,7 +139,11 @@ struct SessionRoundEndPanel: View {
             .padding(.horizontal, 24)
             .padding(.top, 8)
             .padding(.bottom, 24)
-            .accessibilityHint(isSessionOver ? "结束本会话并返回欢迎页" : "进入下一局下注")
+            .accessibilityHint(
+                isSessionOver
+                    ? L10n.t("roundEnd.a11y.endHint")
+                    : L10n.t("roundEnd.a11y.continueHint")
+            )
             .accessibilityLabel(primaryButtonTitle)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -155,14 +159,14 @@ struct SessionRoundEndPanel: View {
 
     private var titleText: String {
         if isSessionOver {
-            return "本局游戏结束"
+            return L10n.t("roundEnd.title.session")
         }
-        return "本局结束"
+        return L10n.t("roundEnd.title.round")
     }
 
     private var unlockCardsBlock: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("本局解锁")
+            Text(L10n.t("roundEnd.unlocks"))
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
             ForEach(Array(unlockNotices.enumerated()), id: \.offset) { _, title in
@@ -187,7 +191,7 @@ struct SessionRoundEndPanel: View {
                         .strokeBorder(Color.orange.opacity(0.22), lineWidth: 1)
                 )
                 .accessibilityElement(children: .combine)
-                .accessibilityLabel("解锁：\(title)")
+                .accessibilityLabel(L10n.format("roundEnd.a11y.unlockFormat", title))
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -197,12 +201,13 @@ struct SessionRoundEndPanel: View {
     @ViewBuilder
     private var challengeSettlementBlock: some View {
         if let settlement {
-            Text("本局盈亏 \(settlement.netChangeLabel)")
+            let netLine = L10n.format("roundEnd.netFormat", settlement.netChangeLabel)
+            Text(netLine)
                 .font(.headline)
                 .monospacedDigit()
                 .foregroundStyle(settlementNetColor(settlement.netChange))
                 .contentTransition(.numericText())
-                .accessibilityLabel("本局盈亏 \(settlement.netChangeLabel)")
+                .accessibilityLabel(netLine)
             if let odds = settlement.oddsLabel {
                 Text(odds)
                     .font(.subheadline.weight(.semibold))
@@ -220,19 +225,31 @@ struct SessionRoundEndPanel: View {
                     .foregroundStyle(.orange)
                     .multilineTextAlignment(.center)
             }
-            Text("你 \(settlement.balanceAfter) · 庄家 \(settlement.dealerBankAfter)")
+            Text(
+                L10n.format(
+                    "roundEnd.banksFormat",
+                    settlement.balanceAfter,
+                    settlement.dealerBankAfter
+                )
+            )
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .monospacedDigit()
                 .accessibilityLabel(
-                    "你的余额 \(settlement.balanceAfter)，庄家余额 \(settlement.dealerBankAfter)"
+                    L10n.format(
+                        "roundEnd.a11y.banksFormat",
+                        settlement.balanceAfter,
+                        settlement.dealerBankAfter
+                    )
                 )
         } else {
-            Text("你 \(balance) · 庄家 \(dealerBank)")
+            Text(L10n.format("roundEnd.banksFormat", balance, dealerBank))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .monospacedDigit()
-                .accessibilityLabel("你的余额 \(balance)，庄家余额 \(dealerBank)")
+                .accessibilityLabel(
+                    L10n.format("roundEnd.a11y.banksFormat", balance, dealerBank)
+                )
         }
     }
 

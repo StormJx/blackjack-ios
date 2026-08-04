@@ -125,12 +125,23 @@ final class StatsStore: ObservableObject {
     }
 
     func chipsSummaryLine() -> String {
-        "累计赢 \(totalChipsWon) · 累计亏 \(totalChipsLost) · 打穿庄家 \(dealerBankClearCount) 次"
+        L10n.format(
+            "stats.chipsFullLineFormat",
+            totalChipsWon,
+            totalChipsLost,
+            dealerBankClearCount
+        )
     }
 
     func recordSummaryLine(for scope: AchievementScope) -> String {
         let m = scope == .challenge ? challenge : practice
-        return "\(m.wins) 胜 · \(m.losses) 负 · \(m.pushes) 平 · 最长连胜 \(m.bestWinStreak)"
+        return L10n.format(
+            "stats.recordSummaryFormat",
+            m.wins,
+            m.losses,
+            m.pushes,
+            m.bestWinStreak
+        )
     }
 
     /// 挑战模式结算后写入总赢/总亏，并检查筹码阶梯成就。

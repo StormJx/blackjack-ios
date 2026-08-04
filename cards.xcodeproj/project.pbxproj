@@ -187,9 +187,10 @@
 				};
 			};
 			buildConfigurationList = CB5CC4852F814AD500FDF3F2 /* Build configuration list for PBXProject "cards" */;
-			developmentRegion = en;
+			developmentRegion = "zh-Hans";
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				"zh-Hans",
 				en,
 				Base,
 			);

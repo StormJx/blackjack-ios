@@ -19,19 +19,11 @@ enum CardBackStyle: String, CaseIterable, Identifiable, Sendable {
     var id: String { rawValue }
 
     var title: String {
-        switch self {
-        case .classicNavy: return "经典海军蓝"
-        case .emeraldLattice: return "翠绿格纹"
-        case .crimsonRibbon: return "绯红缎带"
-        }
+        L10n.key("cardBack.\(rawValue).title")
     }
 
     var unlockHint: String {
-        switch self {
-        case .classicNavy: return "默认拥有"
-        case .emeraldLattice: return "闯关第 2 关或打穿庄家 1 次后解锁"
-        case .crimsonRibbon: return "闯关第 3 关或累计赢 5000 后解锁"
-        }
+        L10n.key("cardBack.\(rawValue).unlockHint")
     }
 
     /// 本版仅默认样式视为已解锁；其余由进度同步。

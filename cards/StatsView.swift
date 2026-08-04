@@ -18,7 +18,7 @@ struct StatsView: View {
                 challengeSection
                 entertainmentSection
             }
-            .navigationTitle("战绩")
+            .navigationTitle(L10n.t("stats.navTitle"))
             .navigationBarTitleDisplayMode(.inline)
         }
     }
@@ -35,7 +35,12 @@ struct StatsView: View {
                 .font(.subheadline.weight(.semibold))
                 .monospacedDigit()
                 .accessibilityLabel(
-                    "\(stage.title)，起始筹码你 \(stage.playerStart)，庄家 \(stage.dealerStart)"
+                    L10n.format(
+                        "stats.a11y.stageBankFormat",
+                        stage.title,
+                        stage.playerStart,
+                        stage.dealerStart
+                    )
                 )
 
             Text(hint)
@@ -52,14 +57,14 @@ struct StatsView: View {
                     .foregroundStyle(.secondary)
                     .monospacedDigit()
             } else {
-                Text("尚无闯关对局记录。")
+                Text(L10n.t("stats.empty.challenge"))
                     .font(.caption)
                     .foregroundStyle(.tertiary)
             }
         } header: {
-            Text("闯关模式")
+            Text(L10n.t("stats.section.challenge"))
         } footer: {
-            Text("新开闯关会话按已解锁最高关给予双方起始筹码。卡背解锁也主要看闯关表现。")
+            Text(L10n.t("stats.footer.challenge"))
         }
     }
 
@@ -75,7 +80,12 @@ struct StatsView: View {
                 .font(.subheadline.weight(.semibold))
                 .monospacedDigit()
                 .accessibilityLabel(
-                    "\(stage.title)，起始筹码你 \(stage.playerStart)，庄家 \(stage.dealerStart)"
+                    L10n.format(
+                        "stats.a11y.stageBankFormat",
+                        stage.title,
+                        stage.playerStart,
+                        stage.dealerStart
+                    )
                 )
 
             Text(stage.tableLimitsSummary)
@@ -99,18 +109,18 @@ struct StatsView: View {
                     .font(.subheadline.weight(.semibold))
                     .monospacedDigit()
             } else {
-                Text("尚无娱乐对局记录。")
+                Text(L10n.t("stats.empty.entertainment"))
                     .font(.caption)
                     .foregroundStyle(.tertiary)
             }
 
-            Text("娱乐胜负不计入闯关成就。")
+            Text(L10n.t("stats.entertainmentNote"))
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
         } header: {
-            Text("娱乐模式")
+            Text(L10n.t("stats.section.entertainment"))
         } footer: {
-            Text("新开娱乐会话按当前阶给予起始筹码与注码三档；玩法道具仅娱乐可用。")
+            Text(L10n.t("stats.footer.entertainment"))
         }
     }
 }

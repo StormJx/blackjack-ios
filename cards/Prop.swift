@@ -24,43 +24,15 @@ enum PropID: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 
     var title: String {
-        switch self {
-        case .midHandAllIn: return "见牌后再全下"
-        case .dealerSoft17Hit: return "庄家软 17 要牌"
-        case .peekHole: return "窥视暗牌"
-        case .redrawOne: return "换一张"
-        case .reshuffleDealerCard: return "换庄家一张"
-        }
+        L10n.key("prop.\(rawValue).title")
     }
 
     var detail: String {
-        switch self {
-        case .midHandAllIn:
-            return "仅娱乐模式：对局中可将剩余筹码追加为全下并自动停牌。闯关模式不可用。天然黑杰克见牌即结算时不可用。"
-        case .dealerSoft17Hit:
-            return "仅娱乐模式：玩家回合开启后，本局庄家软 17 必须要牌。下局需再开。"
-        case .peekHole:
-            return "仅娱乐模式：玩家回合偷看庄家暗牌约 1 秒，每局限 1 次。"
-        case .redrawOne:
-            return "仅娱乐模式：弃掉最近一次要牌得到的牌并重发一张（须已要过牌）。每局限 1 次；天然 BJ 不可用。"
-        case .reshuffleDealerCard:
-            return "仅娱乐模式：随机将庄家手牌中一张（含暗牌）洗回牌库再抽一张替换（不推进切牌穿透；牌库有其它牌时不会原样抽回）。每局限 1 次；窥视进行中不可用；可与其它娱乐道具同局先后使用。"
-        }
+        L10n.key("prop.\(rawValue).detail")
     }
 
     var unlockHint: String {
-        switch self {
-        case .midHandAllIn:
-            return "打穿庄家资金池 1 次后永久解锁（仅娱乐可用）"
-        case .dealerSoft17Hit:
-            return "打穿庄家资金池 5 次后永久解锁（仅娱乐可用）"
-        case .peekHole:
-            return "娱乐模式连胜达 5 后永久解锁"
-        case .redrawOne:
-            return "娱乐模式累计胜 20 局后永久解锁"
-        case .reshuffleDealerCard:
-            return "娱乐模式累计胜 50 局后永久解锁"
-        }
+        L10n.key("prop.\(rawValue).unlockHint")
     }
 
     /// 是否主要靠闯关成就解锁（娱乐页签展示「去闯关解锁」）。

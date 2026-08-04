@@ -47,15 +47,27 @@ struct SessionBetPanel: View {
             return hint
         }
         if draftBet > 0 {
-            return "已选筹码时全下不可用，可先清空"
+            return L10n.t("bet.allInDisabledWhenSelected")
         }
         return nil
     }
 
+    private var balanceLine: String {
+        draftBet == 0
+            ? L10n.format("bet.balancePickFormat", balance)
+            : L10n.format("bet.balanceBetFormat", balance, draftBet)
+    }
+
     private var balanceSummary: String {
         draftBet == 0
-            ? "余额 \(balance)，请选一档"
-            : "余额 \(balance)，注码 \(draftBet)"
+            ? L10n.format("bet.a11y.balancePickFormat", balance)
+            : L10n.format("bet.a11y.balanceBetFormat", balance, draftBet)
+    }
+
+    private var allInTitle: String {
+        emphasizeForcedAllIn && allInUnlocked
+            ? L10n.t("bet.forceAllIn")
+            : L10n.t("bet.allIn")
     }
 
     var body: some View {
@@ -63,17 +75,15 @@ struct SessionBetPanel: View {
             ScrollView {
                 VStack(spacing: 16) {
                     VStack(spacing: 6) {
-                        Text("下注")
+                        Text(L10n.t("bet.title"))
                             .font(.title2.weight(.semibold))
                             .accessibilityAddTraits(.isHeader)
-                        Text(draftBet == 0
-                             ? "余额 \(balance) · 请选一档"
-                             : "余额 \(balance) · 注 \(draftBet)")
+                        Text(balanceLine)
                             .font(.headline)
                             .monospacedDigit()
                             .foregroundStyle(.secondary)
                             .accessibilityLabel(balanceSummary)
-                        Text("三档单选，选好后确认发牌")
+                        Text(L10n.t("bet.hint.pickChips"))
                             .font(.caption)
                             .foregroundStyle(.tertiary)
                         if showRestoreHint {
@@ -103,23 +113,41 @@ struct SessionBetPanel: View {
                             .tint(selected ? .green : .secondary.opacity(0.35))
                             .disabled(!enabled)
                             .opacity(enabled ? 1 : 0.45)
-                            .accessibilityLabel("筹码档 \(value)")
-                            .accessibilityValue(selected ? "已选中" : (enabled ? "未选中" : "余额不足"))
-                            .accessibilityHint(enabled ? "点选作为本局注码" : "余额不足以选择该档")
+                            .accessibilityLabel(L10n.format("bet.a11y.chipFormat", value))
+                            .accessibilityValue(
+                                selected
+                                    ? L10n.t("bet.a11y.chipSelected")
+                                    : (enabled
+                                        ? L10n.t("bet.a11y.chipUnselected")
+                                        : L10n.t("bet.a11y.chipInsufficient"))
+                            )
+                            .accessibilityHint(
+                                enabled
+                                    ? L10n.t("bet.a11y.chipHintSelect")
+                                    : L10n.t("bet.a11y.chipHintInsufficient")
+                            )
                         }
                     }
 
                     HStack(spacing: 16) {
-                        Button("清空") {
+                        Button(L10n.t("bet.clear")) {
                             GameFeedback.shared.buttonTap()
                             onClear()
                         }
                         .font(.subheadline.weight(.semibold))
                         .disabled(draftBet == 0)
-                        .accessibilityHint(draftBet == 0 ? "当前未选注码" : "清除已选注码")
+                        .accessibilityHint(
+                            draftBet == 0
+                                ? L10n.t("bet.a11y.clearNoBet")
+                                : L10n.t("bet.a11y.clearHint")
+                        )
 
                         if showsRepeatLastBet {
-                            Button(lastBetAmount > 0 ? "同上局 \(lastBetAmount)" : "同上局") {
+                            Button(
+                                lastBetAmount > 0
+                                    ? L10n.format("bet.sameAsLastFormat", lastBetAmount)
+                                    : L10n.t("bet.sameAsLast")
+                            ) {
                                 GameFeedback.shared.buttonTap()
                                 onRepeatLastBet()
                             }
@@ -127,8 +155,8 @@ struct SessionBetPanel: View {
                             .disabled(!canRepeatLastBet)
                             .accessibilityHint(
                                 canRepeatLastBet
-                                    ? "使用上局注码 \(lastBetAmount)"
-                                    : "暂无可用的上局注码"
+                                    ? L10n.format("bet.a11y.repeatFormat", lastBetAmount)
+                                    : L10n.t("bet.a11y.repeatUnavailable")
                             )
                         }
 
@@ -140,7 +168,7 @@ struct SessionBetPanel: View {
                             GameFeedback.shared.buttonTap()
                             onAllIn()
                         } label: {
-                            Text(emphasizeForcedAllIn && allInUnlocked ? "强制全下" : "全下")
+                            Text(allInTitle)
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(.borderedProminent)
@@ -148,8 +176,12 @@ struct SessionBetPanel: View {
                         .tint(emphasizeForcedAllIn && canAllIn ? .orange : .red.opacity(0.85))
                         .disabled(!canAllIn)
                         .opacity(canAllIn ? 1 : 0.45)
-                        .accessibilityLabel(emphasizeForcedAllIn && allInUnlocked ? "强制全下" : "全下")
-                        .accessibilityHint(canAllIn ? "将全部余额作为注码" : (allInDisabledReason ?? "当前不可用"))
+                        .accessibilityLabel(allInTitle)
+                        .accessibilityHint(
+                            canAllIn
+                                ? L10n.t("bet.a11y.allInHint")
+                                : (allInDisabledReason ?? L10n.t("disabled.unavailable"))
+                        )
 
                         if let reason = allInDisabledReason {
                             Text(reason)
@@ -169,7 +201,7 @@ struct SessionBetPanel: View {
                 GameFeedback.shared.buttonTap()
                 onConfirm()
             } label: {
-                Text("确认并发牌")
+                Text(L10n.t("bet.confirmDeal"))
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
@@ -180,7 +212,11 @@ struct SessionBetPanel: View {
             .padding(.horizontal, 20)
             .padding(.top, 8)
             .padding(.bottom, 20)
-            .accessibilityHint(canConfirm ? "确认注码并开始发牌" : "请先选择有效注码")
+            .accessibilityHint(
+                canConfirm
+                    ? L10n.t("bet.a11y.confirmHint")
+                    : L10n.t("bet.a11y.confirmDisabled")
+            )
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }

@@ -18,7 +18,7 @@ struct FastSessionStats: Equatable, Sendable {
     var roundsPlayed: Int { wins + losses + pushes }
 
     var summaryLine: String {
-        "本会话 \(wins) 胜 · \(losses) 负 · \(pushes) 平 · 连胜 \(currentWinStreak)"
+        L10n.format("fast.sessionSummaryFormat", wins, losses, pushes, currentWinStreak)
     }
 
     /// 根据本局结局更新计数与连胜。

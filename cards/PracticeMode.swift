@@ -29,26 +29,21 @@ enum PracticeMode: String, CaseIterable, Identifiable, Sendable {
 
     /// 欢迎页 / 牌桌简短展示用：一副牌、两副牌、六副牌。
     var shortLabel: String {
-        "\(Self.chineseDeckCount(numberOfDecks))副牌"
+        switch self {
+        case .singleDeck: return L10n.t("practice.deck.single")
+        case .shoe2: return L10n.t("practice.deck.shoe2")
+        case .shoe6: return L10n.t("practice.deck.shoe6")
+        }
     }
 
     /// 牌桌副标题：总张数说明（剩余张数由对局层动态拼接）。
     var tableSubtitleBase: String {
         let total = numberOfDecks * 52
-        return "共 \(total) 张，切牌点后重洗"
+        return L10n.format("practice.tableSubtitleFormat", total)
     }
 
     /// 欢迎页 Picker 选项文案。
     var pickerLabel: String {
         shortLabel
-    }
-
-    private static func chineseDeckCount(_ n: Int) -> String {
-        switch n {
-        case 1: return "一"
-        case 2: return "两"
-        case 6: return "六"
-        default: return "\(n)"
-        }
     }
 }

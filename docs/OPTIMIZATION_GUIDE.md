@@ -103,7 +103,8 @@
 3. 中文为源语言；英文翻译可后置，但 key 化必须完成。
 4. 注意拼接文案（如 `"解锁\(title)"`、点数读法）改用带插值的 format key。
 
-**验收**：源码无面向用户的裸中文字面量（`rg` 抽查）；UI 显示与现状一致。**规模**：中（2–3 刀）。
+**验收**：源码无面向用户的裸中文字面量（`rg` 抽查）；UI 显示与现状一致。**规模**：中（2–3 刀）。  
+**状态：已完成（2026-08-04）** — `Localizable.xcstrings`（`sourceLanguage=zh-Hans`）+ `L10n.t` / `L10n.key` / `L10n.format`；欢迎页 9 个 key 含 `en`；动态 key 必须用 `L10n.key`（勿用 `LocalizationValue("a.\(id)")` 插值模板）。工程 `developmentRegion=zh-Hans`。`cardsTests` 已绿。
 
 ### L2 P6+ 分牌（既有 backlog 项，上架前建议提优）
 
@@ -224,3 +225,4 @@ App 图标全尺寸、截图（6.7"/6.1" 必备）、副标题与关键词（结
 | 2026-08-01 | A2 完成：`DataSchema` + `DataSchemaTests`；下一刀建议 A3 |
 | 2026-08-01 | A3 完成：GitHub Actions CI + 共享 `cards` scheme；下一刀建议 A4 搭刀或 L1 / 保险抽查 |
 | 2026-08-02 | A4 完成：`recordBraveHitProgress` 去重；可谈 L1 本地化；A5 仍延后至 C5/新道具前 |
+| 2026-08-04 | L1 完成：String Catalog + 三刀文案迁移；欢迎页英文化；动态 key 用 `L10n.key` |

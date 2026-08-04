@@ -104,7 +104,7 @@ struct GameTableView: View {
     }
 
     private var idleHint: String {
-        "确认下注后发牌；庄家明 A 可买保险；使用「要牌」「停牌」「加倍」「投降」进行游戏。"
+        L10n.t("table.idleHint")
     }
 
     private var tableTitle: some View {
@@ -115,7 +115,7 @@ struct GameTableView: View {
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("二十一点")
+                Text(L10n.t("welcome.appTitle"))
                     .font(.system(.title2, design: .rounded).weight(.heavy))
                 Text(game.shoeStatusLine)
                     .font(.caption)
@@ -123,20 +123,20 @@ struct GameTableView: View {
                     .monospacedDigit()
                 if playStyle.showsChips {
                     HStack(spacing: 8) {
-                        Text("你 \(chipBank.balance)")
+                        Text(L10n.format("table.youFormat", chipBank.balance))
                             .font(.caption.weight(.semibold))
                             .monospacedDigit()
-                        Text("庄家 \(chipBank.dealerBank)")
+                        Text(L10n.format("table.dealerFormat", chipBank.dealerBank))
                             .font(.caption.weight(.semibold))
                             .monospacedDigit()
                         if chipBank.activeBet > 0 {
-                            Text("注 \(chipBank.activeBet)")
+                            Text(L10n.format("table.betFormat", chipBank.activeBet))
                                 .font(.caption)
                                 .monospacedDigit()
                                 .foregroundStyle(.tertiary)
                         }
                         if chipBank.activeInsurance > 0 {
-                            Text("保险 \(chipBank.activeInsurance)")
+                            Text(L10n.format("insurance.amountFormat", chipBank.activeInsurance))
                                 .font(.caption)
                                 .monospacedDigit()
                                 .foregroundStyle(.tertiary)
@@ -161,11 +161,11 @@ struct GameTableView: View {
                             .fill(Color.primary.opacity(0.08))
                     )
                 if playStyle == .entertainment {
-                    Text("娱乐")
+                    Text(L10n.t("badge.entertainment"))
                         .font(.caption2.weight(.semibold))
                         .foregroundStyle(.tertiary)
                 } else {
-                    Text("闯关")
+                    Text(L10n.t("badge.challenge"))
                         .font(.caption2.weight(.semibold))
                         .foregroundStyle(.tertiary)
                 }
@@ -177,7 +177,7 @@ struct GameTableView: View {
     private var dealerSection: some View {
         sectionCard {
             VStack(alignment: .leading, spacing: 8) {
-                Text("庄家")
+                Text(L10n.t("common.dealer"))
                     .font(.title3.weight(.semibold))
                 LazyVGrid(columns: cardGridColumns, alignment: .leading, spacing: 8) {
                     ForEach(0..<dealerCardFaces.count, id: \.self) { i in
@@ -194,17 +194,24 @@ struct GameTableView: View {
                 .animation(.spring(response: 0.38, dampingFraction: 0.78), value: dealerCardFaces.count)
                 .animation(.easeInOut(duration: 0.32), value: game.dealerHoleRevealed)
                 if !game.hideDealerHoleCard || game.phase == .idle {
-                    Text("点数：\(visibleDealerValueText)")
+                    Text(L10n.format("table.pointsFormat", visibleDealerValueText))
                         .font(.subheadline.weight(.medium))
                         .monospacedDigit()
                         .foregroundStyle(.primary.opacity(0.78))
-                        .accessibilityLabel("庄家点数 \(visibleDealerValueText)")
+                        .accessibilityLabel(
+                            L10n.format("table.a11y.dealerPointsFormat", visibleDealerValueText)
+                        )
                 } else {
-                    Text("明牌点数：\(dealerUpcardValueText)")
+                    Text(L10n.format("table.upcardPointsFormat", dealerUpcardValueText))
                         .font(.subheadline.weight(.medium))
                         .monospacedDigit()
                         .foregroundStyle(.primary.opacity(0.78))
-                        .accessibilityLabel("庄家明牌点数 \(dealerUpcardValueText)")
+                        .accessibilityLabel(
+                            L10n.format(
+                                "table.a11y.dealerUpcardPointsFormat",
+                                dealerUpcardValueText
+                            )
+                        )
                 }
             }
         }
@@ -214,7 +221,7 @@ struct GameTableView: View {
     private var playerSection: some View {
         sectionCard {
             VStack(alignment: .leading, spacing: 8) {
-                Text("玩家")
+                Text(L10n.t("common.player"))
                     .font(.title3.weight(.semibold))
                 LazyVGrid(columns: cardGridColumns, alignment: .leading, spacing: 8) {
                     ForEach(0..<game.playerCards.count, id: \.self) { i in
@@ -224,11 +231,13 @@ struct GameTableView: View {
                     }
                 }
                 .animation(.spring(response: 0.38, dampingFraction: 0.78), value: game.playerCards.count)
-                Text("点数：\(playerPointsLabel)")
+                Text(L10n.format("table.pointsFormat", playerPointsLabel))
                     .font(.subheadline.weight(.medium))
                     .monospacedDigit()
                     .foregroundStyle(.primary.opacity(0.78))
-                    .accessibilityLabel("玩家点数 \(playerPointsLabel)")
+                    .accessibilityLabel(
+                        L10n.format("table.a11y.playerPointsFormat", playerPointsLabel)
+                    )
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -243,11 +252,11 @@ struct GameTableView: View {
         let color = game.lastOutcome?.statusColor ?? .secondary
         let icon = game.lastOutcome?.statusIconName ?? "hourglass.circle.fill"
         let statusText: String = {
-            if peeking { return "窥视暗牌中…" }
-            if sheetOwnsResult { return "本局已结束" }
+            if peeking { return L10n.t("table.peeking") }
+            if sheetOwnsResult { return L10n.t("table.roundOver") }
             if hasOutcome { return game.outcomeMessage }
             if let propHint { return propHint }
-            return "等待本局结果"
+            return L10n.t("table.waitingResult")
         }()
         let statusColor: Color = {
             if peeking { return .orange }
@@ -292,7 +301,7 @@ struct GameTableView: View {
     private var controls: some View {
         VStack(spacing: 10) {
             HStack(spacing: 12) {
-                Button("要牌") {
+                Button(L10n.t("action.hit")) {
                     GameFeedback.shared.buttonTap()
                     onHit()
                 }
@@ -303,9 +312,13 @@ struct GameTableView: View {
                 .disabled(!canHit)
                 .opacity(canHit ? 1 : 0.55)
                 .saturation(canHit ? 1 : 0.2)
-                .accessibilityHint(canHit ? "再要一张牌" : "当前不可要牌")
+                .accessibilityHint(
+                    canHit
+                        ? L10n.t("action.a11y.hitHint")
+                        : L10n.t("action.a11y.hitDisabled")
+                )
 
-                Button("停牌") {
+                Button(L10n.t("action.stand")) {
                     GameFeedback.shared.buttonTap()
                     onStand()
                 }
@@ -316,11 +329,15 @@ struct GameTableView: View {
                 .disabled(!canStand)
                 .opacity(canStand ? 1 : 0.55)
                 .saturation(canStand ? 1 : 0.2)
-                .accessibilityHint(canStand ? "停止要牌，进入庄家回合" : "当前不可停牌")
+                .accessibilityHint(
+                    canStand
+                        ? L10n.t("action.a11y.standHint")
+                        : L10n.t("action.a11y.standDisabled")
+                )
             }
 
             HStack(spacing: 12) {
-                Button("加倍") {
+                Button(L10n.t("action.double")) {
                     GameFeedback.shared.buttonTap()
                     onDoubleDown()
                 }
@@ -333,11 +350,11 @@ struct GameTableView: View {
                 .saturation(canDoubleDown ? 1 : 0.2)
                 .accessibilityHint(
                     canDoubleDown
-                        ? "再押等额注码并只补一张牌"
-                        : (doubleDownDisabledReason ?? "当前不可加倍")
+                        ? L10n.t("action.a11y.doubleHint")
+                        : (doubleDownDisabledReason ?? L10n.t("action.a11y.doubleDisabled"))
                 )
 
-                Button("投降") {
+                Button(L10n.t("action.surrender")) {
                     GameFeedback.shared.buttonTap()
                     onSurrender()
                 }
@@ -350,12 +367,12 @@ struct GameTableView: View {
                 .saturation(canSurrender ? 1 : 0.2)
                 .accessibilityHint(
                     canSurrender
-                        ? "结束本局并退回一半注码"
-                        : (surrenderDisabledReason ?? "当前不可投降")
+                        ? L10n.t("action.a11y.surrenderHint")
+                        : (surrenderDisabledReason ?? L10n.t("action.a11y.surrenderDisabled"))
                 )
 
                 if showsMidHandAllIn {
-                    Button(emphasizeForcedAllIn ? "强制全下" : "全下") {
+                    Button(midHandAllInTitle) {
                         GameFeedback.shared.buttonTap()
                         onAllIn()
                     }
@@ -366,11 +383,11 @@ struct GameTableView: View {
                     .disabled(!canMidHandAllIn)
                     .opacity(canMidHandAllIn ? 1 : 0.55)
                     .saturation(canMidHandAllIn ? 1 : 0.2)
-                    .accessibilityLabel(emphasizeForcedAllIn ? "强制全下" : "全下")
+                    .accessibilityLabel(midHandAllInTitle)
                     .accessibilityHint(
                         canMidHandAllIn
-                            ? "追加剩余筹码为全下并停牌"
-                            : (midHandAllInDisabledReason ?? "当前不可用")
+                            ? L10n.t("action.a11y.midHandAllInHint")
+                            : (midHandAllInDisabledReason ?? L10n.t("disabled.unavailable"))
                     )
                 }
             }
@@ -379,37 +396,39 @@ struct GameTableView: View {
                 LazyVGrid(columns: propButtonColumns, spacing: 10) {
                     if showsPeekHole {
                         propButton(
-                            title: "窥视",
+                            title: L10n.t("prop.short.peek"),
                             enabled: canPeekHole,
                             disabledReason: peekHoleDisabledReason,
-                            enabledHint: "偷看庄家暗牌约一秒",
+                            enabledHint: L10n.t("prop.a11y.peekHint"),
                             action: onPeekHole
                         )
                     }
                     if showsSoft17Hit {
                         propButton(
-                            title: soft17HitActive ? "软17已开" : "软17要牌",
+                            title: soft17HitActive
+                                ? L10n.t("prop.short.soft17On")
+                                : L10n.t("prop.short.soft17"),
                             enabled: canSoft17Hit,
                             disabledReason: soft17HitDisabledReason,
-                            enabledHint: "本局庄家软十七必须要牌",
+                            enabledHint: L10n.t("prop.a11y.soft17Hint"),
                             action: onSoft17Hit
                         )
                     }
                     if showsRedrawOne {
                         propButton(
-                            title: "换一张",
+                            title: L10n.t("prop.short.redraw"),
                             enabled: canRedrawOne,
                             disabledReason: redrawOneDisabledReason,
-                            enabledHint: "换掉最近一次要到的牌",
+                            enabledHint: L10n.t("prop.a11y.redrawHint"),
                             action: onRedrawOne
                         )
                     }
                     if showsReshuffleDealerCard {
                         propButton(
-                            title: "换庄家",
+                            title: L10n.t("prop.short.reshuffleDealer"),
                             enabled: canReshuffleDealerCard,
                             disabledReason: reshuffleDealerDisabledReason,
-                            enabledHint: "随机替换庄家一张牌",
+                            enabledHint: L10n.t("prop.a11y.reshuffleDealerHint"),
                             action: onReshuffleDealerCard
                         )
                     }
@@ -419,11 +438,15 @@ struct GameTableView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
+    private var midHandAllInTitle: String {
+        emphasizeForcedAllIn ? L10n.t("action.forceAllIn") : L10n.t("action.allIn")
+    }
+
     private func propButton(
         title: String,
         enabled: Bool,
         disabledReason: String? = nil,
-        enabledHint: String = "可用",
+        enabledHint: String = L10n.t("prop.a11y.available"),
         action: @escaping () -> Void
     ) -> some View {
         Button(title) {
@@ -436,17 +459,28 @@ struct GameTableView: View {
         .disabled(!enabled)
         .opacity(enabled ? 1 : 0.55)
         .accessibilityLabel(title)
-        .accessibilityHint(enabled ? enabledHint : (disabledReason ?? "当前不可用"))
+        .accessibilityHint(enabled ? enabledHint : (disabledReason ?? L10n.t("disabled.unavailable")))
     }
 
     private var chipBalanceAccessibilityLabel: String {
         if chipBank.activeBet > 0 {
             if chipBank.activeInsurance > 0 {
-                return "你 \(chipBank.balance)，庄家 \(chipBank.dealerBank)，注 \(chipBank.activeBet)，保险 \(chipBank.activeInsurance)"
+                return L10n.format(
+                    "table.a11y.chipsFullFormat",
+                    chipBank.balance,
+                    chipBank.dealerBank,
+                    chipBank.activeBet,
+                    chipBank.activeInsurance
+                )
             }
-            return "你 \(chipBank.balance)，庄家 \(chipBank.dealerBank)，注 \(chipBank.activeBet)"
+            return L10n.format(
+                "table.a11y.chipsBetFormat",
+                chipBank.balance,
+                chipBank.dealerBank,
+                chipBank.activeBet
+            )
         }
-        return "你 \(chipBank.balance)，庄家 \(chipBank.dealerBank)"
+        return L10n.format("table.a11y.chipsFormat", chipBank.balance, chipBank.dealerBank)
     }
 
     private var propButtonColumns: [GridItem] {

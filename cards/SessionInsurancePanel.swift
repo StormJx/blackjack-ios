@@ -21,13 +21,13 @@ struct SessionInsurancePanel: View {
             ScrollView {
                 VStack(spacing: 16) {
                     VStack(spacing: 6) {
-                        Text("保险")
+                        Text(L10n.t("insurance.title"))
                             .font(.title2.weight(.semibold))
                             .accessibilityAddTraits(.isHeader)
-                        Text("庄家明牌为 A")
+                        Text(L10n.t("insurance.upcardAce"))
                             .font(.headline)
                             .foregroundStyle(.secondary)
-                        Text("可买半注保险；庄家黑杰克时保险按 2:1 赔付，主注仍按胜负结算。")
+                        Text(L10n.t("insurance.rulesDetail"))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
@@ -36,14 +36,18 @@ struct SessionInsurancePanel: View {
                     .frame(maxWidth: .infinity)
 
                     VStack(spacing: 4) {
-                        Text("余额 \(balance) · 主注 \(mainBet)")
+                        Text(L10n.format("insurance.balanceStakeFormat", balance, mainBet))
                             .font(.subheadline.weight(.semibold))
                             .monospacedDigit()
-                            .accessibilityLabel("余额 \(balance)，主注 \(mainBet)")
-                        Text("保险 \(insuranceAmount)")
+                            .accessibilityLabel(
+                                L10n.format("insurance.a11y.balanceStakeFormat", balance, mainBet)
+                            )
+                        Text(L10n.format("insurance.amountFormat", insuranceAmount))
                             .font(.title3.weight(.bold))
                             .monospacedDigit()
-                            .accessibilityLabel("保险注码 \(insuranceAmount)")
+                            .accessibilityLabel(
+                                L10n.format("insurance.a11y.amountFormat", insuranceAmount)
+                            )
                         Text(ChipRules.insuranceOddsLabel)
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(.tertiary)
@@ -60,7 +64,7 @@ struct SessionInsurancePanel: View {
                     GameFeedback.shared.buttonTap()
                     onBuy()
                 } label: {
-                    Text("买保险")
+                    Text(L10n.t("insurance.buy"))
                         .font(.headline.weight(.semibold))
                         .frame(maxWidth: .infinity)
                 }
@@ -69,19 +73,23 @@ struct SessionInsurancePanel: View {
                 .tint(.green)
                 .disabled(!canBuy)
                 .opacity(canBuy ? 1 : 0.55)
-                .accessibilityHint(canBuy ? "支付半注作为保险" : (buyDisabledReason ?? "当前不可买保险"))
+                .accessibilityHint(
+                    canBuy
+                        ? L10n.t("insurance.a11y.buyHint")
+                        : (buyDisabledReason ?? L10n.t("insurance.disabled.unavailable"))
+                )
 
                 Button {
                     GameFeedback.shared.buttonTap()
                     onDecline()
                 } label: {
-                    Text("不买")
+                    Text(L10n.t("insurance.decline"))
                         .font(.headline.weight(.semibold))
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
                 .controlSize(.large)
-                .accessibilityHint("放弃保险，庄家将查看是否黑杰克")
+                .accessibilityHint(L10n.t("insurance.a11y.declineHint"))
             }
             .padding(.horizontal, 20)
             .padding(.top, 8)

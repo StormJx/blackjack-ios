@@ -1,0 +1,4669 @@
+{
+  "sourceLanguage": "zh-Hans",
+  "strings": {
+    "achievement.allInWin15.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战中全下获胜累计 15 次"
+          }
+        }
+      }
+    },
+    "achievement.allInWin15.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全下连捷"
+          }
+        }
+      }
+    },
+    "achievement.allInWin30.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战中全下获胜累计 30 次"
+          }
+        }
+      }
+    },
+    "achievement.allInWin30.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全下传说"
+          }
+        }
+      }
+    },
+    "achievement.allInWin5.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战中全下获胜累计 5 次"
+          }
+        }
+      }
+    },
+    "achievement.allInWin5.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全下首胜"
+          }
+        }
+      }
+    },
+    "achievement.braveHit20To21.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战中 20 点要牌正好 21 并获胜"
+          }
+        }
+      }
+    },
+    "achievement.braveHit20To21.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "神之一手"
+          }
+        }
+      }
+    },
+    "achievement.braveHitOver17.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战中点数 >17 要牌未爆并获胜"
+          }
+        }
+      }
+    },
+    "achievement.braveHitOver17.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "险中求胜·十八"
+          }
+        }
+      }
+    },
+    "achievement.braveHitOver18.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战中点数 >18 要牌未爆并获胜"
+          }
+        }
+      }
+    },
+    "achievement.braveHitOver18.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "险中求胜·十九"
+          }
+        }
+      }
+    },
+    "achievement.braveHitOver19.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战中 20 点要牌未爆并获胜"
+          }
+        }
+      }
+    },
+    "achievement.braveHitOver19.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "险中求胜·二十"
+          }
+        }
+      }
+    },
+    "achievement.chipsWon1000.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战模式累计赢取 1000 筹码"
+          }
+        }
+      }
+    },
+    "achievement.chipsWon1000.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "小赚一笔"
+          }
+        }
+      }
+    },
+    "achievement.chipsWon20000.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战模式累计赢取 20000 筹码"
+          }
+        }
+      }
+    },
+    "achievement.chipsWon20000.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "筹码大亨"
+          }
+        }
+      }
+    },
+    "achievement.chipsWon5000.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战模式累计赢取 5000 筹码"
+          }
+        }
+      }
+    },
+    "achievement.chipsWon5000.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "盆满钵满"
+          }
+        }
+      }
+    },
+    "achievement.comeback.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战中点数 20+ 仍获胜"
+          }
+        }
+      }
+    },
+    "achievement.comeback.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "绝地反击"
+          }
+        }
+      }
+    },
+    "achievement.dealerBust10.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战中庄家爆牌致胜累计 10 次"
+          }
+        }
+      }
+    },
+    "achievement.dealerBust10.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "爆牌收割·十"
+          }
+        }
+      }
+    },
+    "achievement.dealerBust25.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战中庄家爆牌致胜累计 25 次"
+          }
+        }
+      }
+    },
+    "achievement.dealerBust25.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "爆牌收割·廿五"
+          }
+        }
+      }
+    },
+    "achievement.dealerBust50.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战中庄家爆牌致胜累计 50 次"
+          }
+        }
+      }
+    },
+    "achievement.dealerBust50.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "爆牌收割·五十"
+          }
+        }
+      }
+    },
+    "achievement.dealerClear1.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打穿庄家资金池 1 次"
+          }
+        }
+      }
+    },
+    "achievement.dealerClear1.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打穿庄家"
+          }
+        }
+      }
+    },
+    "achievement.dealerClear5.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打穿庄家资金池 5 次"
+          }
+        }
+      }
+    },
+    "achievement.dealerClear5.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "庄家克星"
+          }
+        }
+      }
+    },
+    "achievement.exactTwentyOne.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战中最终正好 21 且非黑杰克"
+          }
+        }
+      }
+    },
+    "achievement.exactTwentyOne.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "压线求生"
+          }
+        }
+      }
+    },
+    "achievement.firstHandWin.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战中仅两张牌（非 BJ）停牌获胜"
+          }
+        }
+      }
+    },
+    "achievement.firstHandWin.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "初手制胜"
+          }
+        }
+      }
+    },
+    "achievement.fiveCardCharlie.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战中单局拿到 5 张牌且未爆牌"
+          }
+        }
+      }
+    },
+    "achievement.fiveCardCharlie.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "五龙不过"
+          }
+        }
+      }
+    },
+    "achievement.naturalBJ15.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战中天然黑杰克累计 15 次"
+          }
+        }
+      }
+    },
+    "achievement.naturalBJ15.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "黑杰克收藏·十五"
+          }
+        }
+      }
+    },
+    "achievement.naturalBJ30.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战中天然黑杰克累计 30 次"
+          }
+        }
+      }
+    },
+    "achievement.naturalBJ30.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "黑杰克收藏·三十"
+          }
+        }
+      }
+    },
+    "achievement.naturalBJ5.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战中天然黑杰克累计 5 次"
+          }
+        }
+      }
+    },
+    "achievement.naturalBJ5.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "黑杰克收藏·五"
+          }
+        }
+      }
+    },
+    "achievement.noBust10.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战模式连续 10 局未爆牌"
+          }
+        }
+      }
+    },
+    "achievement.noBust10.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "稳如磐石"
+          }
+        }
+      }
+    },
+    "achievement.noBust20.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战模式连续 20 局未爆牌"
+          }
+        }
+      }
+    },
+    "achievement.noBust20.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "钢铁神经"
+          }
+        }
+      }
+    },
+    "achievement.noBust5.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战模式连续 5 局未爆牌"
+          }
+        }
+      }
+    },
+    "achievement.noBust5.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "稳健玩家"
+          }
+        }
+      }
+    },
+    "achievement.practiceFiveCard.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式单局 5 张未爆"
+          }
+        }
+      }
+    },
+    "achievement.practiceFiveCard.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐五龙"
+          }
+        }
+      }
+    },
+    "achievement.practiceNaturalBJ.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式开局天然黑杰克"
+          }
+        }
+      }
+    },
+    "achievement.practiceNaturalBJ.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐极速 BJ"
+          }
+        }
+      }
+    },
+    "achievement.practiceNoBust10.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式连续 10 局未爆牌"
+          }
+        }
+      }
+    },
+    "achievement.practiceNoBust10.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐稳健·十"
+          }
+        }
+      }
+    },
+    "achievement.practiceNoBust20.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式连续 20 局未爆牌"
+          }
+        }
+      }
+    },
+    "achievement.practiceNoBust20.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐稳健·二十"
+          }
+        }
+      }
+    },
+    "achievement.practicePush10.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式累计平局 10 次"
+          }
+        }
+      }
+    },
+    "achievement.practicePush10.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐平局·十"
+          }
+        }
+      }
+    },
+    "achievement.practicePush20.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式累计平局 20 次"
+          }
+        }
+      }
+    },
+    "achievement.practicePush20.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐平局·二十"
+          }
+        }
+      }
+    },
+    "achievement.practicePush50.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式累计平局 50 次"
+          }
+        }
+      }
+    },
+    "achievement.practicePush50.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐平局·五十"
+          }
+        }
+      }
+    },
+    "achievement.practiceWinStreak10.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式连续获胜 10 局"
+          }
+        }
+      }
+    },
+    "achievement.practiceWinStreak10.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐连胜·十"
+          }
+        }
+      }
+    },
+    "achievement.practiceWinStreak5.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式连续获胜 5 局"
+          }
+        }
+      }
+    },
+    "achievement.practiceWinStreak5.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐连胜·五"
+          }
+        }
+      }
+    },
+    "achievement.practiceWins100.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式累计获胜 100 局"
+          }
+        }
+      }
+    },
+    "achievement.practiceWins100.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐胜场·一百"
+          }
+        }
+      }
+    },
+    "achievement.practiceWins20.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式累计获胜 20 局"
+          }
+        }
+      }
+    },
+    "achievement.practiceWins20.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐胜场·二十"
+          }
+        }
+      }
+    },
+    "achievement.practiceWins50.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式累计获胜 50 局"
+          }
+        }
+      }
+    },
+    "achievement.practiceWins50.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐胜场·五十"
+          }
+        }
+      }
+    },
+    "achievement.push10.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战模式累计平局 10 次"
+          }
+        }
+      }
+    },
+    "achievement.push10.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "平局入门"
+          }
+        }
+      }
+    },
+    "achievement.push20.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战模式累计平局 20 次"
+          }
+        }
+      }
+    },
+    "achievement.push20.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "平局达人"
+          }
+        }
+      }
+    },
+    "achievement.push50.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战模式累计平局 50 次"
+          }
+        }
+      }
+    },
+    "achievement.push50.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "平局大师"
+          }
+        }
+      }
+    },
+    "achievement.scope.challenge": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "闯关"
+          }
+        }
+      }
+    },
+    "achievement.scope.entertainment": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐"
+          }
+        }
+      }
+    },
+    "achievement.speedBlackjack.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战中开局前两张即黑杰克"
+          }
+        }
+      }
+    },
+    "achievement.speedBlackjack.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "极速黑杰克"
+          }
+        }
+      }
+    },
+    "achievement.winStreak10.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战模式连续获胜 10 局"
+          }
+        }
+      }
+    },
+    "achievement.winStreak10.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "连胜风暴"
+          }
+        }
+      }
+    },
+    "achievement.winStreak3.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战模式连续获胜 3 局"
+          }
+        }
+      }
+    },
+    "achievement.winStreak3.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "连胜起步"
+          }
+        }
+      }
+    },
+    "achievement.winStreak5.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战模式连续获胜 5 局"
+          }
+        }
+      }
+    },
+    "achievement.winStreak5.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "连胜节奏"
+          }
+        }
+      }
+    },
+    "achievement.wins10.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战模式累计获胜 10 局"
+          }
+        }
+      }
+    },
+    "achievement.wins10.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "小有斩获"
+          }
+        }
+      }
+    },
+    "achievement.wins100.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战模式累计获胜 100 局"
+          }
+        }
+      }
+    },
+    "achievement.wins100.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "百战荣光"
+          }
+        }
+      }
+    },
+    "achievement.wins25.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战模式累计获胜 25 局"
+          }
+        }
+      }
+    },
+    "achievement.wins25.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "牌桌熟手"
+          }
+        }
+      }
+    },
+    "achievement.wins50.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑战模式累计获胜 50 局"
+          }
+        }
+      }
+    },
+    "achievement.wins50.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "常胜将军"
+          }
+        }
+      }
+    },
+    "achievements.a11y.rowFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@，%@"
+          }
+        }
+      }
+    },
+    "achievements.countFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "成就 %d/%d"
+          }
+        }
+      }
+    },
+    "achievements.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂无成就"
+          }
+        }
+      }
+    },
+    "achievements.entertainmentNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐对局不计入闯关成就；完成娱乐专属成就可在此查看。"
+          }
+        }
+      }
+    },
+    "achievements.footer.challenge": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仅「闯关挑战」对局会计入本栏成就。"
+          }
+        }
+      }
+    },
+    "achievements.footer.entertainment": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仅「娱乐模式」对局会计入本栏成就。"
+          }
+        }
+      }
+    },
+    "achievements.goChallengeUnlock": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "去闯关解锁"
+          }
+        }
+      }
+    },
+    "achievements.goChallengeUnlockFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "去闯关解锁 · %@"
+          }
+        }
+      }
+    },
+    "achievements.navTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "成就"
+          }
+        }
+      }
+    },
+    "achievements.pickerMode": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模式"
+          }
+        }
+      }
+    },
+    "achievements.progressFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d / %d"
+          }
+        }
+      }
+    },
+    "achievements.propUnlockedEntertainment": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已永久解锁 · 仅娱乐模式可用"
+          }
+        }
+      }
+    },
+    "achievements.props": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "道具"
+          }
+        }
+      }
+    },
+    "achievements.propsChallengeNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "玩法道具请切换到「娱乐」页签查看；闯关对局中不可使用道具。"
+          }
+        }
+      }
+    },
+    "achievements.propsFooter": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "玩法道具仅「娱乐模式」对局可用。部分道具需先在闯关解锁成就。卡背在设置页选用。"
+          }
+        }
+      }
+    },
+    "achievements.state.locked": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未解锁"
+          }
+        }
+      }
+    },
+    "achievements.state.lockedChallenge": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未解锁，去闯关解锁"
+          }
+        }
+      }
+    },
+    "achievements.state.unlocked": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已解锁"
+          }
+        }
+      }
+    },
+    "achievements.statsSummary": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "战绩摘要"
+          }
+        }
+      }
+    },
+    "action.a11y.doubleDisabled": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前不可加倍"
+          }
+        }
+      }
+    },
+    "action.a11y.doubleHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "再押等额注码并只补一张牌"
+          }
+        }
+      }
+    },
+    "action.a11y.hitDisabled": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前不可要牌"
+          }
+        }
+      }
+    },
+    "action.a11y.hitHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "再要一张牌"
+          }
+        }
+      }
+    },
+    "action.a11y.midHandAllInHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "追加剩余筹码为全下并停牌"
+          }
+        }
+      }
+    },
+    "action.a11y.standDisabled": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前不可停牌"
+          }
+        }
+      }
+    },
+    "action.a11y.standHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停止要牌，进入庄家回合"
+          }
+        }
+      }
+    },
+    "action.a11y.surrenderDisabled": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前不可投降"
+          }
+        }
+      }
+    },
+    "action.a11y.surrenderHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "结束本局并退回一半注码"
+          }
+        }
+      }
+    },
+    "action.allIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全下"
+          }
+        }
+      }
+    },
+    "action.double": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加倍"
+          }
+        }
+      }
+    },
+    "action.forceAllIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "强制全下"
+          }
+        }
+      }
+    },
+    "action.hit": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "要牌"
+          }
+        }
+      }
+    },
+    "action.stand": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停牌"
+          }
+        }
+      }
+    },
+    "action.surrender": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "投降"
+          }
+        }
+      }
+    },
+    "badge.challenge": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "闯关"
+          }
+        }
+      }
+    },
+    "badge.entertainment": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐"
+          }
+        }
+      }
+    },
+    "bet.a11y.allInHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将全部余额作为注码"
+          }
+        }
+      }
+    },
+    "bet.a11y.balanceBetFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "余额 %d，注码 %d"
+          }
+        }
+      }
+    },
+    "bet.a11y.balancePickFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "余额 %d，请选一档"
+          }
+        }
+      }
+    },
+    "bet.a11y.chipFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "筹码档 %d"
+          }
+        }
+      }
+    },
+    "bet.a11y.chipHintInsufficient": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "余额不足以选择该档"
+          }
+        }
+      }
+    },
+    "bet.a11y.chipHintSelect": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "点选作为本局注码"
+          }
+        }
+      }
+    },
+    "bet.a11y.chipInsufficient": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "余额不足"
+          }
+        }
+      }
+    },
+    "bet.a11y.chipSelected": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已选中"
+          }
+        }
+      }
+    },
+    "bet.a11y.chipUnselected": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未选中"
+          }
+        }
+      }
+    },
+    "bet.a11y.clearHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除已选注码"
+          }
+        }
+      }
+    },
+    "bet.a11y.clearNoBet": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前未选注码"
+          }
+        }
+      }
+    },
+    "bet.a11y.confirmDisabled": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请先选择有效注码"
+          }
+        }
+      }
+    },
+    "bet.a11y.confirmHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "确认注码并开始发牌"
+          }
+        }
+      }
+    },
+    "bet.a11y.repeatFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用上局注码 %d"
+          }
+        }
+      }
+    },
+    "bet.a11y.repeatUnavailable": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂无可用的上局注码"
+          }
+        }
+      }
+    },
+    "bet.allIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全下"
+          }
+        }
+      }
+    },
+    "bet.allInDisabledWhenSelected": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已选筹码时全下不可用，可先清空"
+          }
+        }
+      }
+    },
+    "bet.balanceBetFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "余额 %d · 注 %d"
+          }
+        }
+      }
+    },
+    "bet.balanceFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "余额 %d"
+          }
+        }
+      }
+    },
+    "bet.balancePickFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "余额 %d · 请选一档"
+          }
+        }
+      }
+    },
+    "bet.clear": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清空"
+          }
+        }
+      }
+    },
+    "bet.confirmDeal": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "确认并发牌"
+          }
+        }
+      }
+    },
+    "bet.currentBetFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前注 %d"
+          }
+        }
+      }
+    },
+    "bet.forceAllIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "强制全下"
+          }
+        }
+      }
+    },
+    "bet.hint.pickChips": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "三档单选，选好后确认发牌"
+          }
+        }
+      }
+    },
+    "bet.sameAsLast": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同上局"
+          }
+        }
+      }
+    },
+    "bet.sameAsLastFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同上局 %d"
+          }
+        }
+      }
+    },
+    "bet.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下注"
+          }
+        }
+      }
+    },
+    "cardBack.classicNavy.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "经典海军蓝"
+          }
+        }
+      }
+    },
+    "cardBack.classicNavy.unlockHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "默认拥有"
+          }
+        }
+      }
+    },
+    "cardBack.crimsonRibbon.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "绯红缎带"
+          }
+        }
+      }
+    },
+    "cardBack.crimsonRibbon.unlockHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "闯关第 3 关或累计赢 5000 后解锁"
+          }
+        }
+      }
+    },
+    "cardBack.emeraldLattice.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "翠绿格纹"
+          }
+        }
+      }
+    },
+    "cardBack.emeraldLattice.unlockHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "闯关第 2 关或打穿庄家 1 次后解锁"
+          }
+        }
+      }
+    },
+    "challenge.progress.maxFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@：已通关全部关卡"
+          }
+        }
+      }
+    },
+    "challenge.progress.nextFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@：下一关再打穿 %d 次或再累计赢 %d"
+          }
+        }
+      }
+    },
+    "challenge.stage.1.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "第一关"
+          }
+        }
+      }
+    },
+    "challenge.stage.2.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "第二关"
+          }
+        }
+      }
+    },
+    "challenge.stage.3.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "第三关"
+          }
+        }
+      }
+    },
+    "challenge.stage.4.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "第四关"
+          }
+        }
+      }
+    },
+    "challenge.stage.5.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "终关"
+          }
+        }
+      }
+    },
+    "challenge.summaryFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@：你 %d · 庄家 %d"
+          }
+        }
+      }
+    },
+    "chips.abandonConfirmDetail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将清空双方筹码并返回主页（与杀进程后自动恢复进度不同）。当前进度不记入历史。"
+          }
+        }
+      }
+    },
+    "chips.challengeWelcome.allInRoundsFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "开局全下需本会话打满 %d 局"
+          }
+        }
+      }
+    },
+    "chips.challengeWelcome.allInZero": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "开局即可全下"
+          }
+        }
+      }
+    },
+    "chips.challengeWelcomeFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "闯关挑战：打穿庄家或累计赢码可解锁更高关卡。注码三档单选；%@。玩法道具仅娱乐模式可用。"
+          }
+        }
+      }
+    },
+    "chips.net.push": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0（平局退注）"
+          }
+        }
+      }
+    },
+    "chips.odds.blackjack": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "黑杰克赔率 3:2"
+          }
+        }
+      }
+    },
+    "chips.odds.insurance": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保险赔率 2:1"
+          }
+        }
+      }
+    },
+    "chips.odds.insuranceMiss": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保险未中"
+          }
+        }
+      }
+    },
+    "chips.odds.normal": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "普通胜负 1:1"
+          }
+        }
+      }
+    },
+    "chips.odds.surrender": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "投降退半注"
+          }
+        }
+      }
+    },
+    "chips.partialPayout": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "庄家筹码不足，已赔付全部剩余"
+          }
+        }
+      }
+    },
+    "chips.preDealAllInLockFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "再玩 %d 局后解锁全下"
+          }
+        }
+      }
+    },
+    "chips.restoreAfterInterrupt": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上次对局未完成，未结算注码已退回；双方筹码与本会话全下解锁进度已保留。"
+          }
+        }
+      }
+    },
+    "chips.sessionClearedHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "进度已清空，可重新开始。"
+          }
+        }
+      }
+    },
+    "common.bet": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "注"
+          }
+        }
+      }
+    },
+    "common.cancel": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消"
+          }
+        }
+      }
+    },
+    "common.continue": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "继续"
+          }
+        }
+      }
+    },
+    "common.dealer": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "庄家"
+          }
+        }
+      }
+    },
+    "common.done": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完成"
+          }
+        }
+      }
+    },
+    "common.insurance": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保险"
+          }
+        }
+      }
+    },
+    "common.player": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "玩家"
+          }
+        }
+      }
+    },
+    "common.shuffling": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "洗牌中…"
+          }
+        }
+      }
+    },
+    "common.shufflingA11yFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "洗牌中，%@"
+          }
+        }
+      }
+    },
+    "common.you": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你"
+          }
+        }
+      }
+    },
+    "cutCard.ceremonial.settingsDetail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "闯关：洗牌页保留切牌仪式文案，但不按切牌点强制重洗；牌堆打到不足开局四张才重洗。"
+          }
+        }
+      }
+    },
+    "cutCard.ceremonial.shuffleOverlay": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仪式切牌完成，正在重新整理牌堆"
+          }
+        }
+      }
+    },
+    "cutCard.ceremonial.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仪式感切牌"
+          }
+        }
+      }
+    },
+    "cutCard.off.settingsDetail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "闯关：每局打完下一局必整副重洗（无渗透）。"
+          }
+        }
+      }
+    },
+    "cutCard.off.shuffleOverlay": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本局已结束，正在重新整理牌堆"
+          }
+        }
+      }
+    },
+    "cutCard.off.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "每局重洗"
+          }
+        }
+      }
+    },
+    "cutCard.real.settingsDetail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "闯关：按 50%–75% 切牌点局间重洗（含尾牌 4–6 张打完再洗）。"
+          }
+        }
+      }
+    },
+    "cutCard.real.shuffleOverlay": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "切牌点已过，正在重新整理牌堆"
+          }
+        }
+      }
+    },
+    "cutCard.real.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "真实切牌"
+          }
+        }
+      }
+    },
+    "deck.remainingFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "共 %d 张，剩余 %d 张"
+          }
+        }
+      }
+    },
+    "dialog.abandon.a11y": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "退出本局"
+          }
+        }
+      }
+    },
+    "dialog.abandon.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "退出本局？"
+          }
+        }
+      }
+    },
+    "dialog.confirmAllIn.confirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全下并停牌"
+          }
+        }
+      }
+    },
+    "dialog.confirmAllIn.message": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将把剩余筹码全部追加为注码，并自动停牌。"
+          }
+        }
+      }
+    },
+    "dialog.confirmAllIn.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "确认全下？"
+          }
+        }
+      }
+    },
+    "dialog.propsGuide.message": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式玩家回合可使用已解锁道具（如窥视、换牌、软 17 要牌、见牌后再全下）。每局限次以按钮提示为准。"
+          }
+        }
+      }
+    },
+    "dialog.propsGuide.ok": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "知道了"
+          }
+        }
+      }
+    },
+    "dialog.propsGuide.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "玩法道具已就绪"
+          }
+        }
+      }
+    },
+    "disabled.animating": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "发牌动画进行中"
+          }
+        }
+      }
+    },
+    "disabled.dealerCardsIncomplete": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "庄家牌未齐"
+          }
+        }
+      }
+    },
+    "disabled.doubleOnlyTwoCards": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仅开局两张时可加倍"
+          }
+        }
+      }
+    },
+    "disabled.insufficientDouble": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "余额不足加倍"
+          }
+        }
+      }
+    },
+    "disabled.needHitBeforeRedraw": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "需先要牌后再换"
+          }
+        }
+      }
+    },
+    "disabled.noBet": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚未下注"
+          }
+        }
+      }
+    },
+    "disabled.noRemainingChips": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无剩余筹码可追加"
+          }
+        }
+      }
+    },
+    "disabled.noReshuffleWhilePeek": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "窥视中不可换庄家牌"
+          }
+        }
+      }
+    },
+    "disabled.noSurrenderAllIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全下不可投降"
+          }
+        }
+      }
+    },
+    "disabled.peekUsed": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本局已用过窥视"
+          }
+        }
+      }
+    },
+    "disabled.peeking": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "窥视进行中"
+          }
+        }
+      }
+    },
+    "disabled.playerTurnOnly": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仅玩家回合可用"
+          }
+        }
+      }
+    },
+    "disabled.redrawUsed": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本局已用过换一张"
+          }
+        }
+      }
+    },
+    "disabled.reshuffleUsed": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本局已用过换庄家"
+          }
+        }
+      }
+    },
+    "disabled.soft17AlreadyOn": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本局已开启"
+          }
+        }
+      }
+    },
+    "disabled.surrenderOnlyTwoCards": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仅开局两张时可投降"
+          }
+        }
+      }
+    },
+    "disabled.unavailable": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前不可用"
+          }
+        }
+      }
+    },
+    "disabled.waitingSettlement": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全下后等待结算"
+          }
+        }
+      }
+    },
+    "entertainment.progress.maxFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@：已通关全部阶梯"
+          }
+        }
+      }
+    },
+    "entertainment.progress.nextFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@：下一阶再打穿 %d 次，或再赢 %d 筹码"
+          }
+        }
+      }
+    },
+    "entertainment.stage.1.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐一阶"
+          }
+        }
+      }
+    },
+    "entertainment.stage.2.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐二阶"
+          }
+        }
+      }
+    },
+    "entertainment.stage.3.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐三阶"
+          }
+        }
+      }
+    },
+    "entertainment.stage.4.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐四阶"
+          }
+        }
+      }
+    },
+    "entertainment.stage.5.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐终阶"
+          }
+        }
+      }
+    },
+    "entertainment.summaryFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@：你 %d · 庄家 %d"
+          }
+        }
+      }
+    },
+    "entertainment.tableLimitsFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最小注 %d；筹码档 %@"
+          }
+        }
+      }
+    },
+    "fast.sessionSummaryFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本会话 %d 胜 · %d 负 · %d 平 · 连胜 %d"
+          }
+        }
+      }
+    },
+    "help.body.challenge1": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "有筹码与庄家资金池。打穿庄家或累计赢码可解锁更高关卡，新会话双方起始筹码随关提升。注码三档单选；开局全下需本会话打满设置中的解锁局数（可配置，默认 5；设为 0 则开局可用）。玩法道具在闯关中不可用。"
+          }
+        }
+      }
+    },
+    "help.body.challenge2": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前关卡、起始筹码与距下一关差额见「战绩」；成就与道具兑换见「成就」。卡背解锁也主要看闯关表现。"
+          }
+        }
+      }
+    },
+    "help.body.entertainment1": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "独立娱乐阶梯：打穿或累计赢码升阶，本阶起始筹码与注码随之提升。已解锁的玩法道具仅在此模式可用（见牌后再全下、软 17 要牌、窥视、换一张、换庄家一张等）。支持「同上局」下注；切牌固定为真实渗透（不受设置页切牌选项影响）。"
+          }
+        }
+      }
+    },
+    "help.body.entertainment2": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐对局计入娱乐成就轨，不计入闯关成就。当前阶、注码与距下一阶差额见「战绩」。"
+          }
+        }
+      }
+    },
+    "help.body.meta1": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "默认牌副、闯关切牌三态（每局重洗 / 仪式感 / 真实）、闯关桌限、全下解锁局数、卡背、音效与触觉：均在「设置」中调整。牌副、切牌、桌限与全下解锁局数对局中修改不生效，须返回主页再开新局；音效、触觉、局内全下确认与卡背可立即生效。"
+          }
+        }
+      }
+    },
+    "help.body.meta2": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「战绩」展示关卡/阶梯进度与胜负摘要；「成就」展示成就与道具兑换。"
+          }
+        }
+      }
+    },
+    "help.body.note": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本应用面向练习与娱乐，规则为简化版赌场二十一点，不等同于线下赌场全部选项（如分牌尚未开放）。"
+          }
+        }
+      }
+    },
+    "help.body.rules": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "比点数接近 21 且不爆牌。庄家点数小于 17 必须要牌，大于等于 17 停牌（软 17 同停）。玩家回合开局两张时可「加倍」（再押等额、只补一张）或「投降」（退回半注；本局全下时不可投降）。庄家明牌为 A 时可买半注「保险」（2:1；全下不可买）；随后庄家查看是否黑杰克，有则直接结算。天然黑杰克赔率 3:2，普通获胜 1:1，平局退注。"
+          }
+        }
+      }
+    },
+    "help.done": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完成"
+          }
+        }
+      }
+    },
+    "help.navTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "帮助说明"
+          }
+        }
+      }
+    },
+    "help.section.challenge": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "闯关挑战"
+          }
+        }
+      }
+    },
+    "help.section.entertainment": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式"
+          }
+        }
+      }
+    },
+    "help.section.meta": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置 · 成就 · 战绩"
+          }
+        }
+      }
+    },
+    "help.section.note": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "说明"
+          }
+        }
+      }
+    },
+    "help.section.rules": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "基本规则"
+          }
+        }
+      }
+    },
+    "hint.reshuffledDealerCard": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已换庄家一张"
+          }
+        }
+      }
+    },
+    "insurance.a11y.amountFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保险注码 %d"
+          }
+        }
+      }
+    },
+    "insurance.a11y.balanceStakeFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "余额 %d，主注 %d"
+          }
+        }
+      }
+    },
+    "insurance.a11y.buyHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "支付半注作为保险"
+          }
+        }
+      }
+    },
+    "insurance.a11y.declineHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "放弃保险，庄家将查看是否黑杰克"
+          }
+        }
+      }
+    },
+    "insurance.amountFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保险 %d"
+          }
+        }
+      }
+    },
+    "insurance.balanceStakeFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "余额 %d · 主注 %d"
+          }
+        }
+      }
+    },
+    "insurance.buy": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "买保险"
+          }
+        }
+      }
+    },
+    "insurance.decline": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不买"
+          }
+        }
+      }
+    },
+    "insurance.disabled.allIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全下不可买保险"
+          }
+        }
+      }
+    },
+    "insurance.disabled.already": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本局已买保险"
+          }
+        }
+      }
+    },
+    "insurance.disabled.betTooSmall": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "注码过小无法保险"
+          }
+        }
+      }
+    },
+    "insurance.disabled.insufficient": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "余额不足买保险"
+          }
+        }
+      }
+    },
+    "insurance.disabled.noBet": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚未下注"
+          }
+        }
+      }
+    },
+    "insurance.disabled.unavailable": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前不可买保险"
+          }
+        }
+      }
+    },
+    "insurance.rules": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可买半注保险；若庄家黑杰克，保险 2:1 赔付。全下不可买。"
+          }
+        }
+      }
+    },
+    "insurance.rulesDetail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可买半注保险；庄家黑杰克时保险按 2:1 赔付，主注仍按胜负结算。"
+          }
+        }
+      }
+    },
+    "insurance.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保险"
+          }
+        }
+      }
+    },
+    "insurance.upcardAce": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "庄家明牌为 A"
+          }
+        }
+      }
+    },
+    "outcome.blackjackWin": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "黑杰克！你赢了（3:2）"
+          }
+        }
+      }
+    },
+    "outcome.bothBJPush": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "双方黑杰克，平局"
+          }
+        }
+      }
+    },
+    "outcome.bustLose": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "爆牌，你输了"
+          }
+        }
+      }
+    },
+    "outcome.dealerBJInsurancePaid": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "庄家黑杰克；保险已赔付"
+          }
+        }
+      }
+    },
+    "outcome.dealerBJLose": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "庄家黑杰克，你输了"
+          }
+        }
+      }
+    },
+    "outcome.dealerBustWin": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "庄家爆牌，你赢了"
+          }
+        }
+      }
+    },
+    "outcome.lose": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你输了"
+          }
+        }
+      }
+    },
+    "outcome.push": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "平局"
+          }
+        }
+      }
+    },
+    "outcome.shuffleError": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "洗牌异常，请重试"
+          }
+        }
+      }
+    },
+    "outcome.surrender": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "投降，退回半注"
+          }
+        }
+      }
+    },
+    "outcome.win": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你赢了"
+          }
+        }
+      }
+    },
+    "playStyle.challenge.abandonButton": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "退出并清空筹码"
+          }
+        }
+      }
+    },
+    "playStyle.challenge.buttonTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "闯关挑战"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Challenge"
+          }
+        }
+      }
+    },
+    "playStyle.challenge.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打穿庄家升关 · 玩法道具禁用"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beat the dealer to advance · No gameplay props"
+          }
+        }
+      }
+    },
+    "playStyle.continue": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "继续"
+          }
+        }
+      }
+    },
+    "playStyle.entertainment.abandonButton": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "退出会话"
+          }
+        }
+      }
+    },
+    "playStyle.entertainment.abandonDetail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将清空本会话娱乐筹码并返回主页（闯关进度不受影响）。"
+          }
+        }
+      }
+    },
+    "playStyle.entertainment.buttonTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment"
+          }
+        }
+      }
+    },
+    "playStyle.entertainment.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "道具可用 · 独立升阶与注码"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Props available · Separate stages & bets"
+          }
+        }
+      }
+    },
+    "practice.deck.shoe2": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "两副牌"
+          }
+        }
+      }
+    },
+    "practice.deck.shoe6": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "六副牌"
+          }
+        }
+      }
+    },
+    "practice.deck.single": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一副牌"
+          }
+        }
+      }
+    },
+    "practice.tableSubtitleFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "共 %d 张，切牌点后重洗"
+          }
+        }
+      }
+    },
+    "prop.a11y.available": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可用"
+          }
+        }
+      }
+    },
+    "prop.a11y.peekHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "偷看庄家暗牌约一秒"
+          }
+        }
+      }
+    },
+    "prop.a11y.redrawHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "换掉最近一次要到的牌"
+          }
+        }
+      }
+    },
+    "prop.a11y.reshuffleDealerHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "随机替换庄家一张牌"
+          }
+        }
+      }
+    },
+    "prop.a11y.soft17Hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本局庄家软十七必须要牌"
+          }
+        }
+      }
+    },
+    "prop.dealerSoft17Hit.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仅娱乐模式：玩家回合开启后，本局庄家软 17 必须要牌。下局需再开。"
+          }
+        }
+      }
+    },
+    "prop.dealerSoft17Hit.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "庄家软 17 要牌"
+          }
+        }
+      }
+    },
+    "prop.dealerSoft17Hit.unlockHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打穿庄家资金池 5 次后永久解锁（仅娱乐可用）"
+          }
+        }
+      }
+    },
+    "prop.midHandAllIn.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仅娱乐模式：对局中可将剩余筹码追加为全下并自动停牌。闯关模式不可用。天然黑杰克见牌即结算时不可用。"
+          }
+        }
+      }
+    },
+    "prop.midHandAllIn.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "见牌后再全下"
+          }
+        }
+      }
+    },
+    "prop.midHandAllIn.unlockHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打穿庄家资金池 1 次后永久解锁（仅娱乐可用）"
+          }
+        }
+      }
+    },
+    "prop.peekHole.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仅娱乐模式：玩家回合偷看庄家暗牌约 1 秒，每局限 1 次。"
+          }
+        }
+      }
+    },
+    "prop.peekHole.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "窥视暗牌"
+          }
+        }
+      }
+    },
+    "prop.peekHole.unlockHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式连胜达 5 后永久解锁"
+          }
+        }
+      }
+    },
+    "prop.redrawOne.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仅娱乐模式：弃掉最近一次要牌得到的牌并重发一张（须已要过牌）。每局限 1 次；天然 BJ 不可用。"
+          }
+        }
+      }
+    },
+    "prop.redrawOne.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "换一张"
+          }
+        }
+      }
+    },
+    "prop.redrawOne.unlockHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式累计胜 20 局后永久解锁"
+          }
+        }
+      }
+    },
+    "prop.reshuffleDealerCard.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仅娱乐模式：随机将庄家手牌中一张（含暗牌）洗回牌库再抽一张替换（不推进切牌穿透；牌库有其它牌时不会原样抽回）。每局限 1 次；窥视进行中不可用；可与其它娱乐道具同局先后使用。"
+          }
+        }
+      }
+    },
+    "prop.reshuffleDealerCard.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "换庄家一张"
+          }
+        }
+      }
+    },
+    "prop.reshuffleDealerCard.unlockHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式累计胜 50 局后永久解锁"
+          }
+        }
+      }
+    },
+    "prop.short.peek": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "窥视"
+          }
+        }
+      }
+    },
+    "prop.short.redraw": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "换一张"
+          }
+        }
+      }
+    },
+    "prop.short.reshuffleDealer": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "换庄家"
+          }
+        }
+      }
+    },
+    "prop.short.soft17": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "软17要牌"
+          }
+        }
+      }
+    },
+    "prop.short.soft17On": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "软17已开"
+          }
+        }
+      }
+    },
+    "roundEnd.a11y.banksFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你的余额 %d，庄家余额 %d"
+          }
+        }
+      }
+    },
+    "roundEnd.a11y.continueHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "进入下一局下注"
+          }
+        }
+      }
+    },
+    "roundEnd.a11y.endHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "结束本会话并返回欢迎页"
+          }
+        }
+      }
+    },
+    "roundEnd.a11y.outcomeFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本局结果：%@"
+          }
+        }
+      }
+    },
+    "roundEnd.a11y.peekHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂时收起结果，查看桌上牌面"
+          }
+        }
+      }
+    },
+    "roundEnd.a11y.unlockFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "解锁：%@"
+          }
+        }
+      }
+    },
+    "roundEnd.banksFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你 %d · 庄家 %d"
+          }
+        }
+      }
+    },
+    "roundEnd.netFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本局盈亏 %@"
+          }
+        }
+      }
+    },
+    "roundEnd.reopenA11y": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新打开本局结果面板"
+          }
+        }
+      }
+    },
+    "roundEnd.returnHome": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "返回主页"
+          }
+        }
+      }
+    },
+    "roundEnd.showResult": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示结果"
+          }
+        }
+      }
+    },
+    "roundEnd.title.round": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本局结束"
+          }
+        }
+      }
+    },
+    "roundEnd.title.session": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本局游戏结束"
+          }
+        }
+      }
+    },
+    "roundEnd.unlocks": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本局解锁"
+          }
+        }
+      }
+    },
+    "roundEnd.viewTable": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "查看牌面"
+          }
+        }
+      }
+    },
+    "sessionEnd.dealerBroke": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "庄家已破产"
+          }
+        }
+      }
+    },
+    "sessionEnd.dealerBroke.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "庄家筹码已全部赔出。若满足条件将解锁更高闯关关卡；请返回主页后再开启新一局。"
+          }
+        }
+      }
+    },
+    "sessionEnd.playerBroke": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你已破产"
+          }
+        }
+      }
+    },
+    "sessionEnd.playerBroke.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "余额不足以继续下注，本局游戏结束。请返回主页后再开启新的一局。"
+          }
+        }
+      }
+    },
+    "settings.allInUnlock.nonzeroFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本会话打满 %d 局后，开局下注页解锁「全下」（闯关与娱乐共用）。"
+          }
+        }
+      }
+    },
+    "settings.allInUnlock.zero": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "开局下注页即可使用「全下」（闯关与娱乐共用）。"
+          }
+        }
+      }
+    },
+    "settings.allInUnlockRoundsFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全下解锁局数：%d"
+          }
+        }
+      }
+    },
+    "settings.cardBack.inUse": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用中"
+          }
+        }
+      }
+    },
+    "settings.cardBack.locked": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未解锁"
+          }
+        }
+      }
+    },
+    "settings.cardBack.tapToSelect": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "点击选用"
+          }
+        }
+      }
+    },
+    "settings.cardBack.unlocked": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已解锁"
+          }
+        }
+      }
+    },
+    "settings.cut.entertainmentFixed": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式固定「真实切牌」（不受本项影响）。"
+          }
+        }
+      }
+    },
+    "settings.footer.cardBack": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "外观不影响胜负；可在闯关与娱乐中共用。未解锁可预览，不可选用。"
+          }
+        }
+      }
+    },
+    "settings.footer.deal": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "默认牌副用于主页开局；切牌仅影响闯关。"
+          }
+        }
+      }
+    },
+    "settings.footer.feedback": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "关闭后不播放音效；未配置音效文件时会静默跳过。「局内全下需确认」仅影响娱乐模式见牌后再全下。"
+          }
+        }
+      }
+    },
+    "settings.footer.immediate": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音效、触觉、局内全下确认与卡背选用可立即生效。"
+          }
+        }
+      }
+    },
+    "settings.navTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置"
+          }
+        }
+      }
+    },
+    "settings.picker.cutCard": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "切牌（闯关）"
+          }
+        }
+      }
+    },
+    "settings.picker.defaultDeck": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "默认牌副"
+          }
+        }
+      }
+    },
+    "settings.picker.tableLimit": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "桌限方案"
+          }
+        }
+      }
+    },
+    "settings.section.allIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全下"
+          }
+        }
+      }
+    },
+    "settings.section.cardBack": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "卡背"
+          }
+        }
+      }
+    },
+    "settings.section.deal": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "牌局"
+          }
+        }
+      }
+    },
+    "settings.section.feedback": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "反馈"
+          }
+        }
+      }
+    },
+    "settings.section.tableLimit": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "桌限"
+          }
+        }
+      }
+    },
+    "settings.section.timing": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "生效时机"
+          }
+        }
+      }
+    },
+    "settings.sessionLockedHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "对局中修改不生效，返回主页后新开局生效"
+          }
+        }
+      }
+    },
+    "settings.tableLimit.caption": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "闯关模式采用此桌限；娱乐模式注码随娱乐阶梯自动提升，不受本项影响。详情见主页「帮助说明」。"
+          }
+        }
+      }
+    },
+    "settings.toggle.confirmAllIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "局内全下需确认"
+          }
+        }
+      }
+    },
+    "settings.toggle.haptics": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "触觉"
+          }
+        }
+      }
+    },
+    "settings.toggle.sound": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音效"
+          }
+        }
+      }
+    },
+    "stats.a11y.stageBankFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@，起始筹码你 %d，庄家 %d"
+          }
+        }
+      }
+    },
+    "stats.chipsFullLineFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "累计赢 %d · 累计亏 %d · 打穿庄家 %d 次"
+          }
+        }
+      }
+    },
+    "stats.chipsLineFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "累计赢 %d · 打穿庄家 %d 次"
+          }
+        }
+      }
+    },
+    "stats.empty.challenge": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚无闯关对局记录。"
+          }
+        }
+      }
+    },
+    "stats.empty.entertainment": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚无娱乐对局记录。"
+          }
+        }
+      }
+    },
+    "stats.entertainmentNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐胜负不计入闯关成就。"
+          }
+        }
+      }
+    },
+    "stats.footer.challenge": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新开闯关会话按已解锁最高关给予双方起始筹码。卡背解锁也主要看闯关表现。"
+          }
+        }
+      }
+    },
+    "stats.footer.entertainment": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新开娱乐会话按当前阶给予起始筹码与注码三档；玩法道具仅娱乐可用。"
+          }
+        }
+      }
+    },
+    "stats.navTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "战绩"
+          }
+        }
+      }
+    },
+    "stats.recordLineFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d 胜 · %d 负 · %d 平"
+          }
+        }
+      }
+    },
+    "stats.recordSummaryFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d 胜 · %d 负 · %d 平 · 最长连胜 %d"
+          }
+        }
+      }
+    },
+    "stats.section.challenge": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "闯关模式"
+          }
+        }
+      }
+    },
+    "stats.section.entertainment": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐模式"
+          }
+        }
+      }
+    },
+    "table.a11y.chipsBetFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你 %d，庄家 %d，注 %d"
+          }
+        }
+      }
+    },
+    "table.a11y.chipsFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你 %d，庄家 %d"
+          }
+        }
+      }
+    },
+    "table.a11y.chipsFullFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你 %d，庄家 %d，注 %d，保险 %d"
+          }
+        }
+      }
+    },
+    "table.a11y.dealerPointsFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "庄家点数 %@"
+          }
+        }
+      }
+    },
+    "table.a11y.dealerUpcardPointsFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "庄家明牌点数 %@"
+          }
+        }
+      }
+    },
+    "table.a11y.playerPointsFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "玩家点数 %@"
+          }
+        }
+      }
+    },
+    "table.betFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "注 %d"
+          }
+        }
+      }
+    },
+    "table.dealerFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "庄家 %d"
+          }
+        }
+      }
+    },
+    "table.idleHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "确认下注后发牌。玩家回合可要牌或停牌；开局两张时可加倍或投降。"
+          }
+        }
+      }
+    },
+    "table.peeking": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "窥视暗牌中…"
+          }
+        }
+      }
+    },
+    "table.pointsFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "点数：%@"
+          }
+        }
+      }
+    },
+    "table.roundOver": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本局已结束"
+          }
+        }
+      }
+    },
+    "table.upcardPointsFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "明牌点数：%@"
+          }
+        }
+      }
+    },
+    "table.waitingResult": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "等待本局结果"
+          }
+        }
+      }
+    },
+    "table.youFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你 %d"
+          }
+        }
+      }
+    },
+    "tableLimit.heavy.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "偏大"
+          }
+        }
+      }
+    },
+    "tableLimit.light.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轻量"
+          }
+        }
+      }
+    },
+    "tableLimit.standard.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "标准"
+          }
+        }
+      }
+    },
+    "tableLimit.summaryFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最小注 %d；筹码档 %@"
+          }
+        }
+      }
+    },
+    "unlock.cardBackFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "卡背·%@"
+          }
+        }
+      }
+    },
+    "unlock.cardBackNoticeFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "卡背解锁：%@"
+          }
+        }
+      }
+    },
+    "unlock.challengePrefixFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "闯关·%@"
+          }
+        }
+      }
+    },
+    "unlock.entertainmentClear": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "娱乐·打穿庄家"
+          }
+        }
+      }
+    },
+    "unlock.entertainmentStageFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@"
+          }
+        }
+      }
+    },
+    "unlock.noticeFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "解锁%@"
+          }
+        }
+      }
+    },
+    "unlock.propFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "道具·%@"
+          }
+        }
+      }
+    },
+    "unlock.propsUnlockedChallengeNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "道具已解锁（娱乐模式可用）"
+          }
+        }
+      }
+    },
+    "welcome.achievements": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "成就"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Achievements"
+          }
+        }
+      }
+    },
+    "welcome.appTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "二十一点"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blackjack"
+          }
+        }
+      }
+    },
+    "welcome.help": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "帮助说明"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Help"
+          }
+        }
+      }
+    },
+    "welcome.settings": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
+          }
+        }
+      }
+    },
+    "welcome.stats": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "战绩"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stats"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

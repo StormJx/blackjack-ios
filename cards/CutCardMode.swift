@@ -19,22 +19,11 @@ enum CutCardMode: String, CaseIterable, Identifiable, Sendable {
     var id: String { rawValue }
 
     var title: String {
-        switch self {
-        case .off: return "每局重洗"
-        case .ceremonial: return "仪式感切牌"
-        case .real: return "真实切牌"
-        }
+        L10n.key("cutCard.\(rawValue).title")
     }
 
     var settingsDetail: String {
-        switch self {
-        case .off:
-            return "闯关：每局打完下一局必整副重洗（无渗透）。"
-        case .ceremonial:
-            return "闯关：洗牌页保留切牌仪式文案，但不按切牌点强制重洗；牌堆打到不足开局四张才重洗。"
-        case .real:
-            return "闯关：按 50%–75% 切牌点局间重洗（含尾牌 4–6 张打完再洗）。"
-        }
+        L10n.key("cutCard.\(rawValue).settingsDetail")
     }
 
     /// 是否按切牌点做渗透重洗数学。
@@ -44,13 +33,6 @@ enum CutCardMode: String, CaseIterable, Identifiable, Sendable {
     var showsCutRitualCopy: Bool { self == .real || self == .ceremonial }
 
     var shuffleOverlayDetail: String {
-        switch self {
-        case .off:
-            return "本局已结束，正在重新整理牌堆"
-        case .ceremonial:
-            return "仪式切牌完成，正在重新整理牌堆"
-        case .real:
-            return "切牌点已过，正在重新整理牌堆"
-        }
+        L10n.key("cutCard.\(rawValue).shuffleOverlay")
     }
 }

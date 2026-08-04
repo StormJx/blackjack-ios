@@ -147,13 +147,13 @@ final class ChipBank: ObservableObject {
     /// VoiceOver / 按钮：保险不可用原因（可买时为 nil）。
     var insuranceDisabledReason: String? {
         if canAffordInsurance { return nil }
-        if activeBet == 0 { return "尚未下注" }
-        if activeBetWasAllIn { return "全下不可买保险" }
-        if activeInsurance > 0 { return "本局已买保险" }
+        if activeBet == 0 { return L10n.t("insurance.disabled.noBet") }
+        if activeBetWasAllIn { return L10n.t("insurance.disabled.allIn") }
+        if activeInsurance > 0 { return L10n.t("insurance.disabled.already") }
         let amount = ChipRules.insuranceBetAmount(forMainBet: activeBet)
-        if amount <= 0 { return "注码过小无法保险" }
-        if balance < amount { return "余额不足买保险" }
-        return "当前不可买保险"
+        if amount <= 0 { return L10n.t("insurance.disabled.betTooSmall") }
+        if balance < amount { return L10n.t("insurance.disabled.insufficient") }
+        return L10n.t("insurance.disabled.unavailable")
     }
 
     @discardableResult

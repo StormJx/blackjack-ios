@@ -19,17 +19,17 @@ enum PlayStyle: String, CaseIterable, Identifiable, Sendable {
 
     var welcomeButtonTitle: String {
         switch self {
-        case .challenge: return "闯关挑战"
-        case .entertainment: return "娱乐模式"
+        case .challenge: return L10n.t("playStyle.challenge.buttonTitle")
+        case .entertainment: return L10n.t("playStyle.entertainment.buttonTitle")
         }
     }
 
     var welcomeSubtitle: String {
         switch self {
         case .challenge:
-            return "打穿庄家升关 · 玩法道具禁用"
+            return L10n.t("playStyle.challenge.subtitle")
         case .entertainment:
-            return "道具可用 · 独立升阶与注码"
+            return L10n.t("playStyle.entertainment.subtitle")
         }
     }
 
@@ -40,10 +40,7 @@ enum PlayStyle: String, CaseIterable, Identifiable, Sendable {
     var allowsGameplayProps: Bool { self == .entertainment }
 
     var continueButtonTitle: String {
-        switch self {
-        case .challenge: return "继续"
-        case .entertainment: return "继续"
-        }
+        L10n.t("playStyle.continue")
     }
 
     var abandonConfirmDetail: String {
@@ -51,14 +48,14 @@ enum PlayStyle: String, CaseIterable, Identifiable, Sendable {
         case .challenge:
             return ChipRules.abandonSessionConfirmDetail
         case .entertainment:
-            return "将清空本会话娱乐筹码并返回主页（闯关进度不受影响）。"
+            return L10n.t("playStyle.entertainment.abandonDetail")
         }
     }
 
     var abandonConfirmButtonTitle: String {
         switch self {
-        case .challenge: return "退出并清空筹码"
-        case .entertainment: return "退出会话"
+        case .challenge: return L10n.t("playStyle.challenge.abandonButton")
+        case .entertainment: return L10n.t("playStyle.entertainment.abandonButton")
         }
     }
 

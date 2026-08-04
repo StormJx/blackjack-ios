@@ -19,11 +19,7 @@ enum TableLimitPreset: String, CaseIterable, Identifiable, Sendable {
     var id: String { rawValue }
 
     var title: String {
-        switch self {
-        case .standard: return "标准"
-        case .light: return "轻量"
-        case .heavy: return "偏大"
-        }
+        L10n.key("tableLimit.\(rawValue).title")
     }
 
     var minimumBet: Int {
@@ -44,7 +40,7 @@ enum TableLimitPreset: String, CaseIterable, Identifiable, Sendable {
 
     var summary: String {
         let chips = betChipValues.map(String.init).joined(separator: " / ")
-        return "最小注 \(minimumBet)；筹码档 \(chips)"
+        return L10n.format("tableLimit.summaryFormat", minimumBet, chips)
     }
 }
 

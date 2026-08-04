@@ -63,9 +63,16 @@ struct ContentView: View {
                             if showClearedHint {
                                 presentWelcomeNotice(ChipRules.sessionClearedReturnHomeHint)
                             } else if sync.leveledUp {
-                                presentWelcomeNotice("解锁\(challengeProgress.currentStage.title)")
+                                presentWelcomeNotice(
+                                    L10n.format(
+                                        "unlock.noticeFormat",
+                                        challengeProgress.currentStage.title
+                                    )
+                                )
                             } else if let back = sync.newlyUnlockedBacks.first {
-                                presentWelcomeNotice("卡背解锁：\(back.title)")
+                                presentWelcomeNotice(
+                                    L10n.format("unlock.cardBackNoticeFormat", back.title)
+                                )
                             }
                         }
                     )
@@ -128,7 +135,7 @@ struct ContentView: View {
                     GameFeedback.shared.buttonTap()
                     showAchievements = true
                 } label: {
-                    Label("成就", systemImage: "checkmark.seal.fill")
+                    Label(L10n.t("welcome.achievements"), systemImage: "checkmark.seal.fill")
                         .font(.subheadline.weight(.semibold))
                 }
                 .buttonStyle(.bordered)
@@ -138,7 +145,7 @@ struct ContentView: View {
                     GameFeedback.shared.buttonTap()
                     showStats = true
                 } label: {
-                    Label("战绩", systemImage: "chart.bar.fill")
+                    Label(L10n.t("welcome.stats"), systemImage: "chart.bar.fill")
                         .font(.subheadline.weight(.semibold))
                 }
                 .buttonStyle(.bordered)
@@ -156,7 +163,7 @@ struct ContentView: View {
                 }
                 .buttonStyle(.bordered)
                 .tint(.white)
-                .accessibilityLabel("设置")
+                .accessibilityLabel(L10n.t("welcome.settings"))
             }
             .padding(.horizontal, 20)
             .padding(.top, 12)
@@ -164,7 +171,7 @@ struct ContentView: View {
             Spacer(minLength: 24)
 
             VStack(spacing: 28) {
-                Text("二十一点")
+                Text(L10n.t("welcome.appTitle"))
                     .font(.system(.largeTitle, design: .rounded).weight(.bold))
                     .minimumScaleFactor(0.7)
                     .lineLimit(1)
@@ -221,7 +228,7 @@ struct ContentView: View {
                     GameFeedback.shared.buttonTap()
                     showHelp = true
                 } label: {
-                    Label("帮助说明", systemImage: "questionmark.circle")
+                    Label(L10n.t("welcome.help"), systemImage: "questionmark.circle")
                         .font(.body.weight(.medium))
                 }
                 .buttonStyle(.plain)
@@ -402,7 +409,10 @@ private struct GameSessionView: View {
                             roundEndPanelCollapsed = false
                         }
                     } label: {
-                        Label("显示结果", systemImage: "rectangle.bottomthird.inset.filled")
+                        Label(
+                            L10n.t("roundEnd.showResult"),
+                            systemImage: "rectangle.bottomthird.inset.filled"
+                        )
                             .font(.subheadline.weight(.semibold))
                             .padding(.horizontal, 16)
                             .padding(.vertical, 10)
@@ -410,7 +420,7 @@ private struct GameSessionView: View {
                     .buttonStyle(.borderedProminent)
                     .tint(.green)
                     .padding(.bottom, 28)
-                    .accessibilityHint("重新打开本局结果面板")
+                    .accessibilityHint(L10n.t("roundEnd.reopenA11y"))
                 }
                 .zIndex(3)
             }
@@ -442,23 +452,23 @@ private struct GameSessionView: View {
             onConfirm: abandonSessionToWelcome
         ))
         .confirmationDialog(
-            "确认全下？",
+            L10n.t("dialog.confirmAllIn.title"),
             isPresented: $showMidHandAllInConfirm,
             titleVisibility: .visible
         ) {
-            Button("全下并停牌", role: .destructive) {
+            Button(L10n.t("dialog.confirmAllIn.confirm"), role: .destructive) {
                 executeMidHandAllIn()
             }
-            Button("取消", role: .cancel) {}
+            Button(L10n.t("common.cancel"), role: .cancel) {}
         } message: {
-            Text("将把剩余筹码全部追加为注码，并自动停牌。")
+            Text(L10n.t("dialog.confirmAllIn.message"))
         }
-        .alert("玩法道具已就绪", isPresented: $showPropsGuide) {
-            Button("知道了") {
+        .alert(L10n.t("dialog.propsGuide.title"), isPresented: $showPropsGuide) {
+            Button(L10n.t("dialog.propsGuide.ok")) {
                 propStore.acknowledgeGameplayPropsGuide()
             }
         } message: {
-            Text("娱乐模式玩家回合可使用已解锁道具（如窥视、换牌、软 17 要牌、见牌后再全下）。每局限次以按钮提示为准。")
+            Text(L10n.t("dialog.propsGuide.message"))
         }
         .onChange(of: game.phase) { _, newPhase in
             if newPhase != .playerTurn {
@@ -648,7 +658,7 @@ private struct GameSessionView: View {
                 )
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("退出本局")
+        .accessibilityLabel(L10n.t("dialog.abandon.a11y"))
     }
 
     private var canConfirmBet: Bool {
@@ -755,40 +765,40 @@ private struct GameSessionView: View {
     private var midHandAllInDisabledReason: String? {
         guard propStore.canUse(.midHandAllIn, in: playStyle) else { return nil }
         if canMidHandAllIn { return nil }
-        if controlsLockedAfterAllIn { return "全下后等待结算" }
-        if game.phase != .playerTurn { return "仅玩家回合可用" }
-        if game.isAnimating { return "发牌动画进行中" }
-        if chipBank.activeBet == 0 { return "尚未下注" }
-        if chipBank.balance <= 0 { return "无剩余筹码可追加" }
-        return "当前不可用"
+        if controlsLockedAfterAllIn { return L10n.t("disabled.waitingSettlement") }
+        if game.phase != .playerTurn { return L10n.t("disabled.playerTurnOnly") }
+        if game.isAnimating { return L10n.t("disabled.animating") }
+        if chipBank.activeBet == 0 { return L10n.t("disabled.noBet") }
+        if chipBank.balance <= 0 { return L10n.t("disabled.noRemainingChips") }
+        return L10n.t("disabled.unavailable")
     }
 
     private var doubleDownDisabledReason: String? {
         if canDoubleDown { return nil }
-        if controlsLockedAfterAllIn { return "全下后等待结算" }
+        if controlsLockedAfterAllIn { return L10n.t("disabled.waitingSettlement") }
         if let handReason = game.doubleDownHandDisabledReason {
             return handReason
         }
-        if chipBank.activeBet == 0 { return "尚未下注" }
-        if !chipBank.canAffordDoubleDown { return "余额不足加倍" }
-        return "当前不可用"
+        if chipBank.activeBet == 0 { return L10n.t("disabled.noBet") }
+        if !chipBank.canAffordDoubleDown { return L10n.t("disabled.insufficientDouble") }
+        return L10n.t("disabled.unavailable")
     }
 
     private var surrenderDisabledReason: String? {
         if canSurrender { return nil }
-        if controlsLockedAfterAllIn { return "全下后等待结算" }
-        if chipBank.activeBetWasAllIn { return "全下不可投降" }
+        if controlsLockedAfterAllIn { return L10n.t("disabled.waitingSettlement") }
+        if chipBank.activeBetWasAllIn { return L10n.t("disabled.noSurrenderAllIn") }
         if let handReason = game.surrenderHandDisabledReason {
             return handReason
         }
-        if chipBank.activeBet == 0 { return "尚未下注" }
-        return "当前不可用"
+        if chipBank.activeBet == 0 { return L10n.t("disabled.noBet") }
+        return L10n.t("disabled.unavailable")
     }
 
     private func propDisabledReason(canUse: Bool, base: String?) -> String? {
         if canUse { return nil }
-        if controlsLockedAfterAllIn { return "全下后等待结算" }
-        return base ?? "当前不可用"
+        if controlsLockedAfterAllIn { return L10n.t("disabled.waitingSettlement") }
+        return base ?? L10n.t("disabled.unavailable")
     }
 
     private func executeDoubleDown() {
@@ -904,14 +914,14 @@ private struct AbandonConfirmModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .confirmationDialog(
-                "退出本局？",
+                L10n.t("dialog.abandon.title"),
                 isPresented: $isPresented,
                 titleVisibility: .visible
             ) {
                 Button(playStyle.abandonConfirmButtonTitle, role: .destructive) {
                     onConfirm()
                 }
-                Button("取消", role: .cancel) {}
+                Button(L10n.t("common.cancel"), role: .cancel) {}
             } message: {
                 Text(playStyle.abandonConfirmDetail)
             }
@@ -970,7 +980,7 @@ private struct ShuffleScreenOverlay: View {
                 )
 
                 VStack(spacing: 8) {
-                    Text("洗牌中…")
+                    Text(L10n.t("common.shuffling"))
                         .font(.title2.weight(.semibold))
                         .foregroundStyle(.white)
                     Text(cutCardMode.shuffleOverlayDetail)
@@ -986,7 +996,9 @@ private struct ShuffleScreenOverlay: View {
             .padding(.horizontal, 28)
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("洗牌中，\(cutCardMode.shuffleOverlayDetail)")
+        .accessibilityLabel(
+            L10n.format("common.shufflingA11yFormat", cutCardMode.shuffleOverlayDetail)
+        )
         .onAppear {
             guard !reduceMotion else { return }
             pulse = true

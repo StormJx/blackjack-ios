@@ -5,8 +5,8 @@
 > P8：`docs/P8_ORIENTATION_AND_A11Y.md` · 评审批次 backlog：`docs/ENGINEERING_REVIEW_BACKLOG.md`  
 > 后续优化执行路线：`docs/OPTIMIZATION_GUIDE.md`（A 工程加固 / L 上架 / T 教学轨 / M 变现 / R 留存）
 
-**基线：** `main` @ `0385e2a`（A4 险中求胜去重；待 push）  
-已推送里程碑：Tag `v1.11.1` @ `12234c5`（UX9）；A3 @ `91f1f4c` / `8c2db15`；此前含 `94d2ddb` A1+A2 / 保险/投降/加倍 / UX1–UX8  
+**基线：** `main` @ `6829d42`（A4 已推送）+ 本批未提交 L1 本地化  
+已推送里程碑：Tag `v1.11.1` @ `12234c5`（UX9）；A4 @ `0385e2a` / `6829d42`；A3 @ `8c2db15`  
 
 **仓库：** https://github.com/StormJx/blackjack-ios  
 **平台：** iOS 17.0+；庄家小于 17 要牌、大于等于 17 停（软 17 同停）；音效基名 deal/flip/shuffle/win/lose/push  
@@ -68,6 +68,7 @@
 - [x] **A2**：`DataSchema` 持久化版本号（`currentVersion = 1`）；`cardsApp.init` 在 Store 之前 `migrateIfNeeded`；改持久化结构须升版本并写 `runMigrations`；`DataSchemaTests`
 - [x] **A3**：GitHub Actions CI（`.github/workflows/test.yml`：`macos-15`，push/PR 触发，动态解析 iPhone 模拟器，`-only-testing:cardsTests`）；补共享 scheme `cards.xcodeproj/xcshareddata/xcschemes/cards.xcscheme`；无 secrets；本地单测已绿；push 后 Actions 已绿
 - [x] **A4**：`BlackjackGame.recordBraveHitProgress(beforeBest:currentBest:)`；`hit` / `doubleDown` / `redrawLastHitCard` 共用；既有 `braveHitLadderRequiresWin` 单测绿
+- [x] **L1**：`Localizable.xcstrings`（zh-Hans）+ `L10n`；欢迎/设置/帮助、面板、牌桌/道具禁用、成就/战绩 key 化；欢迎页含 en；动态 key 用 `L10n.key`
 
 ### 规划入库（效果未接线）
 - [x] P8 横竖屏 → 见 `docs/P8_ORIENTATION_AND_A11Y.md`（横屏仍后置）
@@ -113,13 +114,13 @@
 
 ## 建议下一步（按优先级）
 
-1. **L1 本地化**（上架准备；见 `OPTIMIZATION_GUIDE`）— 建议下一讨论/实现项  
+1. **提交/推送 L1** 后，可按系统语言抽查欢迎页英文  
 2. **保险实机抽查**（可选、不改代码）：明 A 买/不买、全下禁买、peek 后窥视、局末盈亏合计  
 3. **A5**（延后）：道具参数收敛；C5/新道具立项前再做  
 4. 娱乐/闯关阶梯：试玩采样后再调数值（勿空改）  
 5. 更后：L2 分牌（须先锁产品）/ T 教学轨 / 广告专篇 / P8 横屏 / C5 / F10 正片  
 
-**本批提交：** `0385e2a`（A4）。**已推送里程碑：** Tag `v1.11.1` @ `12234c5`；A3 @ `8c2db15`。**交接：** `NEXT_SESSION_PROMPT.md` · 路线：`OPTIMIZATION_GUIDE.md`。
+**本批待提交：** L1 本地化。**已推送：** `6829d42`（A4）。**交接：** `NEXT_SESSION_PROMPT.md` · 路线：`OPTIMIZATION_GUIDE.md`。
 
 ---
 
@@ -148,3 +149,4 @@
 | 2026-08-01 | A1+A2 统一提交 `94d2ddb`；更新 `NEXT_SESSION_PROMPT.md`；检查点基线同步 |
 | 2026-08-01 | A3：GitHub Actions CI + 共享 `cards` scheme @ `91f1f4c`；push 后确认 Actions 绿 |
 | 2026-08-02 | A4：`recordBraveHitProgress` 去重 @ `0385e2a`；建议下一刀讨论 L1 |
+| 2026-08-04 | L1：String Catalog + 三刀迁移；修复动态 key（`L10n.key`）；单测绿 |

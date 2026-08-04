@@ -55,7 +55,7 @@ struct SettlementResult: Equatable, Sendable {
         if netChange > 0 { return "+\(netChange)" }
         if netChange < 0 { return "\(netChange)" }
         if outcome == .push && insuranceBet == 0 {
-            return "0（平局退注）"
+            return L10n.t("chips.net.push")
         }
         return "0"
     }

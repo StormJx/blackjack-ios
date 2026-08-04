@@ -29,13 +29,13 @@ struct SettingsView: View {
                     }
                     .accessibilityElement(children: .combine)
                 } header: {
-                    Text("生效时机")
+                    Text(L10n.t("settings.section.timing"))
                 } footer: {
-                    Text("音效、触觉、局内全下确认与卡背选用可立即生效。")
+                    Text(L10n.t("settings.footer.immediate"))
                 }
 
                 Section {
-                    Picker("默认牌副", selection: $settings.defaultPracticeMode) {
+                    Picker(L10n.t("settings.picker.defaultDeck"), selection: $settings.defaultPracticeMode) {
                         ForEach(PracticeMode.allCases) { mode in
                             Text(mode.pickerLabel).tag(mode)
                         }
@@ -44,7 +44,7 @@ struct SettingsView: View {
                         flashSessionLockedHint()
                     }
 
-                    Picker("切牌（闯关）", selection: $settings.cutCardMode) {
+                    Picker(L10n.t("settings.picker.cutCard"), selection: $settings.cutCardMode) {
                         ForEach(CutCardMode.allCases) { mode in
                             Text(mode.title).tag(mode)
                         }
@@ -55,17 +55,17 @@ struct SettingsView: View {
                     Text(settings.cutCardMode.settingsDetail)
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Text("娱乐模式固定「真实切牌」（不受本项影响）。")
+                    Text(L10n.t("settings.cut.entertainmentFixed"))
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                 } header: {
-                    Text("牌局")
+                    Text(L10n.t("settings.section.deal"))
                 } footer: {
-                    Text("默认牌副用于主页开局；切牌仅影响闯关。")
+                    Text(L10n.t("settings.footer.deal"))
                 }
 
                 Section {
-                    Picker("桌限方案", selection: $settings.tableLimitPreset) {
+                    Picker(L10n.t("settings.picker.tableLimit"), selection: $settings.tableLimitPreset) {
                         ForEach(TableLimitPreset.allCases) { preset in
                             Text("\(preset.title)：\(preset.summary)").tag(preset)
                         }
@@ -73,11 +73,11 @@ struct SettingsView: View {
                     .onChange(of: settings.tableLimitPreset) { _, _ in
                         flashSessionLockedHint()
                     }
-                    Text("闯关模式采用此桌限；娱乐模式注码随娱乐阶梯自动提升，不受本项影响。详情见主页「帮助说明」。")
+                    Text(L10n.t("settings.tableLimit.caption"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } header: {
-                    Text("桌限")
+                    Text(L10n.t("settings.section.tableLimit"))
                 }
 
                 Section {
@@ -85,18 +85,20 @@ struct SettingsView: View {
                         value: $settings.preDealAllInUnlockRounds,
                         in: ChipRules.preDealAllInUnlockRoundsRange
                     ) {
-                        Text("全下解锁局数：\(settings.preDealAllInUnlockRounds)")
+                        Text(L10n.format("settings.allInUnlockRoundsFormat", settings.preDealAllInUnlockRounds))
                     }
                     .onChange(of: settings.preDealAllInUnlockRounds) { _, _ in
                         flashSessionLockedHint()
                     }
-                    Text(settings.preDealAllInUnlockRounds == 0
-                         ? "开局下注页即可使用「全下」（闯关与娱乐共用）。"
-                         : "本会话打满 \(settings.preDealAllInUnlockRounds) 局后，开局下注页解锁「全下」（闯关与娱乐共用）。")
+                    Text(
+                        settings.preDealAllInUnlockRounds == 0
+                            ? L10n.t("settings.allInUnlock.zero")
+                            : L10n.format("settings.allInUnlock.nonzeroFormat", settings.preDealAllInUnlockRounds)
+                    )
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } header: {
-                    Text("全下")
+                    Text(L10n.t("settings.section.allIn"))
                 }
 
                 Section {
@@ -104,21 +106,21 @@ struct SettingsView: View {
                         cardBackRow(style)
                     }
                 } header: {
-                    Text("卡背")
+                    Text(L10n.t("settings.section.cardBack"))
                 } footer: {
-                    Text("外观不影响胜负；可在闯关与娱乐中共用。未解锁可预览，不可选用。")
+                    Text(L10n.t("settings.footer.cardBack"))
                 }
 
-                Section("反馈") {
-                    Toggle("音效", isOn: $settings.soundEnabled)
-                    Toggle("触觉", isOn: $settings.hapticsEnabled)
-                    Toggle("局内全下需确认", isOn: $settings.confirmMidHandAllIn)
-                    Text("关闭后不播放音效；未配置音效文件时会静默跳过。「局内全下需确认」仅影响娱乐模式见牌后再全下。")
+                Section(L10n.t("settings.section.feedback")) {
+                    Toggle(L10n.t("settings.toggle.sound"), isOn: $settings.soundEnabled)
+                    Toggle(L10n.t("settings.toggle.haptics"), isOn: $settings.hapticsEnabled)
+                    Toggle(L10n.t("settings.toggle.confirmAllIn"), isOn: $settings.confirmMidHandAllIn)
+                    Text(L10n.t("settings.footer.feedback"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
             }
-            .navigationTitle("设置")
+            .navigationTitle(L10n.t("settings.navTitle"))
             .navigationBarTitleDisplayMode(.inline)
             .animation(.easeInOut(duration: 0.2), value: highlightSessionLockedHint)
             .onDisappear {
@@ -145,7 +147,7 @@ struct SettingsView: View {
                         .font(.headline)
                         .foregroundStyle(owned ? .primary : .secondary)
                     if owned {
-                        Text(selected ? "使用中" : "点击选用")
+                        Text(selected ? L10n.t("settings.cardBack.inUse") : L10n.t("settings.cardBack.tapToSelect"))
                             .font(.caption)
                             .foregroundStyle(selected ? .green : .secondary)
                     } else {
@@ -167,7 +169,9 @@ struct SettingsView: View {
         }
         .buttonStyle(.plain)
         .disabled(!owned)
-        .accessibilityLabel("\(style.title)，\(owned ? (selected ? "使用中" : "已解锁") : "未解锁")")
+        .accessibilityLabel(
+            "\(style.title)，\(owned ? (selected ? L10n.t("settings.cardBack.inUse") : L10n.t("settings.cardBack.unlocked")) : L10n.t("settings.cardBack.locked"))"
+        )
     }
 
     private func flashSessionLockedHint() {

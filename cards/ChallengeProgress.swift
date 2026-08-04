@@ -13,18 +13,21 @@ struct ChallengeStage: Equatable, Sendable, Identifiable {
     let level: Int
     let playerStart: Int
     let dealerStart: Int
-    let title: String
 
     var id: Int { level }
+
+    var title: String {
+        L10n.key("challenge.stage.\(level).title")
+    }
 }
 
 enum ChallengeRules {
     static let stages: [ChallengeStage] = [
-        ChallengeStage(level: 1, playerStart: 1000, dealerStart: 2000, title: "第一关"),
-        ChallengeStage(level: 2, playerStart: 1500, dealerStart: 4000, title: "第二关"),
-        ChallengeStage(level: 3, playerStart: 2500, dealerStart: 7000, title: "第三关"),
-        ChallengeStage(level: 4, playerStart: 4000, dealerStart: 12_000, title: "第四关"),
-        ChallengeStage(level: 5, playerStart: 6000, dealerStart: 20_000, title: "终关"),
+        ChallengeStage(level: 1, playerStart: 1000, dealerStart: 2000),
+        ChallengeStage(level: 2, playerStart: 1500, dealerStart: 4000),
+        ChallengeStage(level: 3, playerStart: 2500, dealerStart: 7000),
+        ChallengeStage(level: 4, playerStart: 4000, dealerStart: 12_000),
+        ChallengeStage(level: 5, playerStart: 6000, dealerStart: 20_000),
     ]
 
     static var maxLevel: Int { stages.last?.level ?? 1 }
@@ -57,7 +60,12 @@ enum ChallengeRules {
     /// 战绩页：当前关起始筹码摘要。
     static func stageBankSummary(level: Int) -> String {
         let stage = stage(level: level)
-        return "\(stage.title)：你 \(stage.playerStart) · 庄家 \(stage.dealerStart)"
+        return L10n.format(
+            "challenge.summaryFormat",
+            stage.title,
+            stage.playerStart,
+            stage.dealerStart
+        )
     }
 
     /// 战绩 / 帮助：当前关 + 距下一关差额（F2）。
@@ -68,11 +76,11 @@ enum ChallengeRules {
     ) -> String {
         let stage = stage(level: unlockedLevel)
         guard let next = nextStageThreshold(afterLevel: unlockedLevel) else {
-            return "\(stage.title)：已通关全部关卡"
+            return L10n.format("challenge.progress.maxFormat", stage.title)
         }
         let clearsLeft = max(0, next.clears - dealerClears)
         let chipsLeft = max(0, next.chipsWon - totalChipsWon)
-        return "\(stage.title)：下一关再打穿 \(clearsLeft) 次或再累计赢 \(chipsLeft)"
+        return L10n.format("challenge.progress.nextFormat", stage.title, clearsLeft, chipsLeft)
     }
 }
 

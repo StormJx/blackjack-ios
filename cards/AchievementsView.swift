@@ -15,7 +15,7 @@ struct AchievementsView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                Picker("模式", selection: $scope) {
+                Picker(L10n.t("achievements.pickerMode"), selection: $scope) {
                     ForEach(AchievementScope.allCases) { s in
                         Text(s.tabTitle).tag(s)
                     }
@@ -35,12 +35,12 @@ struct AchievementsView: View {
                                 .foregroundStyle(.secondary)
                                 .monospacedDigit()
                         } else {
-                            Text("娱乐对局不计入闯关成就；完成娱乐专属成就可在此查看。")
+                            Text(L10n.t("achievements.entertainmentNote"))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
                     } header: {
-                        Text("战绩摘要")
+                        Text(L10n.t("achievements.statsSummary"))
                     }
 
                     if scope == .practice {
@@ -49,24 +49,24 @@ struct AchievementsView: View {
                                 propRow(prop)
                             }
                         } header: {
-                            Text("道具")
+                            Text(L10n.t("achievements.props"))
                         } footer: {
-                            Text("玩法道具仅「娱乐模式」对局可用。部分道具需先在闯关解锁成就。卡背在设置页选用。")
+                            Text(L10n.t("achievements.propsFooter"))
                         }
                     } else {
                         Section {
-                            Text("玩法道具请切换到「娱乐」页签查看；闯关对局中不可使用道具。")
+                            Text(L10n.t("achievements.propsChallengeNote"))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         } header: {
-                            Text("道具")
+                            Text(L10n.t("achievements.props"))
                         }
                     }
 
                     Section {
                         let ids = AchievementID.ids(in: scope)
                         if ids.isEmpty {
-                            Text("暂无成就")
+                            Text(L10n.t("achievements.empty"))
                         } else {
                             ForEach(ids) { id in
                                 achievementRow(id)
@@ -76,15 +76,15 @@ struct AchievementsView: View {
                         let unlocked = AchievementID.ids(in: scope)
                             .filter { stats.unlockedIDs.contains($0) }.count
                         let total = AchievementID.ids(in: scope).count
-                        Text("成就 \(unlocked)/\(total)")
+                        Text(L10n.format("achievements.countFormat", unlocked, total))
                     } footer: {
                         Text(scope == .challenge
-                             ? "仅「闯关挑战」对局会计入本栏成就。"
-                             : "仅「娱乐模式」对局会计入本栏成就。")
+                             ? L10n.t("achievements.footer.challenge")
+                             : L10n.t("achievements.footer.entertainment"))
                     }
                 }
             }
-            .navigationTitle("成就")
+            .navigationTitle(L10n.t("achievements.navTitle"))
             .navigationBarTitleDisplayMode(.inline)
         }
     }
@@ -101,7 +101,7 @@ struct AchievementsView: View {
                         .font(.headline)
                         .foregroundStyle(owned ? .primary : .secondary)
                     if !owned, id.unlocksViaChallenge {
-                        Text("去闯关解锁")
+                        Text(L10n.t("achievements.goChallengeUnlock"))
                             .font(.caption2.weight(.semibold))
                             .foregroundStyle(.orange)
                             .padding(.horizontal, 6)
@@ -116,11 +116,11 @@ struct AchievementsView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 if owned {
-                    Text("已永久解锁 · 仅娱乐模式可用")
+                    Text(L10n.t("achievements.propUnlockedEntertainment"))
                         .font(.caption2)
                         .foregroundStyle(.green)
                 } else if id.unlocksViaChallenge {
-                    Text("去闯关解锁 · \(id.unlockHint)")
+                    Text(L10n.format("achievements.goChallengeUnlockFormat", id.unlockHint))
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                 } else {
@@ -134,7 +134,15 @@ struct AchievementsView: View {
         .padding(.vertical, 2)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
-            "\(id.title)，\(owned ? "已解锁" : (id.unlocksViaChallenge ? "未解锁，去闯关解锁" : "未解锁"))"
+            L10n.format(
+                "achievements.a11y.rowFormat",
+                id.title,
+                owned
+                    ? L10n.t("achievements.state.unlocked")
+                    : (id.unlocksViaChallenge
+                        ? L10n.t("achievements.state.lockedChallenge")
+                        : L10n.t("achievements.state.locked"))
+            )
         )
     }
 
@@ -157,7 +165,7 @@ struct AchievementsView: View {
                     .foregroundStyle(.secondary)
                 if target > 1 {
                     ProgressView(value: Double(progress), total: Double(target))
-                    Text("\(progress) / \(target)")
+                    Text(L10n.format("achievements.progressFormat", progress, target))
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                         .monospacedDigit()
@@ -167,6 +175,14 @@ struct AchievementsView: View {
         }
         .padding(.vertical, 2)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(id.title)，\(unlocked ? "已解锁" : "未解锁")")
+        .accessibilityLabel(
+            L10n.format(
+                "achievements.a11y.rowFormat",
+                id.title,
+                unlocked
+                    ? L10n.t("achievements.state.unlocked")
+                    : L10n.t("achievements.state.locked")
+            )
+        )
     }
 }

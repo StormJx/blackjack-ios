@@ -145,9 +145,9 @@ final class BlackjackGame: ObservableObject {
 
     /// VoiceOver：加倍手牌侧不可用原因（不含余额）。
     var doubleDownHandDisabledReason: String? {
-        guard phase == .playerTurn else { return "仅玩家回合可用" }
-        if isAnimating { return "发牌动画进行中" }
-        if playerCards.count != 2 { return "仅开局两张时可加倍" }
+        guard phase == .playerTurn else { return L10n.t("disabled.playerTurnOnly") }
+        if isAnimating { return L10n.t("disabled.animating") }
+        if playerCards.count != 2 { return L10n.t("disabled.doubleOnlyTwoCards") }
         return nil
     }
 
@@ -158,9 +158,9 @@ final class BlackjackGame: ObservableObject {
 
     /// VoiceOver：投降手牌侧不可用原因（不含全下）。
     var surrenderHandDisabledReason: String? {
-        guard phase == .playerTurn else { return "仅玩家回合可用" }
-        if isAnimating { return "发牌动画进行中" }
-        if playerCards.count != 2 { return "仅开局两张时可投降" }
+        guard phase == .playerTurn else { return L10n.t("disabled.playerTurnOnly") }
+        if isAnimating { return L10n.t("disabled.animating") }
+        if playerCards.count != 2 { return L10n.t("disabled.surrenderOnlyTwoCards") }
         return nil
     }
 
@@ -195,44 +195,44 @@ final class BlackjackGame: ObservableObject {
 
     /// VoiceOver：窥视不可用时的具体原因。
     var peekHoleDisabledReason: String? {
-        guard phase == .playerTurn else { return "仅玩家回合可用" }
-        if isAnimating { return "发牌动画进行中" }
-        if hasPeekedHoleThisRound { return "本局已用过窥视" }
-        if isPeekingHoleCard { return "窥视进行中" }
-        if dealerCards.count < 2 { return "庄家牌未齐" }
+        guard phase == .playerTurn else { return L10n.t("disabled.playerTurnOnly") }
+        if isAnimating { return L10n.t("disabled.animating") }
+        if hasPeekedHoleThisRound { return L10n.t("disabled.peekUsed") }
+        if isPeekingHoleCard { return L10n.t("disabled.peeking") }
+        if dealerCards.count < 2 { return L10n.t("disabled.dealerCardsIncomplete") }
         return nil
     }
 
     /// VoiceOver：换一张不可用时的具体原因。
     var redrawOneDisabledReason: String? {
-        guard phase == .playerTurn else { return "仅玩家回合可用" }
-        if isAnimating { return "发牌动画进行中" }
-        if hasRedrawnThisRound { return "本局已用过换一张" }
-        if playerCards.count <= 2 { return "需先要牌后再换" }
+        guard phase == .playerTurn else { return L10n.t("disabled.playerTurnOnly") }
+        if isAnimating { return L10n.t("disabled.animating") }
+        if hasRedrawnThisRound { return L10n.t("disabled.redrawUsed") }
+        if playerCards.count <= 2 { return L10n.t("disabled.needHitBeforeRedraw") }
         return nil
     }
 
     /// VoiceOver：换庄家不可用时的具体原因。
     var reshuffleDealerDisabledReason: String? {
-        guard phase == .playerTurn else { return "仅玩家回合可用" }
-        if isAnimating { return "发牌动画进行中" }
-        if isPeekingHoleCard { return "窥视中不可换庄家牌" }
-        if hasReshuffledDealerThisRound { return "本局已用过换庄家" }
-        if dealerCards.count < 2 { return "庄家牌未齐" }
+        guard phase == .playerTurn else { return L10n.t("disabled.playerTurnOnly") }
+        if isAnimating { return L10n.t("disabled.animating") }
+        if isPeekingHoleCard { return L10n.t("disabled.noReshuffleWhilePeek") }
+        if hasReshuffledDealerThisRound { return L10n.t("disabled.reshuffleUsed") }
+        if dealerCards.count < 2 { return L10n.t("disabled.dealerCardsIncomplete") }
         return nil
     }
 
     /// VoiceOver：软 17 要牌不可用时的具体原因。
     var soft17HitDisabledReason: String? {
-        guard phase == .playerTurn else { return "仅玩家回合可用" }
-        if isAnimating { return "发牌动画进行中" }
-        if dealerHitsSoft17ThisRound { return "本局已开启" }
+        guard phase == .playerTurn else { return L10n.t("disabled.playerTurnOnly") }
+        if isAnimating { return L10n.t("disabled.animating") }
+        if dealerHitsSoft17ThisRound { return L10n.t("disabled.soft17AlreadyOn") }
         return nil
     }
 
     /// 牌桌副标题：共 N 张 + 剩余张数。
     var shoeStatusLine: String {
-        "共 \(totalCardCount) 张，剩余 \(remainingCardCount) 张"
+        L10n.format("deck.remainingFormat", totalCardCount, remainingCardCount)
     }
 
     /// 下一局发牌前是否会整副重洗（下注页据此判断「剩余张数」是否仍是本局牌况）。
@@ -326,7 +326,7 @@ final class BlackjackGame: ObservableObject {
         publishDeckCounts()
 
         guard let c1 = deck.draw(), let c2 = deck.draw(), let c3 = deck.draw(), let c4 = deck.draw() else {
-            outcomeMessage = "洗牌异常，请重试"
+            outcomeMessage = L10n.t("outcome.shuffleError")
             phase = .finished
             feedback.notifyError()
             isAnimating = false
@@ -401,8 +401,8 @@ final class BlackjackGame: ObservableObject {
             lastInsuranceWon = didBuyInsurance
             finishRound(
                 message: didBuyInsurance
-                    ? "庄家黑杰克；保险已赔付"
-                    : "庄家黑杰克，你输了",
+                    ? L10n.t("outcome.dealerBJInsurancePaid")
+                    : L10n.t("outcome.dealerBJLose"),
                 outcome: .playerLose,
                 playerWon: false,
                 isPush: false
@@ -446,7 +446,7 @@ final class BlackjackGame: ObservableObject {
         let hand = Hand(cards: playerCards)
         if hand.isBusted {
             finishRound(
-                message: "爆牌，你输了",
+                message: L10n.t("outcome.bustLose"),
                 outcome: .playerLose,
                 playerWon: false,
                 isPush: false
@@ -495,7 +495,7 @@ final class BlackjackGame: ObservableObject {
         let hand = Hand(cards: playerCards)
         if hand.isBusted {
             finishRound(
-                message: "爆牌，你输了",
+                message: L10n.t("outcome.bustLose"),
                 outcome: .playerLose,
                 playerWon: false,
                 isPush: false
@@ -515,7 +515,7 @@ final class BlackjackGame: ObservableObject {
         guard canSurrenderHand else { return }
         dealerHoleRevealed = true
         finishRound(
-            message: "投降，退回半注",
+            message: L10n.t("outcome.surrender"),
             outcome: .playerSurrender,
             playerWon: false,
             isPush: false
@@ -574,7 +574,7 @@ final class BlackjackGame: ObservableObject {
         let hand = Hand(cards: playerCards)
         if hand.isBusted {
             finishRound(
-                message: "爆牌，你输了",
+                message: L10n.t("outcome.bustLose"),
                 outcome: .playerLose,
                 playerWon: false,
                 isPush: false
@@ -623,7 +623,7 @@ final class BlackjackGame: ObservableObject {
         }
         feedback.shuffleHint()
         showReshufflePulse(at: index)
-        showPropActionHint("已换庄家一张")
+        showPropActionHint(L10n.t("hint.reshuffledDealerCard"))
         await timing.sleep(nanoseconds: delayAfterHit)
         return true
     }
@@ -754,14 +754,14 @@ final class BlackjackGame: ObservableObject {
         let dealerHand = Hand(cards: dealerCards)
         if dealerHand.isNaturalBlackjack {
             finishRound(
-                message: "双方黑杰克，平局",
+                message: L10n.t("outcome.bothBJPush"),
                 outcome: .push,
                 playerWon: nil,
                 isPush: true
             )
         } else {
             finishRound(
-                message: "黑杰克！你赢了（\(ChipRules.blackjackOddsLabel)）",
+                message: L10n.t("outcome.blackjackWin"),
                 outcome: .playerBlackjack,
                 playerWon: true,
                 isPush: false
@@ -802,7 +802,7 @@ final class BlackjackGame: ObservableObject {
     private func presentShuffleScreenAndReshuffle() async {
         withAnimation(.easeInOut(duration: 0.28)) {
             isShowingShuffleScreen = true
-            dealingCaption = "洗牌中…"
+            dealingCaption = L10n.t("common.shuffling")
         }
         feedback.shuffleHint()
         await timing.sleep(nanoseconds: delayShuffleScreen)
@@ -828,28 +828,28 @@ final class BlackjackGame: ObservableObject {
         switch outcome {
         case .playerWin where d > 21:
             finishRound(
-                message: "庄家爆牌，你赢了",
+                message: L10n.t("outcome.dealerBustWin"),
                 outcome: .playerWin,
                 playerWon: true,
                 isPush: false
             )
         case .playerWin:
             finishRound(
-                message: "你赢了",
+                message: L10n.t("outcome.win"),
                 outcome: .playerWin,
                 playerWon: true,
                 isPush: false
             )
         case .playerLose:
             finishRound(
-                message: "你输了",
+                message: L10n.t("outcome.lose"),
                 outcome: .playerLose,
                 playerWon: false,
                 isPush: false
             )
         case .push:
             finishRound(
-                message: "平局",
+                message: L10n.t("outcome.push"),
                 outcome: .push,
                 playerWon: nil,
                 isPush: true
@@ -857,7 +857,7 @@ final class BlackjackGame: ObservableObject {
         case .playerBlackjack:
             // 比点路径不会产生天然黑杰克结局。
             finishRound(
-                message: "你赢了",
+                message: L10n.t("outcome.win"),
                 outcome: .playerWin,
                 playerWon: true,
                 isPush: false

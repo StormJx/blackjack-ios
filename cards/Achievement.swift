@@ -16,8 +16,8 @@ enum AchievementScope: String, CaseIterable, Identifiable, Sendable {
 
     var tabTitle: String {
         switch self {
-        case .challenge: return "闯关"
-        case .practice: return "娱乐"
+        case .challenge: return L10n.t("achievement.scope.challenge")
+        case .practice: return L10n.t("achievement.scope.entertainment")
         }
     }
 }
@@ -190,109 +190,11 @@ enum AchievementID: String, CaseIterable, Identifiable, Sendable {
     }
 
     var title: String {
-        switch self {
-        case .fiveCardCharlie: return "五龙不过"
-        case .speedBlackjack: return "极速黑杰克"
-        case .comeback: return "绝地反击"
-        case .exactTwentyOne: return "压线求生"
-        case .braveHitOver17: return "险中求胜·十八"
-        case .braveHitOver18: return "险中求胜·十九"
-        case .braveHitOver19: return "险中求胜·二十"
-        case .braveHit20To21: return "神之一手"
-        case .firstHandWin: return "初手制胜"
-        case .winStreak3: return "连胜起步"
-        case .winStreak5: return "连胜节奏"
-        case .winStreak10: return "连胜风暴"
-        case .noBust5: return "稳健玩家"
-        case .noBust10: return "稳如磐石"
-        case .noBust20: return "钢铁神经"
-        case .wins10: return "小有斩获"
-        case .wins25: return "牌桌熟手"
-        case .wins50: return "常胜将军"
-        case .wins100: return "百战荣光"
-        case .push10: return "平局入门"
-        case .push20: return "平局达人"
-        case .push50: return "平局大师"
-        case .dealerBust10: return "爆牌收割·十"
-        case .dealerBust25: return "爆牌收割·廿五"
-        case .dealerBust50: return "爆牌收割·五十"
-        case .naturalBJ5: return "黑杰克收藏·五"
-        case .naturalBJ15: return "黑杰克收藏·十五"
-        case .naturalBJ30: return "黑杰克收藏·三十"
-        case .chipsWon1000: return "小赚一笔"
-        case .chipsWon5000: return "盆满钵满"
-        case .chipsWon20000: return "筹码大亨"
-        case .dealerClear1: return "打穿庄家"
-        case .dealerClear5: return "庄家克星"
-        case .allInWin5: return "全下首胜"
-        case .allInWin15: return "全下连捷"
-        case .allInWin30: return "全下传说"
-        case .practiceWinStreak5: return "娱乐连胜·五"
-        case .practiceWinStreak10: return "娱乐连胜·十"
-        case .practiceWins20: return "娱乐胜场·二十"
-        case .practiceWins50: return "娱乐胜场·五十"
-        case .practiceWins100: return "娱乐胜场·一百"
-        case .practicePush10: return "娱乐平局·十"
-        case .practicePush20: return "娱乐平局·二十"
-        case .practicePush50: return "娱乐平局·五十"
-        case .practiceNoBust10: return "娱乐稳健·十"
-        case .practiceNoBust20: return "娱乐稳健·二十"
-        case .practiceFiveCard: return "娱乐五龙"
-        case .practiceNaturalBJ: return "娱乐极速 BJ"
-        }
+        L10n.key("achievement.\(rawValue).title")
     }
 
     var detail: String {
-        switch self {
-        case .fiveCardCharlie: return "挑战中单局拿到 5 张牌且未爆牌"
-        case .speedBlackjack: return "挑战中开局前两张即黑杰克"
-        case .comeback: return "挑战中点数 20+ 仍获胜"
-        case .exactTwentyOne: return "挑战中最终正好 21 且非黑杰克"
-        case .braveHitOver17: return "挑战中点数 >17 要牌未爆并获胜"
-        case .braveHitOver18: return "挑战中点数 >18 要牌未爆并获胜"
-        case .braveHitOver19: return "挑战中 20 点要牌未爆并获胜"
-        case .braveHit20To21: return "挑战中 20 点要牌正好 21 并获胜"
-        case .firstHandWin: return "挑战中仅两张牌（非 BJ）停牌获胜"
-        case .winStreak3: return "挑战模式连续获胜 3 局"
-        case .winStreak5: return "挑战模式连续获胜 5 局"
-        case .winStreak10: return "挑战模式连续获胜 10 局"
-        case .noBust5: return "挑战模式连续 5 局未爆牌"
-        case .noBust10: return "挑战模式连续 10 局未爆牌"
-        case .noBust20: return "挑战模式连续 20 局未爆牌"
-        case .wins10: return "挑战模式累计获胜 10 局"
-        case .wins25: return "挑战模式累计获胜 25 局"
-        case .wins50: return "挑战模式累计获胜 50 局"
-        case .wins100: return "挑战模式累计获胜 100 局"
-        case .push10: return "挑战模式累计平局 10 次"
-        case .push20: return "挑战模式累计平局 20 次"
-        case .push50: return "挑战模式累计平局 50 次"
-        case .dealerBust10: return "挑战中庄家爆牌致胜累计 10 次"
-        case .dealerBust25: return "挑战中庄家爆牌致胜累计 25 次"
-        case .dealerBust50: return "挑战中庄家爆牌致胜累计 50 次"
-        case .naturalBJ5: return "挑战中天然黑杰克累计 5 次"
-        case .naturalBJ15: return "挑战中天然黑杰克累计 15 次"
-        case .naturalBJ30: return "挑战中天然黑杰克累计 30 次"
-        case .chipsWon1000: return "挑战模式累计赢取 1000 筹码"
-        case .chipsWon5000: return "挑战模式累计赢取 5000 筹码"
-        case .chipsWon20000: return "挑战模式累计赢取 20000 筹码"
-        case .dealerClear1: return "打穿庄家资金池 1 次"
-        case .dealerClear5: return "打穿庄家资金池 5 次"
-        case .allInWin5: return "挑战中全下获胜累计 5 次"
-        case .allInWin15: return "挑战中全下获胜累计 15 次"
-        case .allInWin30: return "挑战中全下获胜累计 30 次"
-        case .practiceWinStreak5: return "娱乐模式连续获胜 5 局"
-        case .practiceWinStreak10: return "娱乐模式连续获胜 10 局"
-        case .practiceWins20: return "娱乐模式累计获胜 20 局"
-        case .practiceWins50: return "娱乐模式累计获胜 50 局"
-        case .practiceWins100: return "娱乐模式累计获胜 100 局"
-        case .practicePush10: return "娱乐模式累计平局 10 次"
-        case .practicePush20: return "娱乐模式累计平局 20 次"
-        case .practicePush50: return "娱乐模式累计平局 50 次"
-        case .practiceNoBust10: return "娱乐模式连续 10 局未爆牌"
-        case .practiceNoBust20: return "娱乐模式连续 20 局未爆牌"
-        case .practiceFiveCard: return "娱乐模式单局 5 张未爆"
-        case .practiceNaturalBJ: return "娱乐模式开局天然黑杰克"
-        }
+        L10n.key("achievement.\(rawValue).detail")
     }
 
     var progressTarget: Int {
