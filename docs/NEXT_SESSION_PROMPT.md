@@ -18,15 +18,18 @@ docs/P8_ORIENTATION_AND_A11Y.md。用中文回复。
 一、当前基线
 ================================================================================
 GitHub：https://github.com/StormJx/blackjack-ios
-分支 main @ `398dc74`（L1；若尚未 push 则本地 ahead）
+分支 main @ `0fa80e6`（已与 origin 同步）
+  - 功能提交：`398dc74` L1 String Catalog + 文案 key 化
+  - 检查点：`0fa80e6` 同步至 L1 基线
   - 已推送里程碑：Tag `v1.11.1` @ `12234c5`（UX9 + OPTIMIZATION_GUIDE）
-  - 本批：`398dc74` L1 String Catalog（zh-Hans）+ 欢迎页 en；`L10n.t` / `L10n.key` / `L10n.format`
-  - 更早：`0385e2a`/`6829d42` A4；`8c2db15` A3；A1+A2；保险/投降/加倍；UX1–UX8 / Tag `v1.11.0`
+  - 更早：`0385e2a`/`6829d42` A4；`91f1f4c`/`8c2db15` A3；`94d2ddb` A1+A2；
+    `ef95b0c` 保险；`c5aa3ec` 投降；`cd32c31` 加倍；UX1–UX8 / Tag `v1.11.0`
 iOS 最低 17.0；庄家 <17 要牌、≥17 停（软 17 同停）；GameFeedback 音效基名约定不变
   （deal/flip/shuffle/win/lose/push；缺文件静默跳过）。
 推送前须跑 ./scripts/check-before-push.sh；禁止提交 VERSION_ROADMAP.txt / .env / 密钥。
 未点名勿擅自大改；可单测逻辑须补测。
 后续优化按 docs/OPTIMIZATION_GUIDE.md 路线执行（一次一刀）。
+跑 xcodebuild / 单测时一次只开一个进程，日志落到文件，避免叠多个模拟器拖垮机器。
 
 --------------------------------------------------------------------------------
 产品方向（重要）
@@ -60,7 +63,19 @@ P6 加倍、P6+ 投降/保险、OPTIMIZATION_GUIDE 入库。
 【A2 DataSchema】currentVersion=1；Store 前迁移；改持久化须升版本。
 【A3 GitHub Actions CI】macos-15；仅 cardsTests；共享 scheme；Actions 已绿。
 【A4】`recordBraveHitProgress`：hit / doubleDown / redrawLastHitCard 险中求胜判定去重。
-【L1】`Localizable.xcstrings`（zh-Hans）+ `L10n`；欢迎页含 en；动态 key 用 `L10n.key`（勿 LocalizationValue 插值）。
+
+【L1 本地化 @ 398dc74 / 检查点 0fa80e6】
+- cards/Localizable.xcstrings：sourceLanguage = zh-Hans；约 400+ 语义化 key
+- cards/L10n.swift：L10n.t（静态）/ L10n.key（运行时拼接）/ L10n.format（无 locale 千分位）
+- 工程 developmentRegion = zh-Hans；knownRegions 含 zh-Hans / en / Base
+- 已迁：欢迎/设置/帮助、枚举 title（PlayStyle/CutCard/TableLimit/CardBack/PracticeMode）、
+  下注/局末/保险面板、牌桌与道具禁用原因、成就 title/detail、战绩摘要
+- 英文：仅欢迎页 9 key（appTitle / 成就战绩设置 / 帮助 / 闯关娱乐按钮与副文案）；
+  其它页无 en → 英文本地回退中文
+- 红线：动态 key 必须 L10n.key("a.\(id).b")；禁止 String.LocalizationValue("a.\(id).b")
+  （后者会当插值模板，Catalog 查不到，界面显示 key 本身）
+- 扩英文：只改 xcstrings 给对应 key 加 "en"；勿再散落硬编码中文
+- cardsTests 已绿；CI 随 push 触发
 
 【P6+ 保险 @ ef95b0c】（已锁定，勿擅自改）明 A；半注 2:1；Ace peek；全下禁；无 Even Money
 
@@ -68,11 +83,12 @@ P6 加倍、P6+ 投降/保险、OPTIMIZATION_GUIDE 入库。
 二、待后续完成（须用户点名后再做）— 见 OPTIMIZATION_GUIDE
 ================================================================================
 优先建议：
-1. 可选：保险路径实机抽查；有 bug 再修
-2. A5 GameTableView 道具参数收敛（新道具或 C5 前；现延后）
-3. L2 分牌须先锁产品；扩英文：只改 xcstrings 的 en
-4. T 教学轨（基础策略引擎等）— 差异化，后置于上架准备讨论
-5. 广告专篇 / P8 横屏 / C5 / F10 正片 — 更后
+1. 可选：系统语言英文抽查欢迎页；保险路径实机抽查（有 bug 再修）
+2. 扩英文（按屏补 xcstrings en）— 非必须下一刀
+3. A5 GameTableView 道具参数收敛（新道具或 C5 前；现延后）
+4. L2 分牌须先锁产品（见 OPTIMIZATION_GUIDE L2）
+5. T 教学轨（基础策略引擎等）— 差异化，后置
+6. 广告专篇 / P8 横屏 / C5 / F10 正片 — 更后
 
 其它后置：见 docs/ENGINEERING_REVIEW_BACKLOG.md 与 docs/OPTIMIZATION_GUIDE.md
 
@@ -92,14 +108,15 @@ P6 加倍、P6+ 投降/保险、OPTIMIZATION_GUIDE 入库。
 3. 若做道具：仅娱乐模式接线；闯关保持禁用。
 4. 若做卡背：只做外观选用/解锁，不改赔率与牌值。
 5. 改持久化结构：必须升 DataSchema.currentVersion 并写迁移。
-6. 改完：可单测补测 → check-before-push.sh → 用户要求才 commit/push；
+6. 改用户可见文案：走 Localizable.xcstrings + L10n；动态 key 用 L10n.key。
+7. 改完：可单测补测 → check-before-push.sh → 用户要求才 commit/push；
    勿提交 VERSION_ROADMAP.txt。
-7. 额外体验优化单独罗列，便于验收。
-8. 欢迎页保持简洁；说明进 HelpView / StatsView。
-9. 一个功能切片结束后建议用户同步检查点；用户要求 push 前必须跑 check-before-push.sh。
+8. 额外体验优化单独罗列，便于验收。
+9. 欢迎页保持简洁；说明进 HelpView / StatsView。
+10. 一个功能切片结束后建议用户同步检查点；用户要求 push 前必须跑 check-before-push.sh。
 
 请先确认已读上述内容，然后等待我点名要讨论或要实现的项。
-（建议下一刀：保险实机抽查，或讨论 L2 / T；见 docs/OPTIMIZATION_GUIDE.md。）
+（建议：先英文欢迎页/保险实机抽查；或讨论 L2 分牌产品锁 / T 教学轨。）
 ```
 
 ---
@@ -108,8 +125,8 @@ P6 加倍、P6+ 投降/保险、OPTIMIZATION_GUIDE 入库。
 
 | 优先级 | 项 | 为何现在做 | 步骤提纲 |
 |--------|----|------------|----------|
-| 1 | 保险实机抽查 | 防回归 | 明 A 买/不买；全下禁买；peek 后窥视；庄家 BJ 盈亏约 0 |
-| 2 | 扩英文 | 按屏补 xcstrings `en` | 欢迎页已有；其它页加 en 即可 |
+| 1 | 欢迎页英文 + 保险实机抽查 | L1/保险验收 | 系统语言 EN 看欢迎页；明 A 买/不买等 |
+| 2 | 扩英文 | 上架准备 | 按屏在 xcstrings 补 `en` |
 | 3 | A5 | 参数收敛 | C5/新道具前做；现延后 |
 | 4 | L2 分牌 | 须先产品锁 | 多手状态机；见 OPTIMIZATION_GUIDE L2 |
 | 后置 | T 教学轨 / 广告 / 横屏 / C5 / F10 | 产品或素材未齐 | 未点名不接 SDK |
