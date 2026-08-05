@@ -772,9 +772,23 @@ struct E1E4FeatureTests {
     // MARK: - UX1–UX8
 
     @Test func welcomeSubtitlesAreShortOneLiners() {
-        #expect(PlayStyle.challenge.welcomeSubtitle.count <= 24)
-        #expect(PlayStyle.entertainment.welcomeSubtitle.count <= 24)
-        #expect(!PlayStyle.challenge.welcomeSubtitle.contains("三档"))
+        // 欢迎页布局预算按中文源文案；英文本地有独立较长译文。
+        #expect(L10n.t("playStyle.challenge.subtitle", language: "zh-Hans").count <= 24)
+        #expect(L10n.t("playStyle.entertainment.subtitle", language: "zh-Hans").count <= 24)
+        #expect(!L10n.t("playStyle.challenge.subtitle", language: "zh-Hans").contains("三档"))
+        // 当前语言下不得回落到 key 本身（L10n 缺译回退 zh-Hans / 或已有 en）。
+        #expect(PlayStyle.challenge.welcomeSubtitle != "playStyle.challenge.subtitle")
+        #expect(PlayStyle.entertainment.welcomeSubtitle != "playStyle.entertainment.subtitle")
+    }
+
+    @Test func l10nFallsBackToSimplifiedChineseWhenEnglishMissing() {
+        // en.lproj 仅有欢迎页少量 key；缺译必须回退中文，不能显示 key。
+        #expect(PracticeMode.singleDeck.shortLabel == "一副牌")
+        #expect(AppSettings.sessionLockedSettingsHint.contains("对局中修改不生效"))
+        #expect(AchievementID.practiceWins20.title.hasPrefix("娱乐"))
+        // 已有 en 的欢迎文案在英文本地仍可为英文（不强制中文）。
+        #expect(L10n.t("welcome.appTitle", language: "en") == "Blackjack")
+        #expect(L10n.t("welcome.appTitle", language: "zh-Hans") == "二十一点")
     }
 
     @Test func entertainmentAchievementTitlesUseEntertainmentWording() {
