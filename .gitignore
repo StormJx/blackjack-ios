@@ -12,6 +12,9 @@ xcuserdata/
 # macOS
 .DS_Store
 
+# 本地图标对比预览（非正式资源）
+.icon-previews/
+
 # 可选：若使用 CocoaPods
 # Pods/
 

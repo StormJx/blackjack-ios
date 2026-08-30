@@ -50,11 +50,15 @@ jobs:
       - name: Run unit tests
         run: |
           set -euo pipefail
+          # Lock English so missing-translation fallback regressions fail here
+          # (GitHub runners are English; local default is often zh-Hans).
           xcodebuild test \
             -project cards.xcodeproj \
             -scheme cards \
             -destination "${{ steps.sim.outputs.destination }}" \
             -only-testing:cardsTests \
+            -testLanguage en \
+            -testRegion US \
             -resultBundlePath TestResults.xcresult \
             CODE_SIGNING_ALLOWED=NO
 
