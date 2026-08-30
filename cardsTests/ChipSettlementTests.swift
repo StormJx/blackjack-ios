@@ -143,7 +143,7 @@ struct ChipSettlementTests {
         #expect(result.amountReturned == 100)
         #expect(result.balanceAfter == 1000)
         #expect(result.dealerBankAfter == ChipRules.dealerStartingBank)
-        #expect(result.netChangeLabel == "0（平局退注）")
+        #expect(result.netChangeLabel == L10n.t("chips.net.push"))
         #expect(result.oddsLabel == nil)
     }
 
@@ -252,7 +252,7 @@ struct ChipSettlementTests {
             sessionRoundsCompleted: 4,
             draftBet: 0
         ) == false)
-        #expect(ChipRules.preDealAllInLockHint(sessionRoundsCompleted: 4) == "再玩 1 局后解锁全下")
+        #expect(ChipRules.preDealAllInLockHint(sessionRoundsCompleted: 4) == L10n.format("chips.preDealAllInLockFormat", 1))
 
         // 满 5 局且未选档：可全下
         #expect(ChipRules.isPreDealAllInEnabled(
@@ -287,7 +287,7 @@ struct ChipSettlementTests {
             sessionRoundsCompleted: 2,
             draftBet: 0
         ) == false)
-        #expect(ChipRules.preDealAllInLockHint(sessionRoundsCompleted: 2) == "再玩 1 局后解锁全下")
+        #expect(ChipRules.preDealAllInLockHint(sessionRoundsCompleted: 2) == L10n.format("chips.preDealAllInLockFormat", 1))
         #expect(ChipRules.isPreDealAllInEnabled(
             balance: 1000,
             sessionRoundsCompleted: 3,
@@ -405,7 +405,7 @@ struct ChipSettlementTests {
         #expect(bank.placeBet(stake))
         #expect(bank.activeBetWasAllIn)
         #expect(bank.canAffordInsurance == false)
-        #expect(bank.insuranceDisabledReason == "全下不可买保险")
+        #expect(bank.insuranceDisabledReason == L10n.t("insurance.disabled.allIn"))
         #expect(bank.placeInsurance() == false)
     }
 
@@ -517,7 +517,7 @@ struct ChipSettlementTests {
 
         #expect(bank.placeBet(100))
         let push = bank.settle(outcome: .push)
-        #expect(push?.netChangeLabel == "0（平局退注）")
+        #expect(push?.netChangeLabel == L10n.t("chips.net.push"))
         #expect(bank.balance == 900)
         #expect(bank.dealerBank == 2100)
     }
@@ -632,7 +632,10 @@ struct ChipSettlementTests {
         #expect(bank.didRestoreAfterInterrupt)
         #expect(bank.balance == 700)
         #expect(bank.sessionRoundsCompleted == 4)
-        #expect(ChipRules.restoreAfterInterruptHint.contains("全下解锁"))
+        #expect(
+            ChipRules.restoreAfterInterruptHint.contains("全下解锁")
+                || ChipRules.restoreAfterInterruptHint.contains("all-in unlock")
+        )
 
         bank.abandonSession()
         #expect(bank.sessionRoundsCompleted == 0)

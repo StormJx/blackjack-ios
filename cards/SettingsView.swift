@@ -13,6 +13,7 @@ struct SettingsView: View {
     /// UX9：会话级设置刚被改动时短暂高亮「生效时机」提示。
     @State private var highlightSessionLockedHint = false
     @State private var hintClearTask: Task<Void, Never>?
+    @State private var showPrivacy = false
 
     var body: some View {
         NavigationStack {
@@ -119,15 +120,43 @@ struct SettingsView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+
+                Section {
+                    Picker(L10n.t("settings.picker.language"), selection: $settings.languagePreference) {
+                        ForEach(AppLanguagePreference.allCases) { language in
+                            Text(language.title).tag(language)
+                        }
+                    }
+                } header: {
+                    Text(L10n.t("settings.section.language"))
+                } footer: {
+                    Text(L10n.t("settings.footer.language"))
+                }
+
+                Section {
+                    LabeledContent(L10n.t("settings.versionLabel"), value: marketingVersion)
+                    Button(L10n.t("settings.privacy")) {
+                        showPrivacy = true
+                    }
+                } header: {
+                    Text(L10n.t("settings.section.about"))
+                }
             }
             .navigationTitle(L10n.t("settings.navTitle"))
             .navigationBarTitleDisplayMode(.inline)
             .animation(.easeInOut(duration: 0.2), value: highlightSessionLockedHint)
+            .sheet(isPresented: $showPrivacy) {
+                PrivacyView()
+            }
             .onDisappear {
                 hintClearTask?.cancel()
                 hintClearTask = nil
             }
         }
+    }
+
+    private var marketingVersion: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "2.0"
     }
 
     private func cardBackRow(_ style: CardBackStyle) -> some View {

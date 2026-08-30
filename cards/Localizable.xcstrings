@@ -9,6 +9,12 @@
             "state": "translated",
             "value": "挑战中全下获胜累计 15 次"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 15 all-in hands in Challenge"
+          }
         }
       }
     },
@@ -19,6 +25,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "全下连捷"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All-In Streak"
           }
         }
       }
@@ -31,6 +43,12 @@
             "state": "translated",
             "value": "挑战中全下获胜累计 30 次"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 30 all-in hands in Challenge"
+          }
         }
       }
     },
@@ -41,6 +59,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "全下传说"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All-In Legend"
           }
         }
       }
@@ -53,6 +77,12 @@
             "state": "translated",
             "value": "挑战中全下获胜累计 5 次"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 5 all-in hands in Challenge"
+          }
         }
       }
     },
@@ -63,6 +93,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "全下首胜"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "First All-In Win"
           }
         }
       }
@@ -75,6 +111,12 @@
             "state": "translated",
             "value": "挑战中 20 点要牌正好 21 并获胜"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hit 20 to exactly 21 and win in Challenge"
+          }
         }
       }
     },
@@ -85,6 +127,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "神之一手"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Perfect Hit"
           }
         }
       }
@@ -97,6 +145,12 @@
             "state": "translated",
             "value": "挑战中点数 >17 要牌未爆并获胜"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hit above 17 without busting and win in Challenge"
+          }
         }
       }
     },
@@ -107,6 +161,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "险中求胜·十八"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brave Hit · 18"
           }
         }
       }
@@ -119,6 +179,12 @@
             "state": "translated",
             "value": "挑战中点数 >18 要牌未爆并获胜"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hit above 18 without busting and win in Challenge"
+          }
         }
       }
     },
@@ -129,6 +195,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "险中求胜·十九"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brave Hit · 19"
           }
         }
       }
@@ -141,6 +213,12 @@
             "state": "translated",
             "value": "挑战中 20 点要牌未爆并获胜"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hit on 20 without busting and win in Challenge"
+          }
         }
       }
     },
@@ -151,6 +229,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "险中求胜·二十"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brave Hit · 20"
           }
         }
       }
@@ -163,6 +247,12 @@
             "state": "translated",
             "value": "挑战模式累计赢取 1000 筹码"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 1000 chips total in Challenge"
+          }
         }
       }
     },
@@ -173,6 +263,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "小赚一笔"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Small Score"
           }
         }
       }
@@ -185,6 +281,12 @@
             "state": "translated",
             "value": "挑战模式累计赢取 20000 筹码"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 20000 chips total in Challenge"
+          }
         }
       }
     },
@@ -195,6 +297,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "筹码大亨"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chip Mogul"
           }
         }
       }
@@ -207,6 +315,12 @@
             "state": "translated",
             "value": "挑战模式累计赢取 5000 筹码"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 5000 chips total in Challenge"
+          }
         }
       }
     },
@@ -217,6 +331,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "盆满钵满"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cashing In"
           }
         }
       }
@@ -229,6 +349,12 @@
             "state": "translated",
             "value": "挑战中点数 20+ 仍获胜"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win a hand with 20+ in Challenge"
+          }
         }
       }
     },
@@ -239,6 +365,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "绝地反击"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comeback"
           }
         }
       }
@@ -251,6 +383,12 @@
             "state": "translated",
             "value": "挑战中庄家爆牌致胜累计 10 次"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 10 hands by dealer bust in Challenge"
+          }
         }
       }
     },
@@ -261,6 +399,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "爆牌收割·十"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bust Harvest · 10"
           }
         }
       }
@@ -273,6 +417,12 @@
             "state": "translated",
             "value": "挑战中庄家爆牌致胜累计 25 次"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 25 hands by dealer bust in Challenge"
+          }
         }
       }
     },
@@ -283,6 +433,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "爆牌收割·廿五"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bust Harvest · 25"
           }
         }
       }
@@ -295,6 +451,12 @@
             "state": "translated",
             "value": "挑战中庄家爆牌致胜累计 50 次"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 50 hands by dealer bust in Challenge"
+          }
         }
       }
     },
@@ -305,6 +467,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "爆牌收割·五十"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bust Harvest · 50"
           }
         }
       }
@@ -317,6 +485,12 @@
             "state": "translated",
             "value": "打穿庄家资金池 1 次"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear the dealer bank 1 time"
+          }
         }
       }
     },
@@ -327,6 +501,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "打穿庄家"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealer Broke"
           }
         }
       }
@@ -339,6 +519,12 @@
             "state": "translated",
             "value": "打穿庄家资金池 5 次"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear the dealer bank 5 times"
+          }
         }
       }
     },
@@ -349,6 +535,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "庄家克星"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealer Slayer"
           }
         }
       }
@@ -361,6 +553,12 @@
             "state": "translated",
             "value": "挑战中最终正好 21 且非黑杰克"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finish on exactly 21 (not blackjack) in Challenge"
+          }
         }
       }
     },
@@ -371,6 +569,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "压线求生"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On the Line"
           }
         }
       }
@@ -383,6 +587,12 @@
             "state": "translated",
             "value": "挑战中仅两张牌（非 BJ）停牌获胜"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stand on two cards (not BJ) and win in Challenge"
+          }
         }
       }
     },
@@ -393,6 +603,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "初手制胜"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "First-Hand Win"
           }
         }
       }
@@ -405,6 +621,12 @@
             "state": "translated",
             "value": "挑战中单局拿到 5 张牌且未爆牌"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hold 5 cards without busting in Challenge"
+          }
         }
       }
     },
@@ -415,6 +637,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "五龙不过"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Five-Card Charlie"
           }
         }
       }
@@ -427,6 +655,12 @@
             "state": "translated",
             "value": "挑战中天然黑杰克累计 15 次"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get 15 natural blackjacks in Challenge"
+          }
         }
       }
     },
@@ -437,6 +671,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "黑杰克收藏·十五"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BJ Collection · 15"
           }
         }
       }
@@ -449,6 +689,12 @@
             "state": "translated",
             "value": "挑战中天然黑杰克累计 30 次"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get 30 natural blackjacks in Challenge"
+          }
         }
       }
     },
@@ -459,6 +705,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "黑杰克收藏·三十"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BJ Collection · 30"
           }
         }
       }
@@ -471,6 +723,12 @@
             "state": "translated",
             "value": "挑战中天然黑杰克累计 5 次"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get 5 natural blackjacks in Challenge"
+          }
         }
       }
     },
@@ -481,6 +739,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "黑杰克收藏·五"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BJ Collection · 5"
           }
         }
       }
@@ -493,6 +757,12 @@
             "state": "translated",
             "value": "挑战模式连续 10 局未爆牌"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play 10 Challenge hands in a row without busting"
+          }
         }
       }
     },
@@ -503,6 +773,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "稳如磐石"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rock Solid"
           }
         }
       }
@@ -515,6 +791,12 @@
             "state": "translated",
             "value": "挑战模式连续 20 局未爆牌"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play 20 Challenge hands in a row without busting"
+          }
         }
       }
     },
@@ -525,6 +807,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "钢铁神经"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nerves of Steel"
           }
         }
       }
@@ -537,6 +825,12 @@
             "state": "translated",
             "value": "挑战模式连续 5 局未爆牌"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play 5 Challenge hands in a row without busting"
+          }
         }
       }
     },
@@ -547,6 +841,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "稳健玩家"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Steady Player"
           }
         }
       }
@@ -559,6 +859,12 @@
             "state": "translated",
             "value": "娱乐模式单局 5 张未爆"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hold 5 cards without busting in Entertainment"
+          }
         }
       }
     },
@@ -569,6 +875,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐五龙"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment Five-Card"
           }
         }
       }
@@ -581,6 +893,12 @@
             "state": "translated",
             "value": "娱乐模式开局天然黑杰克"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start with a natural blackjack in Entertainment"
+          }
         }
       }
     },
@@ -591,6 +909,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐极速 BJ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment Fast BJ"
           }
         }
       }
@@ -603,6 +927,12 @@
             "state": "translated",
             "value": "娱乐模式连续 10 局未爆牌"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play 10 Entertainment hands in a row without busting"
+          }
         }
       }
     },
@@ -613,6 +943,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐稳健·十"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment Steady · 10"
           }
         }
       }
@@ -625,6 +961,12 @@
             "state": "translated",
             "value": "娱乐模式连续 20 局未爆牌"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play 20 Entertainment hands in a row without busting"
+          }
         }
       }
     },
@@ -635,6 +977,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐稳健·二十"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment Steady · 20"
           }
         }
       }
@@ -647,6 +995,12 @@
             "state": "translated",
             "value": "娱乐模式累计平局 10 次"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Push 10 times in Entertainment"
+          }
         }
       }
     },
@@ -657,6 +1011,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐平局·十"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment Push · 10"
           }
         }
       }
@@ -669,6 +1029,12 @@
             "state": "translated",
             "value": "娱乐模式累计平局 20 次"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Push 20 times in Entertainment"
+          }
         }
       }
     },
@@ -679,6 +1045,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐平局·二十"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment Push · 20"
           }
         }
       }
@@ -691,6 +1063,12 @@
             "state": "translated",
             "value": "娱乐模式累计平局 50 次"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Push 50 times in Entertainment"
+          }
         }
       }
     },
@@ -701,6 +1079,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐平局·五十"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment Push · 50"
           }
         }
       }
@@ -713,6 +1097,12 @@
             "state": "translated",
             "value": "娱乐模式连续获胜 10 局"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 10 Entertainment hands in a row"
+          }
         }
       }
     },
@@ -723,6 +1113,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐连胜·十"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment Streak · 10"
           }
         }
       }
@@ -735,6 +1131,12 @@
             "state": "translated",
             "value": "娱乐模式连续获胜 5 局"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 5 Entertainment hands in a row"
+          }
         }
       }
     },
@@ -745,6 +1147,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐连胜·五"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment Streak · 5"
           }
         }
       }
@@ -757,6 +1165,12 @@
             "state": "translated",
             "value": "娱乐模式累计获胜 100 局"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 100 Entertainment hands"
+          }
         }
       }
     },
@@ -767,6 +1181,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐胜场·一百"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment Wins · 100"
           }
         }
       }
@@ -779,6 +1199,12 @@
             "state": "translated",
             "value": "娱乐模式累计获胜 20 局"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 20 Entertainment hands"
+          }
         }
       }
     },
@@ -789,6 +1215,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐胜场·二十"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment Wins · 20"
           }
         }
       }
@@ -801,6 +1233,12 @@
             "state": "translated",
             "value": "娱乐模式累计获胜 50 局"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 50 Entertainment hands"
+          }
         }
       }
     },
@@ -811,6 +1249,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐胜场·五十"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment Wins · 50"
           }
         }
       }
@@ -823,6 +1267,12 @@
             "state": "translated",
             "value": "挑战模式累计平局 10 次"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Push 10 times in Challenge"
+          }
         }
       }
     },
@@ -833,6 +1283,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "平局入门"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Push Starter"
           }
         }
       }
@@ -845,6 +1301,12 @@
             "state": "translated",
             "value": "挑战模式累计平局 20 次"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Push 20 times in Challenge"
+          }
         }
       }
     },
@@ -855,6 +1317,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "平局达人"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Push Pro"
           }
         }
       }
@@ -867,6 +1335,12 @@
             "state": "translated",
             "value": "挑战模式累计平局 50 次"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Push 50 times in Challenge"
+          }
         }
       }
     },
@@ -877,6 +1351,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "平局大师"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Push Master"
           }
         }
       }
@@ -889,6 +1369,12 @@
             "state": "translated",
             "value": "闯关"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Challenge"
+          }
         }
       }
     },
@@ -899,6 +1385,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment"
           }
         }
       }
@@ -911,6 +1403,12 @@
             "state": "translated",
             "value": "挑战中开局前两张即黑杰克"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get a natural blackjack on the opening two cards in Challenge"
+          }
         }
       }
     },
@@ -921,6 +1419,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "极速黑杰克"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instant Blackjack"
           }
         }
       }
@@ -933,6 +1437,12 @@
             "state": "translated",
             "value": "挑战模式连续获胜 10 局"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 10 Challenge hands in a row"
+          }
         }
       }
     },
@@ -943,6 +1453,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "连胜风暴"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win Storm"
           }
         }
       }
@@ -955,6 +1471,12 @@
             "state": "translated",
             "value": "挑战模式连续获胜 3 局"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 3 Challenge hands in a row"
+          }
         }
       }
     },
@@ -965,6 +1487,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "连胜起步"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win Starter"
           }
         }
       }
@@ -977,6 +1505,12 @@
             "state": "translated",
             "value": "挑战模式连续获胜 5 局"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 5 Challenge hands in a row"
+          }
         }
       }
     },
@@ -987,6 +1521,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "连胜节奏"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win Rhythm"
           }
         }
       }
@@ -999,6 +1539,12 @@
             "state": "translated",
             "value": "挑战模式累计获胜 10 局"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 10 Challenge hands"
+          }
         }
       }
     },
@@ -1009,6 +1555,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "小有斩获"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "First Cuts"
           }
         }
       }
@@ -1021,6 +1573,12 @@
             "state": "translated",
             "value": "挑战模式累计获胜 100 局"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 100 Challenge hands"
+          }
         }
       }
     },
@@ -1031,6 +1589,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "百战荣光"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Century"
           }
         }
       }
@@ -1043,6 +1607,12 @@
             "state": "translated",
             "value": "挑战模式累计获胜 25 局"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 25 Challenge hands"
+          }
         }
       }
     },
@@ -1053,6 +1623,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "牌桌熟手"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Table Regular"
           }
         }
       }
@@ -1065,6 +1641,12 @@
             "state": "translated",
             "value": "挑战模式累计获胜 50 局"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Win 50 Challenge hands"
+          }
         }
       }
     },
@@ -1075,6 +1657,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "常胜将军"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Winning General"
           }
         }
       }
@@ -1087,6 +1675,12 @@
             "state": "translated",
             "value": "%@，%@"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, %@"
+          }
         }
       }
     },
@@ -1097,6 +1691,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "成就 %d/%d"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Achievements %d/%d"
           }
         }
       }
@@ -1109,6 +1709,12 @@
             "state": "translated",
             "value": "暂无成就"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No achievements yet"
+          }
         }
       }
     },
@@ -1119,6 +1725,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐对局不计入闯关成就；完成娱乐专属成就可在此查看。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment hands do not count toward Challenge achievements. Entertainment-only achievements appear here."
           }
         }
       }
@@ -1131,6 +1743,12 @@
             "state": "translated",
             "value": "仅「闯关挑战」对局会计入本栏成就。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only Challenge hands count toward this list."
+          }
         }
       }
     },
@@ -1141,6 +1759,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "仅「娱乐模式」对局会计入本栏成就。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only Entertainment hands count toward this list."
           }
         }
       }
@@ -1153,6 +1777,12 @@
             "state": "translated",
             "value": "去闯关解锁"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlock in Challenge"
+          }
         }
       }
     },
@@ -1163,6 +1793,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "去闯关解锁 · %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlock in Challenge · %@"
           }
         }
       }
@@ -1175,6 +1811,12 @@
             "state": "translated",
             "value": "成就"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Achievements"
+          }
         }
       }
     },
@@ -1186,6 +1828,12 @@
             "state": "translated",
             "value": "模式"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mode"
+          }
         }
       }
     },
@@ -1193,6 +1841,12 @@
       "extractionState": "manual",
       "localizations": {
         "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d / %d"
+          }
+        },
+        "en": {
           "stringUnit": {
             "state": "translated",
             "value": "%d / %d"
@@ -1208,6 +1862,12 @@
             "state": "translated",
             "value": "已永久解锁 · 仅娱乐模式可用"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permanently unlocked · Entertainment only"
+          }
         }
       }
     },
@@ -1218,6 +1878,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "道具"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Props"
           }
         }
       }
@@ -1230,6 +1896,12 @@
             "state": "translated",
             "value": "玩法道具请切换到「娱乐」页签查看；闯关对局中不可使用道具。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Switch to the Entertainment tab for gameplay props. Props cannot be used in Challenge."
+          }
         }
       }
     },
@@ -1240,6 +1912,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "玩法道具仅「娱乐模式」对局可用。部分道具需先在闯关解锁成就。卡背在设置页选用。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gameplay props work only in Entertainment. Some unlock from Challenge achievements. Choose a card back in Settings."
           }
         }
       }
@@ -1252,6 +1930,12 @@
             "state": "translated",
             "value": "未解锁"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Locked"
+          }
         }
       }
     },
@@ -1262,6 +1946,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "未解锁，去闯关解锁"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Locked — unlock in Challenge"
           }
         }
       }
@@ -1274,6 +1964,12 @@
             "state": "translated",
             "value": "已解锁"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlocked"
+          }
         }
       }
     },
@@ -1284,6 +1980,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "战绩摘要"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stats summary"
           }
         }
       }
@@ -1296,6 +1998,12 @@
             "state": "translated",
             "value": "当前不可加倍"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Double is unavailable"
+          }
         }
       }
     },
@@ -1306,6 +2014,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "再押等额注码并只补一张牌"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Match your bet and take one card only"
           }
         }
       }
@@ -1318,6 +2032,12 @@
             "state": "translated",
             "value": "当前不可要牌"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hit is unavailable"
+          }
         }
       }
     },
@@ -1328,6 +2048,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "再要一张牌"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take another card"
           }
         }
       }
@@ -1340,6 +2066,12 @@
             "state": "translated",
             "value": "追加剩余筹码为全下并停牌"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add remaining chips as all-in and stand"
+          }
         }
       }
     },
@@ -1350,6 +2082,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "当前不可停牌"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stand is unavailable"
           }
         }
       }
@@ -1362,6 +2100,12 @@
             "state": "translated",
             "value": "停止要牌，进入庄家回合"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop hitting and start the dealer turn"
+          }
         }
       }
     },
@@ -1372,6 +2116,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "当前不可投降"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Surrender is unavailable"
           }
         }
       }
@@ -1384,6 +2134,12 @@
             "state": "translated",
             "value": "结束本局并退回一半注码"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End the hand and recover half your bet"
+          }
         }
       }
     },
@@ -1394,6 +2150,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "全下"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All-in"
           }
         }
       }
@@ -1406,6 +2168,12 @@
             "state": "translated",
             "value": "加倍"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Double"
+          }
         }
       }
     },
@@ -1416,6 +2184,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "强制全下"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Force all-in"
           }
         }
       }
@@ -1428,6 +2202,12 @@
             "state": "translated",
             "value": "要牌"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hit"
+          }
         }
       }
     },
@@ -1438,6 +2218,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "停牌"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stand"
           }
         }
       }
@@ -1450,6 +2236,12 @@
             "state": "translated",
             "value": "投降"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Surrender"
+          }
         }
       }
     },
@@ -1460,6 +2252,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "闯关"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Challenge"
           }
         }
       }
@@ -1472,6 +2270,12 @@
             "state": "translated",
             "value": "娱乐"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment"
+          }
         }
       }
     },
@@ -1482,6 +2286,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "将全部余额作为注码"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bet your full balance"
           }
         }
       }
@@ -1494,6 +2304,12 @@
             "state": "translated",
             "value": "余额 %d，注码 %d"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balance %d, bet %d"
+          }
         }
       }
     },
@@ -1504,6 +2320,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "余额 %d，请选一档"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balance %d, pick a chip size"
           }
         }
       }
@@ -1516,6 +2338,12 @@
             "state": "translated",
             "value": "筹码档 %d"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chip size %d"
+          }
         }
       }
     },
@@ -1526,6 +2354,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "余额不足以选择该档"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balance is too low for this size"
           }
         }
       }
@@ -1538,6 +2372,12 @@
             "state": "translated",
             "value": "点选作为本局注码"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select as this hand’s bet"
+          }
         }
       }
     },
@@ -1548,6 +2388,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "余额不足"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insufficient balance"
           }
         }
       }
@@ -1560,6 +2406,12 @@
             "state": "translated",
             "value": "已选中"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selected"
+          }
         }
       }
     },
@@ -1570,6 +2422,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "未选中"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not selected"
           }
         }
       }
@@ -1582,6 +2440,12 @@
             "state": "translated",
             "value": "清除已选注码"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear the selected bet"
+          }
         }
       }
     },
@@ -1592,6 +2456,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "当前未选注码"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No bet selected"
           }
         }
       }
@@ -1604,6 +2474,12 @@
             "state": "translated",
             "value": "请先选择有效注码"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick a valid bet first"
+          }
         }
       }
     },
@@ -1614,6 +2490,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "确认注码并开始发牌"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm the bet and deal"
           }
         }
       }
@@ -1626,6 +2508,12 @@
             "state": "translated",
             "value": "使用上局注码 %d"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use last bet of %d"
+          }
         }
       }
     },
@@ -1636,6 +2524,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "暂无可用的上局注码"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No last bet available"
           }
         }
       }
@@ -1648,6 +2542,12 @@
             "state": "translated",
             "value": "全下"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All-in"
+          }
         }
       }
     },
@@ -1658,6 +2558,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "已选筹码时全下不可用，可先清空"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All-in is off while chips are selected; clear first"
           }
         }
       }
@@ -1670,6 +2576,12 @@
             "state": "translated",
             "value": "余额 %d · 注 %d"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balance %d · Bet %d"
+          }
         }
       }
     },
@@ -1680,6 +2592,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "余额 %d"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balance %d"
           }
         }
       }
@@ -1692,6 +2610,12 @@
             "state": "translated",
             "value": "余额 %d · 请选一档"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balance %d · Pick a size"
+          }
         }
       }
     },
@@ -1702,6 +2626,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "清空"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear"
           }
         }
       }
@@ -1714,6 +2644,12 @@
             "state": "translated",
             "value": "确认并发牌"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm & deal"
+          }
         }
       }
     },
@@ -1724,6 +2660,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "当前注 %d"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current bet %d"
           }
         }
       }
@@ -1736,6 +2678,12 @@
             "state": "translated",
             "value": "强制全下"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Force all-in"
+          }
         }
       }
     },
@@ -1746,6 +2694,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "三档单选，选好后确认发牌"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick one of three sizes, then confirm to deal"
           }
         }
       }
@@ -1758,6 +2712,12 @@
             "state": "translated",
             "value": "同上局"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Same as last"
+          }
         }
       }
     },
@@ -1768,6 +2728,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "同上局 %d"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Same as last %d"
           }
         }
       }
@@ -1780,6 +2746,12 @@
             "state": "translated",
             "value": "下注"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bet"
+          }
         }
       }
     },
@@ -1790,6 +2762,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "经典海军蓝"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Classic Navy"
           }
         }
       }
@@ -1802,6 +2780,12 @@
             "state": "translated",
             "value": "默认拥有"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Owned by default"
+          }
         }
       }
     },
@@ -1812,6 +2796,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "绯红缎带"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crimson Ribbon"
           }
         }
       }
@@ -1824,6 +2814,12 @@
             "state": "translated",
             "value": "闯关第 3 关或累计赢 5000 后解锁"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlock at Challenge stage 3 or after winning 5000 chips"
+          }
         }
       }
     },
@@ -1834,6 +2830,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "翠绿格纹"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Emerald Lattice"
           }
         }
       }
@@ -1846,6 +2848,12 @@
             "state": "translated",
             "value": "闯关第 2 关或打穿庄家 1 次后解锁"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlock at Challenge stage 2 or after clearing the dealer once"
+          }
         }
       }
     },
@@ -1856,6 +2864,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@：已通关全部关卡"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: all stages cleared"
           }
         }
       }
@@ -1868,6 +2882,12 @@
             "state": "translated",
             "value": "%@：下一关再打穿 %d 次或再累计赢 %d"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: clear the dealer %d more time(s) or win %d more chips"
+          }
         }
       }
     },
@@ -1878,6 +2898,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "第一关"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stage 1"
           }
         }
       }
@@ -1890,6 +2916,12 @@
             "state": "translated",
             "value": "第二关"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stage 2"
+          }
         }
       }
     },
@@ -1900,6 +2932,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "第三关"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stage 3"
           }
         }
       }
@@ -1912,6 +2950,12 @@
             "state": "translated",
             "value": "第四关"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stage 4"
+          }
         }
       }
     },
@@ -1922,6 +2966,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "终关"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Final Stage"
           }
         }
       }
@@ -1934,6 +2984,12 @@
             "state": "translated",
             "value": "%@：你 %d · 庄家 %d"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: you %d · dealer %d"
+          }
         }
       }
     },
@@ -1944,6 +3000,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "将清空双方筹码并返回主页（与杀进程后自动恢复进度不同）。当前进度不记入历史。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clears both chip banks and returns home (unlike restoring progress after a force-quit). This session is not saved to history."
           }
         }
       }
@@ -1956,6 +3018,12 @@
             "state": "translated",
             "value": "开局全下需本会话打满 %d 局"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opening all-in needs %d hands this session"
+          }
         }
       }
     },
@@ -1966,6 +3034,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "开局即可全下"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opening all-in is available now"
           }
         }
       }
@@ -1978,6 +3052,12 @@
             "state": "translated",
             "value": "闯关挑战：打穿庄家或累计赢码可解锁更高关卡。注码三档单选；%@。玩法道具仅娱乐模式可用。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Challenge: clear the dealer or win chips to unlock higher stages. Pick one of three bets; %@. Gameplay props are Entertainment only."
+          }
         }
       }
     },
@@ -1988,6 +3068,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "0（平局退注）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0 (push, bet returned)"
           }
         }
       }
@@ -2000,6 +3086,12 @@
             "state": "translated",
             "value": "黑杰克赔率 3:2"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blackjack pays 3:2"
+          }
         }
       }
     },
@@ -2010,6 +3102,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "保险赔率 2:1"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insurance pays 2:1"
           }
         }
       }
@@ -2022,6 +3120,12 @@
             "state": "translated",
             "value": "保险未中"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insurance missed"
+          }
         }
       }
     },
@@ -2032,6 +3136,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "普通胜负 1:1"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regular win pays 1:1"
           }
         }
       }
@@ -2044,6 +3154,12 @@
             "state": "translated",
             "value": "投降退半注"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Surrender returns half the bet"
+          }
         }
       }
     },
@@ -2054,6 +3170,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "庄家筹码不足，已赔付全部剩余"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealer bank is short; remaining chips were paid out"
           }
         }
       }
@@ -2066,6 +3188,12 @@
             "state": "translated",
             "value": "再玩 %d 局后解锁全下"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play %d more hand(s) to unlock all-in"
+          }
         }
       }
     },
@@ -2076,6 +3204,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "上次对局未完成，未结算注码已退回；双方筹码与本会话全下解锁进度已保留。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The last hand did not finish; the unsettled bet was returned. Both chip banks and this session’s all-in unlock progress were kept."
           }
         }
       }
@@ -2088,6 +3222,12 @@
             "state": "translated",
             "value": "进度已清空，可重新开始。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Progress cleared. You can start again."
+          }
         }
       }
     },
@@ -2098,6 +3238,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "注"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bet"
           }
         }
       }
@@ -2110,6 +3256,12 @@
             "state": "translated",
             "value": "取消"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
         }
       }
     },
@@ -2120,6 +3272,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "继续"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue"
           }
         }
       }
@@ -2132,6 +3290,12 @@
             "state": "translated",
             "value": "庄家"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealer"
+          }
         }
       }
     },
@@ -2142,6 +3306,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "完成"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
           }
         }
       }
@@ -2154,6 +3324,12 @@
             "state": "translated",
             "value": "保险"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insurance"
+          }
         }
       }
     },
@@ -2164,6 +3340,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "玩家"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Player"
           }
         }
       }
@@ -2176,6 +3358,12 @@
             "state": "translated",
             "value": "洗牌中…"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shuffling…"
+          }
         }
       }
     },
@@ -2186,6 +3374,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "洗牌中，%@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shuffling, %@"
           }
         }
       }
@@ -2198,6 +3392,12 @@
             "state": "translated",
             "value": "你"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You"
+          }
         }
       }
     },
@@ -2208,6 +3408,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "闯关：洗牌页保留切牌仪式文案，但不按切牌点强制重洗；牌堆打到不足开局四张才重洗。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Challenge: the shuffle screen keeps ceremonial cut copy, but does not force a reshuffle at a cut point. The shoe reshuffles only when fewer than four cards remain to start a hand."
           }
         }
       }
@@ -2220,6 +3426,12 @@
             "state": "translated",
             "value": "仪式切牌完成，正在重新整理牌堆"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ceremonial cut done; restacking the shoe"
+          }
         }
       }
     },
@@ -2230,6 +3442,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "仪式感切牌"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ceremonial cut"
           }
         }
       }
@@ -2242,6 +3460,12 @@
             "state": "translated",
             "value": "闯关：每局打完下一局必整副重洗（无渗透）。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Challenge: the shoe is fully reshuffled after every hand (no penetration)."
+          }
         }
       }
     },
@@ -2252,6 +3476,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "本局已结束，正在重新整理牌堆"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hand over; restacking the shoe"
           }
         }
       }
@@ -2264,6 +3494,12 @@
             "state": "translated",
             "value": "每局重洗"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shuffle every hand"
+          }
         }
       }
     },
@@ -2274,6 +3510,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "闯关：按 50%–75% 切牌点局间重洗（含尾牌 4–6 张打完再洗）。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Challenge: reshuffle between hands at a 50%–75% cut (including a 4–6 card leftover after play)."
           }
         }
       }
@@ -2286,6 +3528,12 @@
             "state": "translated",
             "value": "切牌点已过，正在重新整理牌堆"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cut card reached; restacking the shoe"
+          }
         }
       }
     },
@@ -2296,6 +3544,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "真实切牌"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Real cut"
           }
         }
       }
@@ -2308,6 +3562,12 @@
             "state": "translated",
             "value": "共 %d 张，剩余 %d 张"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d cards total, %d left"
+          }
         }
       }
     },
@@ -2318,6 +3578,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "退出本局"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leave this hand"
           }
         }
       }
@@ -2330,6 +3596,12 @@
             "state": "translated",
             "value": "退出本局？"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leave this hand?"
+          }
         }
       }
     },
@@ -2340,6 +3612,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "全下并停牌"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All-in and stand"
           }
         }
       }
@@ -2352,6 +3630,12 @@
             "state": "translated",
             "value": "将把剩余筹码全部追加为注码，并自动停牌。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adds your remaining chips to the bet and stands automatically."
+          }
         }
       }
     },
@@ -2362,6 +3646,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "确认全下？"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm all-in?"
           }
         }
       }
@@ -2374,6 +3664,12 @@
             "state": "translated",
             "value": "娱乐模式玩家回合可使用已解锁道具（如窥视、换牌、软 17 要牌、见牌后再全下）。每局限次以按钮提示为准。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On your Entertainment turn you can use unlocked props (peek, redraw, hit soft 17, mid-hand all-in). Per-hand limits are shown on the buttons."
+          }
         }
       }
     },
@@ -2384,6 +3680,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "知道了"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Got it"
           }
         }
       }
@@ -2396,6 +3698,12 @@
             "state": "translated",
             "value": "玩法道具已就绪"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gameplay props ready"
+          }
         }
       }
     },
@@ -2406,6 +3714,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "发牌动画进行中"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deal animation in progress"
           }
         }
       }
@@ -2418,6 +3732,12 @@
             "state": "translated",
             "value": "庄家牌未齐"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealer cards are not complete"
+          }
         }
       }
     },
@@ -2428,6 +3748,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "仅开局两张时可加倍"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Double only on the opening two cards"
           }
         }
       }
@@ -2440,6 +3766,12 @@
             "state": "translated",
             "value": "余额不足加倍"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not enough balance to double"
+          }
         }
       }
     },
@@ -2450,6 +3782,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "需先要牌后再换"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hit first, then redraw"
           }
         }
       }
@@ -2462,6 +3800,12 @@
             "state": "translated",
             "value": "尚未下注"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No bet placed"
+          }
         }
       }
     },
@@ -2472,6 +3816,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "无剩余筹码可追加"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No remaining chips to add"
           }
         }
       }
@@ -2484,6 +3834,12 @@
             "state": "translated",
             "value": "窥视中不可换庄家牌"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cannot replace a dealer card while peeking"
+          }
         }
       }
     },
@@ -2494,6 +3850,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "全下不可投降"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cannot surrender after all-in"
           }
         }
       }
@@ -2506,6 +3868,12 @@
             "state": "translated",
             "value": "本局已用过窥视"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Peek already used this hand"
+          }
         }
       }
     },
@@ -2516,6 +3884,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "窥视进行中"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Peek in progress"
           }
         }
       }
@@ -2528,6 +3902,12 @@
             "state": "translated",
             "value": "仅玩家回合可用"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Available on your turn only"
+          }
         }
       }
     },
@@ -2538,6 +3918,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "本局已用过换一张"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Redraw already used this hand"
           }
         }
       }
@@ -2550,6 +3936,12 @@
             "state": "translated",
             "value": "本局已用过换庄家"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealer redraw already used this hand"
+          }
         }
       }
     },
@@ -2560,6 +3952,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "本局已开启"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Already on for this hand"
           }
         }
       }
@@ -2572,6 +3970,12 @@
             "state": "translated",
             "value": "仅开局两张时可投降"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Surrender only on the opening two cards"
+          }
         }
       }
     },
@@ -2582,6 +3986,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "当前不可用"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unavailable right now"
           }
         }
       }
@@ -2594,6 +4004,12 @@
             "state": "translated",
             "value": "全下后等待结算"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting to settle after all-in"
+          }
         }
       }
     },
@@ -2604,6 +4020,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@：已通关全部阶梯"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: all stages cleared"
           }
         }
       }
@@ -2616,6 +4038,12 @@
             "state": "translated",
             "value": "%@：下一阶再打穿 %d 次，或再赢 %d 筹码"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: clear the dealer %d more time(s), or win %d more chips"
+          }
         }
       }
     },
@@ -2626,6 +4054,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐一阶"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment Stage 1"
           }
         }
       }
@@ -2638,6 +4072,12 @@
             "state": "translated",
             "value": "娱乐二阶"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment Stage 2"
+          }
         }
       }
     },
@@ -2648,6 +4088,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐三阶"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment Stage 3"
           }
         }
       }
@@ -2660,6 +4106,12 @@
             "state": "translated",
             "value": "娱乐四阶"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment Stage 4"
+          }
         }
       }
     },
@@ -2670,6 +4122,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐终阶"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment Final Stage"
           }
         }
       }
@@ -2682,6 +4140,12 @@
             "state": "translated",
             "value": "%@：你 %d · 庄家 %d"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: you %d · dealer %d"
+          }
         }
       }
     },
@@ -2692,6 +4156,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "最小注 %d；筹码档 %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Min bet %d; chip sizes %@"
           }
         }
       }
@@ -2704,6 +4174,12 @@
             "state": "translated",
             "value": "本会话 %d 胜 · %d 负 · %d 平 · 连胜 %d"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This session %d W · %d L · %d P · streak %d"
+          }
         }
       }
     },
@@ -2714,6 +4190,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "有筹码与庄家资金池。打穿庄家或累计赢码可解锁更高关卡，新会话双方起始筹码随关提升。注码三档单选；开局全下需本会话打满设置中的解锁局数（可配置，默认 5；设为 0 则开局可用）。玩法道具在闯关中不可用。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You and the dealer have chip banks. Clear the dealer or win chips to unlock higher stages; both start with more chips in a new session. Pick one of three bet sizes. Opening all-in unlocks after the session hand count in Settings (default 5; 0 = available immediately). Gameplay props are off in Challenge."
           }
         }
       }
@@ -2726,6 +4208,12 @@
             "state": "translated",
             "value": "当前关卡、起始筹码与距下一关差额见「战绩」；成就与道具兑换见「成就」。卡背解锁也主要看闯关表现。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "See Stats for your stage, starting chips, and the gap to the next stage. Achievements and prop unlocks are on Achievements. Card backs also unlock mainly from Challenge play."
+          }
         }
       }
     },
@@ -2736,6 +4224,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "独立娱乐阶梯：打穿或累计赢码升阶，本阶起始筹码与注码随之提升。已解锁的玩法道具仅在此模式可用（见牌后再全下、软 17 要牌、窥视、换一张、换庄家一张等）。支持「同上局」下注；切牌固定为真实渗透（不受设置页切牌选项影响）。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Separate Entertainment stages: clear the dealer or win chips to advance; starting chips and bets rise with the stage. Unlocked gameplay props work only here (mid-hand all-in, dealer hits soft 17, peek, redraw one, replace a dealer card, and more). Repeat last bet is available. Cut card is always real penetration (Settings cut option does not apply)."
           }
         }
       }
@@ -2748,6 +4242,12 @@
             "state": "translated",
             "value": "娱乐对局计入娱乐成就轨，不计入闯关成就。当前阶、注码与距下一阶差额见「战绩」。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment hands count toward Entertainment achievements only, not Challenge. See Stats for your stage, bets, and the gap to the next stage."
+          }
         }
       }
     },
@@ -2758,6 +4258,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "默认牌副、闯关切牌三态（每局重洗 / 仪式感 / 真实）、闯关桌限、全下解锁局数、卡背、音效与触觉：均在「设置」中调整。牌副、切牌、桌限与全下解锁局数对局中修改不生效，须返回主页再开新局；音效、触觉、局内全下确认与卡背可立即生效。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default shoe, Challenge cut (every-hand shuffle / ceremonial / real), Challenge table limits, all-in unlock hands, card back, sound, and haptics are in Settings. Deck, cut, table limits, and all-in unlock hands apply only on a new round from the home screen. Sound, haptics, mid-hand all-in confirm, and card back apply immediately."
           }
         }
       }
@@ -2770,6 +4276,12 @@
             "state": "translated",
             "value": "「战绩」展示关卡/阶梯进度与胜负摘要；「成就」展示成就与道具兑换。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stats shows stage progress and win/loss summaries. Achievements shows achievements and prop unlocks."
+          }
         }
       }
     },
@@ -2780,6 +4292,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "本应用面向练习与娱乐，规则为简化版赌场二十一点，不等同于线下赌场全部选项（如分牌尚未开放）。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This app is for practice and play. Rules are simplified casino blackjack and do not include every live option (split is not available yet)."
           }
         }
       }
@@ -2792,6 +4310,12 @@
             "state": "translated",
             "value": "比点数接近 21 且不爆牌。庄家点数小于 17 必须要牌，大于等于 17 停牌（软 17 同停）。玩家回合开局两张时可「加倍」（再押等额、只补一张）或「投降」（退回半注；本局全下时不可投降）。庄家明牌为 A 时可买半注「保险」（2:1；全下不可买）；随后庄家查看是否黑杰克，有则直接结算。天然黑杰克赔率 3:2，普通获胜 1:1，平局退注。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get closer to 21 than the dealer without busting. The dealer hits below 17 and stands on 17 or more (soft 17 stands). On your first two cards you may Double (match the bet, one card only) or Surrender (half bet back; not after all-in). If the dealer upcard is an Ace, you may buy half-bet Insurance (2:1; not after all-in); the dealer then checks for blackjack and settles if they have it. Natural blackjack pays 3:2, a regular win pays 1:1, and a push returns the bet."
+          }
         }
       }
     },
@@ -2802,6 +4326,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "完成"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
           }
         }
       }
@@ -2814,6 +4344,12 @@
             "state": "translated",
             "value": "帮助说明"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Help"
+          }
         }
       }
     },
@@ -2824,6 +4360,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "闯关挑战"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Challenge"
           }
         }
       }
@@ -2836,6 +4378,12 @@
             "state": "translated",
             "value": "娱乐模式"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment"
+          }
         }
       }
     },
@@ -2846,6 +4394,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "设置 · 成就 · 战绩"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings · Achievements · Stats"
           }
         }
       }
@@ -2858,6 +4412,12 @@
             "state": "translated",
             "value": "说明"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notes"
+          }
         }
       }
     },
@@ -2868,6 +4428,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "基本规则"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Basic rules"
           }
         }
       }
@@ -2880,6 +4446,12 @@
             "state": "translated",
             "value": "已换庄家一张"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Replaced one dealer card"
+          }
         }
       }
     },
@@ -2890,6 +4462,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "保险注码 %d"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insurance bet %d"
           }
         }
       }
@@ -2902,6 +4480,12 @@
             "state": "translated",
             "value": "余额 %d，主注 %d"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balance %d, main bet %d"
+          }
         }
       }
     },
@@ -2912,6 +4496,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "支付半注作为保险"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pay half the bet as insurance"
           }
         }
       }
@@ -2924,6 +4514,12 @@
             "state": "translated",
             "value": "放弃保险，庄家将查看是否黑杰克"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Decline insurance; the dealer will check for blackjack"
+          }
         }
       }
     },
@@ -2934,6 +4530,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "保险 %d"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insurance %d"
           }
         }
       }
@@ -2946,6 +4548,12 @@
             "state": "translated",
             "value": "余额 %d · 主注 %d"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balance %d · Main bet %d"
+          }
         }
       }
     },
@@ -2956,6 +4564,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "买保险"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buy insurance"
           }
         }
       }
@@ -2968,6 +4582,12 @@
             "state": "translated",
             "value": "不买"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No thanks"
+          }
         }
       }
     },
@@ -2978,6 +4598,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "全下不可买保险"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cannot buy insurance after all-in"
           }
         }
       }
@@ -2990,6 +4616,12 @@
             "state": "translated",
             "value": "本局已买保险"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insurance already bought this hand"
+          }
         }
       }
     },
@@ -3000,6 +4632,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "注码过小无法保险"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bet is too small for insurance"
           }
         }
       }
@@ -3012,6 +4650,12 @@
             "state": "translated",
             "value": "余额不足买保险"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not enough balance for insurance"
+          }
         }
       }
     },
@@ -3022,6 +4666,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "尚未下注"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No bet placed"
           }
         }
       }
@@ -3034,6 +4684,12 @@
             "state": "translated",
             "value": "当前不可买保险"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insurance unavailable right now"
+          }
         }
       }
     },
@@ -3044,6 +4700,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "可买半注保险；若庄家黑杰克，保险 2:1 赔付。全下不可买。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You may buy half-bet insurance; if the dealer has blackjack, insurance pays 2:1. Not available after all-in."
           }
         }
       }
@@ -3056,6 +4718,12 @@
             "state": "translated",
             "value": "可买半注保险；庄家黑杰克时保险按 2:1 赔付，主注仍按胜负结算。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You may buy half-bet insurance. If the dealer has blackjack, insurance pays 2:1; the main bet still settles on the hand."
+          }
         }
       }
     },
@@ -3066,6 +4734,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "保险"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insurance"
           }
         }
       }
@@ -3078,6 +4752,12 @@
             "state": "translated",
             "value": "庄家明牌为 A"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealer upcard is an Ace"
+          }
         }
       }
     },
@@ -3088,6 +4768,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "黑杰克！你赢了（3:2）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blackjack! You win (3:2)"
           }
         }
       }
@@ -3100,6 +4786,12 @@
             "state": "translated",
             "value": "双方黑杰克，平局"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Both blackjack — push"
+          }
         }
       }
     },
@@ -3110,6 +4802,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "爆牌，你输了"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bust — you lose"
           }
         }
       }
@@ -3122,6 +4820,12 @@
             "state": "translated",
             "value": "庄家黑杰克；保险已赔付"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealer blackjack; insurance paid"
+          }
         }
       }
     },
@@ -3132,6 +4836,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "庄家黑杰克，你输了"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealer blackjack — you lose"
           }
         }
       }
@@ -3144,6 +4854,12 @@
             "state": "translated",
             "value": "庄家爆牌，你赢了"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealer busts — you win"
+          }
         }
       }
     },
@@ -3154,6 +4870,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "你输了"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You lose"
           }
         }
       }
@@ -3166,6 +4888,12 @@
             "state": "translated",
             "value": "平局"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Push"
+          }
         }
       }
     },
@@ -3176,6 +4904,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "洗牌异常，请重试"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shuffle error, please try again"
           }
         }
       }
@@ -3188,6 +4922,12 @@
             "state": "translated",
             "value": "投降，退回半注"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Surrender — half bet returned"
+          }
         }
       }
     },
@@ -3199,6 +4939,12 @@
             "state": "translated",
             "value": "你赢了"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You win"
+          }
         }
       }
     },
@@ -3209,6 +4955,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "退出并清空筹码"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quit and clear chips"
           }
         }
       }
@@ -3255,6 +5007,12 @@
             "state": "translated",
             "value": "继续"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue"
+          }
         }
       }
     },
@@ -3266,6 +5024,12 @@
             "state": "translated",
             "value": "退出会话"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End session"
+          }
         }
       }
     },
@@ -3276,6 +5040,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "将清空本会话娱乐筹码并返回主页（闯关进度不受影响）。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clears this session’s Entertainment chips and returns home (Challenge progress is unchanged)."
           }
         }
       }
@@ -3322,6 +5092,12 @@
             "state": "translated",
             "value": "两副牌"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Two decks"
+          }
         }
       }
     },
@@ -3332,6 +5108,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "六副牌"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Six decks"
           }
         }
       }
@@ -3344,6 +5126,12 @@
             "state": "translated",
             "value": "一副牌"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One deck"
+          }
         }
       }
     },
@@ -3354,6 +5142,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "共 %d 张，切牌点后重洗"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d cards total; reshuffle after the cut"
           }
         }
       }
@@ -3366,6 +5160,12 @@
             "state": "translated",
             "value": "可用"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Available"
+          }
         }
       }
     },
@@ -3376,6 +5176,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "偷看庄家暗牌约一秒"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Peek at the dealer hole card for about a second"
           }
         }
       }
@@ -3388,6 +5194,12 @@
             "state": "translated",
             "value": "换掉最近一次要到的牌"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Replace the last card you hit"
+          }
         }
       }
     },
@@ -3398,6 +5210,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "随机替换庄家一张牌"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Randomly replace one dealer card"
           }
         }
       }
@@ -3410,6 +5228,12 @@
             "state": "translated",
             "value": "本局庄家软十七必须要牌"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealer must hit soft 17 this hand"
+          }
         }
       }
     },
@@ -3420,6 +5244,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "仅娱乐模式：玩家回合开启后，本局庄家软 17 必须要牌。下局需再开。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment only: once turned on during your turn, the dealer must hit soft 17 this hand. Turn it on again next hand."
           }
         }
       }
@@ -3432,6 +5262,12 @@
             "state": "translated",
             "value": "庄家软 17 要牌"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealer hits soft 17"
+          }
         }
       }
     },
@@ -3442,6 +5278,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "打穿庄家资金池 5 次后永久解锁（仅娱乐可用）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permanently unlock after clearing the dealer bank 5 times (Entertainment only)"
           }
         }
       }
@@ -3454,6 +5296,12 @@
             "state": "translated",
             "value": "仅娱乐模式：对局中可将剩余筹码追加为全下并自动停牌。闯关模式不可用。天然黑杰克见牌即结算时不可用。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment only: add remaining chips as all-in mid-hand and stand. Not available in Challenge. Unavailable when a natural blackjack is settled on sight."
+          }
         }
       }
     },
@@ -3464,6 +5312,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "见牌后再全下"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mid-hand all-in"
           }
         }
       }
@@ -3476,6 +5330,12 @@
             "state": "translated",
             "value": "打穿庄家资金池 1 次后永久解锁（仅娱乐可用）"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permanently unlock after clearing the dealer bank 1 time (Entertainment only)"
+          }
         }
       }
     },
@@ -3486,6 +5346,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "仅娱乐模式：玩家回合偷看庄家暗牌约 1 秒，每局限 1 次。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment only: peek at the dealer hole card for about 1 second on your turn, once per hand."
           }
         }
       }
@@ -3498,6 +5364,12 @@
             "state": "translated",
             "value": "窥视暗牌"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Peek hole card"
+          }
         }
       }
     },
@@ -3508,6 +5380,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐模式连胜达 5 后永久解锁"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permanently unlock after a 5-hand Entertainment win streak"
           }
         }
       }
@@ -3520,6 +5398,12 @@
             "state": "translated",
             "value": "仅娱乐模式：弃掉最近一次要牌得到的牌并重发一张（须已要过牌）。每局限 1 次；天然 BJ 不可用。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment only: discard the last hit card and draw a replacement (you must have already hit). Once per hand; unavailable on a natural BJ."
+          }
         }
       }
     },
@@ -3530,6 +5414,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "换一张"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Redraw one"
           }
         }
       }
@@ -3542,6 +5432,12 @@
             "state": "translated",
             "value": "娱乐模式累计胜 20 局后永久解锁"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permanently unlock after 20 Entertainment wins"
+          }
         }
       }
     },
@@ -3552,6 +5448,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "仅娱乐模式：随机将庄家手牌中一张（含暗牌）洗回牌库再抽一张替换（不推进切牌穿透；牌库有其它牌时不会原样抽回）。每局限 1 次；窥视进行中不可用；可与其它娱乐道具同局先后使用。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment only: randomly return one dealer card (including the hole card) to the shoe and draw a replacement (does not advance cut penetration; will not redraw the same card if others remain). Once per hand; unavailable while peeking; can be used in the same hand as other Entertainment props."
           }
         }
       }
@@ -3564,6 +5466,12 @@
             "state": "translated",
             "value": "换庄家一张"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Replace a dealer card"
+          }
         }
       }
     },
@@ -3574,6 +5482,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐模式累计胜 50 局后永久解锁"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permanently unlock after 50 Entertainment wins"
           }
         }
       }
@@ -3586,6 +5500,12 @@
             "state": "translated",
             "value": "窥视"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Peek"
+          }
         }
       }
     },
@@ -3596,6 +5516,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "换一张"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Redraw"
           }
         }
       }
@@ -3608,6 +5534,12 @@
             "state": "translated",
             "value": "换庄家"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealer card"
+          }
         }
       }
     },
@@ -3618,6 +5550,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "软17要牌"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hit soft 17"
           }
         }
       }
@@ -3630,6 +5568,12 @@
             "state": "translated",
             "value": "软17已开"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soft 17 on"
+          }
         }
       }
     },
@@ -3640,6 +5584,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "你的余额 %d，庄家余额 %d"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your balance %d, dealer balance %d"
           }
         }
       }
@@ -3652,6 +5602,12 @@
             "state": "translated",
             "value": "进入下一局下注"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Go to the next hand’s bet"
+          }
         }
       }
     },
@@ -3662,6 +5618,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "结束本会话并返回欢迎页"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End this session and return to the welcome screen"
           }
         }
       }
@@ -3674,6 +5636,12 @@
             "state": "translated",
             "value": "本局结果：%@"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hand result: %@"
+          }
         }
       }
     },
@@ -3684,6 +5652,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "暂时收起结果，查看桌上牌面"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hide the result and view the table"
           }
         }
       }
@@ -3696,6 +5670,12 @@
             "state": "translated",
             "value": "解锁：%@"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlocked: %@"
+          }
         }
       }
     },
@@ -3706,6 +5686,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "你 %d · 庄家 %d"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You %d · Dealer %d"
           }
         }
       }
@@ -3718,6 +5704,12 @@
             "state": "translated",
             "value": "本局盈亏 %@"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This hand %@"
+          }
         }
       }
     },
@@ -3728,6 +5720,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "重新打开本局结果面板"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reopen this hand’s result"
           }
         }
       }
@@ -3740,6 +5738,12 @@
             "state": "translated",
             "value": "返回主页"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Home"
+          }
         }
       }
     },
@@ -3750,6 +5754,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "显示结果"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show result"
           }
         }
       }
@@ -3762,6 +5772,12 @@
             "state": "translated",
             "value": "本局结束"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hand over"
+          }
         }
       }
     },
@@ -3772,6 +5788,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "本局游戏结束"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Session over"
           }
         }
       }
@@ -3784,6 +5806,12 @@
             "state": "translated",
             "value": "本局解锁"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlocked this hand"
+          }
         }
       }
     },
@@ -3794,6 +5822,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "查看牌面"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View table"
           }
         }
       }
@@ -3806,6 +5840,12 @@
             "state": "translated",
             "value": "庄家已破产"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealer is broke"
+          }
         }
       }
     },
@@ -3816,6 +5856,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "庄家筹码已全部赔出。若满足条件将解锁更高闯关关卡；请返回主页后再开启新一局。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The dealer’s chips are gone. A higher Challenge stage may unlock if you qualify. Return home, then start a new round."
           }
         }
       }
@@ -3828,6 +5874,12 @@
             "state": "translated",
             "value": "你已破产"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are broke"
+          }
         }
       }
     },
@@ -3838,6 +5890,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "余额不足以继续下注，本局游戏结束。请返回主页后再开启新的一局。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balance is too low to bet. This session is over. Return home, then start a new round."
           }
         }
       }
@@ -3850,6 +5908,12 @@
             "state": "translated",
             "value": "本会话打满 %d 局后，开局下注页解锁「全下」（闯关与娱乐共用）。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "After %d hands this session, opening all-in unlocks on the bet screen (shared by Challenge and Entertainment)."
+          }
         }
       }
     },
@@ -3860,6 +5924,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "开局下注页即可使用「全下」（闯关与娱乐共用）。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opening all-in is available on the bet screen (shared by Challenge and Entertainment)."
           }
         }
       }
@@ -3872,6 +5942,12 @@
             "state": "translated",
             "value": "全下解锁局数：%d"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All-in unlock hands: %d"
+          }
         }
       }
     },
@@ -3882,6 +5958,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "使用中"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In use"
           }
         }
       }
@@ -3894,6 +5976,12 @@
             "state": "translated",
             "value": "未解锁"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Locked"
+          }
         }
       }
     },
@@ -3904,6 +5992,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "点击选用"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap to use"
           }
         }
       }
@@ -3916,6 +6010,12 @@
             "state": "translated",
             "value": "已解锁"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlocked"
+          }
         }
       }
     },
@@ -3926,6 +6026,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐模式固定「真实切牌」（不受本项影响）。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment always uses Real cut (this setting does not apply)."
           }
         }
       }
@@ -3938,6 +6044,12 @@
             "state": "translated",
             "value": "外观不影响胜负；可在闯关与娱乐中共用。未解锁可预览，不可选用。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Looks do not affect outcomes. Shared in Challenge and Entertainment. Locked backs can be previewed but not selected."
+          }
         }
       }
     },
@@ -3948,6 +6060,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "默认牌副用于主页开局；切牌仅影响闯关。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The default shoe is used when you start from Home. Cut card applies to Challenge only."
           }
         }
       }
@@ -3960,6 +6078,12 @@
             "state": "translated",
             "value": "关闭后不播放音效；未配置音效文件时会静默跳过。「局内全下需确认」仅影响娱乐模式见牌后再全下。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sound stays off when disabled; missing sound files are skipped silently. Mid-hand all-in confirm applies only to Entertainment mid-hand all-in."
+          }
         }
       }
     },
@@ -3970,6 +6094,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "音效、触觉、局内全下确认与卡背选用可立即生效。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sound, haptics, mid-hand all-in confirm, and card back apply immediately."
           }
         }
       }
@@ -3982,6 +6112,12 @@
             "state": "translated",
             "value": "设置"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
+          }
         }
       }
     },
@@ -3992,6 +6128,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "切牌（闯关）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cut card (Challenge)"
           }
         }
       }
@@ -4004,6 +6146,12 @@
             "state": "translated",
             "value": "默认牌副"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default shoe"
+          }
         }
       }
     },
@@ -4014,6 +6162,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "桌限方案"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Table-limit plan"
           }
         }
       }
@@ -4026,6 +6180,12 @@
             "state": "translated",
             "value": "全下"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All-in"
+          }
         }
       }
     },
@@ -4036,6 +6196,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "卡背"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Card back"
           }
         }
       }
@@ -4048,6 +6214,12 @@
             "state": "translated",
             "value": "牌局"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealing"
+          }
         }
       }
     },
@@ -4058,6 +6230,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "反馈"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Feedback"
           }
         }
       }
@@ -4070,6 +6248,12 @@
             "state": "translated",
             "value": "桌限"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Table limits"
+          }
         }
       }
     },
@@ -4080,6 +6264,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "生效时机"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When changes apply"
           }
         }
       }
@@ -4092,6 +6282,12 @@
             "state": "translated",
             "value": "对局中修改不生效，返回主页后新开局生效"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Changes do not apply mid-session; start a new round from the home screen"
+          }
         }
       }
     },
@@ -4102,6 +6298,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "闯关模式采用此桌限；娱乐模式注码随娱乐阶梯自动提升，不受本项影响。详情见主页「帮助说明」。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Challenge uses this table limit. Entertainment bets rise with Entertainment stages and ignore this setting. See Help on the home screen."
           }
         }
       }
@@ -4114,6 +6316,12 @@
             "state": "translated",
             "value": "局内全下需确认"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm mid-hand all-in"
+          }
         }
       }
     },
@@ -4124,6 +6332,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "触觉"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haptics"
           }
         }
       }
@@ -4136,6 +6350,12 @@
             "state": "translated",
             "value": "音效"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sound"
+          }
         }
       }
     },
@@ -4146,6 +6366,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@，起始筹码你 %d，庄家 %d"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, starting chips you %d, dealer %d"
           }
         }
       }
@@ -4158,6 +6384,12 @@
             "state": "translated",
             "value": "累计赢 %d · 累计亏 %d · 打穿庄家 %d 次"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Won %d · lost %d · dealer cleared %d time(s)"
+          }
         }
       }
     },
@@ -4168,6 +6400,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "累计赢 %d · 打穿庄家 %d 次"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Won %d · dealer cleared %d time(s)"
           }
         }
       }
@@ -4180,6 +6418,12 @@
             "state": "translated",
             "value": "尚无闯关对局记录。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Challenge hands yet."
+          }
         }
       }
     },
@@ -4190,6 +6434,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "尚无娱乐对局记录。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Entertainment hands yet."
           }
         }
       }
@@ -4202,6 +6452,12 @@
             "state": "translated",
             "value": "娱乐胜负不计入闯关成就。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment results do not count toward Challenge achievements."
+          }
         }
       }
     },
@@ -4212,6 +6468,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "新开闯关会话按已解锁最高关给予双方起始筹码。卡背解锁也主要看闯关表现。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A new Challenge session starts both banks at the highest unlocked stage. Card backs also unlock mainly from Challenge play."
           }
         }
       }
@@ -4224,6 +6486,12 @@
             "state": "translated",
             "value": "新开娱乐会话按当前阶给予起始筹码与注码三档；玩法道具仅娱乐可用。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A new Entertainment session starts chips and three bet sizes at the current stage. Gameplay props are Entertainment only."
+          }
         }
       }
     },
@@ -4234,6 +6502,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "战绩"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stats"
           }
         }
       }
@@ -4246,6 +6520,12 @@
             "state": "translated",
             "value": "%d 胜 · %d 负 · %d 平"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d W · %d L · %d P"
+          }
         }
       }
     },
@@ -4256,6 +6536,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%d 胜 · %d 负 · %d 平 · 最长连胜 %d"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d W · %d L · %d P · best streak %d"
           }
         }
       }
@@ -4268,6 +6554,12 @@
             "state": "translated",
             "value": "闯关模式"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Challenge"
+          }
         }
       }
     },
@@ -4278,6 +6570,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "娱乐模式"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment"
           }
         }
       }
@@ -4290,6 +6588,12 @@
             "state": "translated",
             "value": "你 %d，庄家 %d，注 %d"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You %d, dealer %d, bet %d"
+          }
         }
       }
     },
@@ -4300,6 +6604,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "你 %d，庄家 %d"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You %d, dealer %d"
           }
         }
       }
@@ -4312,6 +6622,12 @@
             "state": "translated",
             "value": "你 %d，庄家 %d，注 %d，保险 %d"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You %d, dealer %d, bet %d, insurance %d"
+          }
         }
       }
     },
@@ -4322,6 +6638,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "庄家点数 %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealer total %@"
           }
         }
       }
@@ -4334,6 +6656,12 @@
             "state": "translated",
             "value": "庄家明牌点数 %@"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealer upcard %@"
+          }
         }
       }
     },
@@ -4344,6 +6672,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "玩家点数 %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Player total %@"
           }
         }
       }
@@ -4356,6 +6690,12 @@
             "state": "translated",
             "value": "注 %d"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bet %d"
+          }
         }
       }
     },
@@ -4366,6 +6706,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "庄家 %d"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealer %d"
           }
         }
       }
@@ -4378,6 +6724,12 @@
             "state": "translated",
             "value": "确认下注后发牌。玩家回合可要牌或停牌；开局两张时可加倍或投降。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm a bet to deal. On your turn you can hit or stand; on the opening two cards you can double or surrender."
+          }
         }
       }
     },
@@ -4388,6 +6740,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "窥视暗牌中…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Peeking at the hole card…"
           }
         }
       }
@@ -4400,6 +6758,12 @@
             "state": "translated",
             "value": "点数：%@"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total: %@"
+          }
         }
       }
     },
@@ -4410,6 +6774,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "本局已结束"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hand over"
           }
         }
       }
@@ -4422,6 +6792,12 @@
             "state": "translated",
             "value": "明牌点数：%@"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upcard: %@"
+          }
         }
       }
     },
@@ -4432,6 +6808,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "等待本局结果"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting for the result"
           }
         }
       }
@@ -4444,6 +6826,12 @@
             "state": "translated",
             "value": "你 %d"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You %d"
+          }
         }
       }
     },
@@ -4454,6 +6842,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "偏大"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heavy"
           }
         }
       }
@@ -4466,6 +6860,12 @@
             "state": "translated",
             "value": "轻量"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Light"
+          }
         }
       }
     },
@@ -4476,6 +6876,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "标准"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standard"
           }
         }
       }
@@ -4488,6 +6894,12 @@
             "state": "translated",
             "value": "最小注 %d；筹码档 %@"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Min bet %d; chip sizes %@"
+          }
         }
       }
     },
@@ -4498,6 +6910,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "卡背·%@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Card back · %@"
           }
         }
       }
@@ -4510,6 +6928,12 @@
             "state": "translated",
             "value": "卡背解锁：%@"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Card back unlocked: %@"
+          }
         }
       }
     },
@@ -4520,6 +6944,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "闯关·%@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Challenge · %@"
           }
         }
       }
@@ -4532,6 +6962,12 @@
             "state": "translated",
             "value": "娱乐·打穿庄家"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entertainment · dealer cleared"
+          }
         }
       }
     },
@@ -4539,6 +6975,12 @@
       "extractionState": "manual",
       "localizations": {
         "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@"
+          }
+        },
+        "en": {
           "stringUnit": {
             "state": "translated",
             "value": "%@"
@@ -4554,6 +6996,12 @@
             "state": "translated",
             "value": "解锁%@"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlocked %@"
+          }
         }
       }
     },
@@ -4565,6 +7013,12 @@
             "state": "translated",
             "value": "道具·%@"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prop · %@"
+          }
         }
       }
     },
@@ -4575,6 +7029,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "道具已解锁（娱乐模式可用）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prop unlocked (usable in Entertainment)"
           }
         }
       }
@@ -4660,6 +7120,363 @@
           "stringUnit": {
             "state": "translated",
             "value": "Stats"
+          }
+        }
+      }
+    },
+    "settings.section.language": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "语言"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Language"
+          }
+        }
+      }
+    },
+    "settings.picker.language": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "界面语言"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App language"
+          }
+        }
+      }
+    },
+    "settings.language.system": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跟随系统"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System"
+          }
+        }
+      }
+    },
+    "settings.language.chinese": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "中文"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chinese"
+          }
+        }
+      }
+    },
+    "settings.language.english": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "English"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "English"
+          }
+        }
+      }
+    },
+    "settings.footer.language": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "立即切换中文或英文；与系统语言可分别设置，互不覆盖。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Switch Chinese or English immediately. This is separate from the system language."
+          }
+        }
+      }
+    },
+    "settings.section.about": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "关于"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About"
+          }
+        }
+      }
+    },
+    "settings.versionLabel": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "版本"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version"
+          }
+        }
+      }
+    },
+    "settings.privacy": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隐私说明"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy"
+          }
+        }
+      }
+    },
+    "help.section.positioning": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "产品定位"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About this app"
+          }
+        }
+      }
+    },
+    "help.body.positioning": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本品以公平闯关为主：闯关只用规则内筹码，玩法道具仅娱乐模式可用。不卖筹码，也不在对局中插广告。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is a fair challenge-first practice app. Challenge mode uses standard chips only; gameplay props stay in Entertainment. No chip sales, and no ads during a hand."
+          }
+        }
+      }
+    },
+    "help.body.privacy": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不采集账号或追踪数据；进度仅保存在本机。详见设置中的「隐私说明」。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No accounts or tracking. Progress stays on this device. See Privacy in Settings."
+          }
+        }
+      }
+    },
+    "privacy.navTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隐私说明"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy"
+          }
+        }
+      }
+    },
+    "privacy.done": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完成"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
+    "privacy.section.summary": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "数据"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data"
+          }
+        }
+      }
+    },
+    "privacy.section.product": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "玩法"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gameplay"
+          }
+        }
+      }
+    },
+    "privacy.body.collect": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本应用不创建账号，不收集个人身份信息，不使用追踪技术，也不向第三方发送对局数据。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This app has no accounts, does not collect personal identity data, does not track you, and does not send hand data to third parties."
+          }
+        }
+      }
+    },
+    "privacy.body.storage": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "战绩、成就、关卡进度、设置与外观仅使用本机存储（系统用户默认设置）。卸载应用将删除这些数据。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stats, achievements, stage progress, settings, and cosmetics are stored only on this device (system user defaults). Deleting the app removes this data."
+          }
+        }
+      }
+    },
+    "privacy.body.ads": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前版本不含广告软件开发包，也不会在对局进行中弹出广告。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This version includes no ad SDK and will not show ads during a hand."
+          }
+        }
+      }
+    },
+    "privacy.body.age": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本应用为模拟筹码的二十一点练习，不含真实货币赌博。上架时将按模拟赌博相关分级申报。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is a practice blackjack game with simulated chips, not real-money gambling. Store age rating will follow simulated-gambling guidelines."
+          }
+        }
+      }
+    },
+    "privacy.body.positioning": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "产品以公平闯关为主；娱乐模式的道具只影响该模式，不改变闯关赔率与牌值。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The product is fair-challenge first. Entertainment props affect that mode only and never change Challenge odds or card values."
           }
         }
       }

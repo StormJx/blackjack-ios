@@ -55,6 +55,11 @@ final class AppSettings: ObservableObject {
         didSet { persist() }
     }
 
+    /// 界面语言：跟随系统 / 中文 / English；立即生效，不锁在会话里。
+    @Published var languagePreference: AppLanguagePreference {
+        didSet { persist() }
+    }
+
     private let defaults: UserDefaults
 
     private enum Keys {
@@ -67,6 +72,7 @@ final class AppSettings: ObservableObject {
         static let sound = "appSettings.soundEnabled"
         static let haptics = "appSettings.hapticsEnabled"
         static let confirmMidHandAllIn = "appSettings.confirmMidHandAllIn"
+        static let language = "appSettings.languagePreference"
     }
 
     init(defaults: UserDefaults = .standard) {
@@ -121,8 +127,20 @@ final class AppSettings: ObservableObject {
             confirmMidHandAllIn = true
         }
 
+        if let raw = defaults.string(forKey: Keys.language),
+           let language = AppLanguagePreference(rawValue: raw) {
+            languagePreference = language
+        } else {
+            languagePreference = .system
+        }
+
         GameFeedback.shared.soundEnabled = soundEnabled
         GameFeedback.shared.hapticsEnabled = hapticsEnabled
+    }
+
+    /// 把当前语言偏好写到 `L10n`（仅 App 根设置调用，避免单测污染全局）。
+    func applyLanguageOverride() {
+        L10n.languageOverride = languagePreference.catalogLanguage
     }
 
     /// 当前所选桌限文案（设置页展示；未必等于对局中已生效值）。
@@ -147,5 +165,6 @@ final class AppSettings: ObservableObject {
         defaults.set(soundEnabled, forKey: Keys.sound)
         defaults.set(hapticsEnabled, forKey: Keys.haptics)
         defaults.set(confirmMidHandAllIn, forKey: Keys.confirmMidHandAllIn)
+        defaults.set(languagePreference.rawValue, forKey: Keys.language)
     }
 }

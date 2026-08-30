@@ -58,8 +58,10 @@ struct E1E4FeatureTests {
         settings.soundEnabled = false
         settings.hapticsEnabled = false
         settings.confirmMidHandAllIn = false
+        settings.languagePreference = .english
 
         let reloaded = AppSettings(defaults: defaults)
+        #expect(reloaded.languagePreference == .english)
         #expect(reloaded.defaultPracticeMode == .shoe6)
         #expect(reloaded.cutCardMode == .off)
         #expect(reloaded.preDealAllInUnlockRounds == 3)
@@ -99,8 +101,7 @@ struct E1E4FeatureTests {
     @Test func ux9SessionLockedSettingsHintIsUnified() {
         let hint = AppSettings.sessionLockedSettingsHint
         #expect(hint == AppSettings.sessionLockedSettingsChangeFlash)
-        #expect(hint.contains("对局中修改不生效"))
-        #expect(hint.contains("返回主页后新开局生效"))
+        #expect(hint == L10n.t("settings.sessionLockedHint"))
         #expect(!hint.contains("对下一局生效"))
     }
 
@@ -493,8 +494,7 @@ struct E1E4FeatureTests {
             dealerClears: 0,
             totalChipsWon: 500
         )
-        #expect(early.contains("第一关"))
-        #expect(early.contains("1 次"))
+        #expect(early.contains(L10n.t("challenge.stage.1.title")))
         #expect(early.contains("1500"))
 
         let maxed = ChallengeRules.progressHint(
@@ -502,13 +502,22 @@ struct E1E4FeatureTests {
             dealerClears: 5,
             totalChipsWon: 20_000
         )
-        #expect(maxed.contains("已通关全部关卡"))
+        #expect(maxed.contains(L10n.t("challenge.stage.5.title")))
     }
 
     @Test func challengeAndEntertainmentStageBankSummariesForStats() {
-        #expect(ChallengeRules.stageBankSummary(level: 1) == "第一关：你 1000 · 庄家 2000")
-        #expect(ChallengeRules.stageBankSummary(level: 3) == "第三关：你 2500 · 庄家 7000")
-        #expect(EntertainmentRules.stageBankSummary(level: 2) == "娱乐二阶：你 2000 · 庄家 5000")
+        #expect(
+            ChallengeRules.stageBankSummary(level: 1)
+                == L10n.format("challenge.summaryFormat", L10n.t("challenge.stage.1.title"), 1000, 2000)
+        )
+        #expect(
+            ChallengeRules.stageBankSummary(level: 3)
+                == L10n.format("challenge.summaryFormat", L10n.t("challenge.stage.3.title"), 2500, 7000)
+        )
+        #expect(
+            EntertainmentRules.stageBankSummary(level: 2)
+                == L10n.format("entertainment.summaryFormat", L10n.t("entertainment.stage.2.title"), 2000, 5000)
+        )
         #expect(EntertainmentRules.stage(level: 2).tableLimitsSummary.contains("200 / 400 / 800"))
 
         let entHint = EntertainmentRules.progressHint(
@@ -516,7 +525,7 @@ struct E1E4FeatureTests {
             dealerClears: 0,
             totalChipsWon: 500
         )
-        #expect(entHint.contains("娱乐一阶"))
+        #expect(entHint.contains(L10n.t("entertainment.stage.1.title")))
         #expect(entHint.contains("1500"))
     }
 
@@ -721,7 +730,7 @@ struct E1E4FeatureTests {
         #expect(game.dealerCards != beforeDealer)
         #expect(game.hasReshuffledDealerThisRound)
         #expect(game.canReshuffleDealerCard == false)
-        #expect(game.propActionHint == "已换庄家一张")
+        #expect(game.propActionHint == L10n.t("hint.reshuffledDealerCard"))
         #expect(game.reshufflePulseIndex != nil)
 
         let afterFirst = game.dealerCards
@@ -781,22 +790,23 @@ struct E1E4FeatureTests {
         #expect(PlayStyle.entertainment.welcomeSubtitle != "playStyle.entertainment.subtitle")
     }
 
-    @Test func l10nFallsBackToSimplifiedChineseWhenEnglishMissing() {
-        // en.lproj 仅有欢迎页少量 key；缺译必须回退中文，不能显示 key。
-        #expect(PracticeMode.singleDeck.shortLabel == "一副牌")
-        #expect(AppSettings.sessionLockedSettingsHint.contains("对局中修改不生效"))
-        #expect(AchievementID.practiceWins20.title.hasPrefix("娱乐"))
-        // 已有 en 的欢迎文案在英文本地仍可为英文（不强制中文）。
+    @Test func l10nChineseAndEnglishCatalogsDoNotCollide() {
+        #expect(L10n.t("practice.deck.single", language: "zh-Hans") == "一副牌")
+        #expect(L10n.t("practice.deck.single", language: "en") == L10n.t("practice.deck.single", language: "en"))
+        #expect(L10n.t("practice.deck.single", language: "en") != "一副牌")
         #expect(L10n.t("welcome.appTitle", language: "en") == "Blackjack")
         #expect(L10n.t("welcome.appTitle", language: "zh-Hans") == "二十一点")
+        #expect(L10n.t("__missing.key.for.fallback__", language: "en") == "__missing.key.for.fallback__")
     }
 
     @Test func entertainmentAchievementTitlesUseEntertainmentWording() {
-        #expect(AchievementID.practiceWinStreak5.title.hasPrefix("娱乐"))
-        #expect(AchievementID.practiceWins20.title.hasPrefix("娱乐"))
-        #expect(AchievementID.practiceFiveCard.title.hasPrefix("娱乐"))
-        #expect(AchievementID.practiceNaturalBJ.title.hasPrefix("娱乐"))
+        let prefix = L10n.t("achievement.scope.entertainment")
+        #expect(AchievementID.practiceWinStreak5.title.hasPrefix(prefix))
+        #expect(AchievementID.practiceWins20.title.hasPrefix(prefix))
+        #expect(AchievementID.practiceFiveCard.title.hasPrefix(prefix))
+        #expect(AchievementID.practiceNaturalBJ.title.hasPrefix(prefix))
         #expect(!AchievementID.practiceWins50.title.contains("练习"))
+        #expect(!AchievementID.practiceWins50.title.contains("Practice"))
     }
 
     @Test func challengeUnlockedPropsShowCrossModeHint() {

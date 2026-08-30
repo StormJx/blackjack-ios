@@ -179,7 +179,7 @@ struct BlackjackGameLogicTests {
         #expect(game.phase == .playerTurn)
         #expect(game.playerCards.count == 3)
         #expect(game.canDoubleDownHand == false)
-        #expect(game.doubleDownHandDisabledReason == "仅开局两张时可加倍")
+        #expect(game.doubleDownHandDisabledReason == L10n.t("disabled.doubleOnlyTwoCards"))
     }
 
     @Test func dealerAceOffersInsuranceThenPeekNoBlackjack() async {
@@ -219,7 +219,7 @@ struct BlackjackGameLogicTests {
         #expect(game.lastOutcome == .playerLose)
         #expect(game.lastInsuranceWon)
         #expect(game.dealerHoleRevealed)
-        #expect(game.outcomeMessage == "庄家黑杰克；保险已赔付")
+        #expect(game.outcomeMessage == L10n.t("outcome.dealerBJInsurancePaid"))
     }
 
     @Test func dealerAcePeekBlackjackWithoutInsurance() async {
@@ -238,7 +238,7 @@ struct BlackjackGameLogicTests {
         #expect(game.phase == .finished)
         #expect(game.lastOutcome == .playerLose)
         #expect(game.lastInsuranceWon == false)
-        #expect(game.outcomeMessage == "庄家黑杰克，你输了")
+        #expect(game.outcomeMessage == L10n.t("outcome.dealerBJLose"))
     }
 
     @Test func nonAceUpcardSkipsInsuranceOffer() async {
@@ -270,7 +270,7 @@ struct BlackjackGameLogicTests {
         game.surrender()
         #expect(game.phase == .finished)
         #expect(game.lastOutcome == .playerSurrender)
-        #expect(game.outcomeMessage == "投降，退回半注")
+        #expect(game.outcomeMessage == L10n.t("outcome.surrender"))
         #expect(game.dealerHoleRevealed)
         #expect(game.playerCards.count == 2)
     }
@@ -293,7 +293,7 @@ struct BlackjackGameLogicTests {
         await game.hit()
         #expect(game.phase == .playerTurn)
         #expect(game.canSurrenderHand == false)
-        #expect(game.surrenderHandDisabledReason == "仅开局两张时可投降")
+        #expect(game.surrenderHandDisabledReason == L10n.t("disabled.surrenderOnlyTwoCards"))
     }
 
     @Test func cancelPendingWorkClearsPeekAndHints() async {

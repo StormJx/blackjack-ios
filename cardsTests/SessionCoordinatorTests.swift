@@ -56,7 +56,7 @@ struct SessionCoordinatorTests {
         #expect(harness.challengeProgress.unlockedLevel >= 2)
         #expect(harness.cosmeticsStore.owns(.emeraldLattice))
         #expect(
-            result.unlockNotices.contains(where: { $0.contains("卡背") })
+            result.unlockNotices.contains(where: { $0.contains("卡背") || $0.contains("Card back") })
             || harness.cosmeticsStore.owns(.emeraldLattice)
         )
     }
@@ -88,8 +88,8 @@ struct SessionCoordinatorTests {
         #expect(harness.statsStore.challenge.wins == 0)
         #expect(harness.statsStore.practice.wins == 1)
         #expect(
-            result.unlockNotices.contains("娱乐二阶")
-            || result.unlockNotices.contains("娱乐·打穿庄家")
+            result.unlockNotices.contains(L10n.t("entertainment.stage.2.title"))
+            || result.unlockNotices.contains(L10n.t("unlock.entertainmentClear"))
         )
     }
 

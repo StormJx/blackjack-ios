@@ -5,8 +5,9 @@
 > P8：`docs/P8_ORIENTATION_AND_A11Y.md` · 评审批次 backlog：`docs/ENGINEERING_REVIEW_BACKLOG.md`  
 > 后续优化执行路线：`docs/OPTIMIZATION_GUIDE.md`（A 工程加固 / L 上架 / T 教学轨 / M 变现 / R 留存）
 
-**基线：** `main` @ `0fa80e6`（已推送；功能 `398dc74` L1）  
-已推送里程碑：Tag `v1.11.1` @ `12234c5`（UX9）；L1 @ `398dc74` / 检查点 `0fa80e6`；A4 @ `6829d42`  
+**基线：** `main` @ 即将推送的 v2.0 本批（功能 + 检查点；回填 SHA）  
+工程版本：`MARKETING_VERSION = 2.0` / `CURRENT_PROJECT_VERSION = 2`  
+已推送里程碑：绯红图标 + CI 英文本地 @ `3ae3e74`；L10n 回退 @ `6aa8c6b`；Tag `v1.11.1` @ `12234c5`（UX9）；L1 @ `398dc74`  
 
 **仓库：** https://github.com/StormJx/blackjack-ios  
 **平台：** iOS 17.0+；庄家小于 17 要牌、大于等于 17 停（软 17 同停）；音效基名 deal/flip/shuffle/win/lose/push  
@@ -65,10 +66,13 @@
 - [x] **P8-1** 无障碍第一切片：下注/局末可滚动 + 粘性主按钮；VoiceOver（点数/余额/注码/结果/要牌停牌/道具具体禁用原因）；欢迎标题动态字体；洗牌页尊重减弱动态效果；设置页去开发者音效文案
 - [x] **Q2**：`GameTiming` / `GameFeedbackServing` 注入；`SessionConfiguration`；`cancelPendingWork()`；天然 BJ / hit 爆牌 / 软 17 默认停与道具要 / 牌尽 fallback 单测
 - [x] **A1**：`SessionCoordinator` 抽取局末结算/成就/进度/卡背同步；欢迎页 `syncOnAppAppear` / `syncProgressAndCosmetics`；`SessionCoordinatorTests` 四类场景
-- [x] **A2**：`DataSchema` 持久化版本号（`currentVersion = 1`）；`cardsApp.init` 在 Store 之前 `migrateIfNeeded`；改持久化结构须升版本并写 `runMigrations`；`DataSchemaTests`
-- [x] **A3**：GitHub Actions CI（`.github/workflows/test.yml`：`macos-15`，push/PR 触发，动态解析 iPhone 模拟器，`-only-testing:cardsTests`）；补共享 scheme `cards.xcodeproj/xcshareddata/xcschemes/cards.xcscheme`；无 secrets；本地单测已绿；push 后 Actions 已绿
-- [x] **A4**：`BlackjackGame.recordBraveHitProgress(beforeBest:currentBest:)`；`hit` / `doubleDown` / `redrawLastHitCard` 共用；既有 `braveHitLadderRequiresWin` 单测绿
-- [x] **L1**：`Localizable.xcstrings`（zh-Hans，约 400+ key）+ `L10n.t` / `L10n.key` / `L10n.format`；欢迎/设置/帮助、枚举 title、面板、牌桌/道具禁用、成就/战绩已 key 化；欢迎页 9 key 含 en；动态 key **必须** `L10n.key`（禁止 `LocalizationValue("a.\(id)")` 插值）；`developmentRegion=zh-Hans`；@ `398dc74` 已推送
+- [x] **A2**：`DataSchema` 持久化版本号（**`currentVersion = 2`**）；`cardsApp.init` 在 Store 之前 `migrateIfNeeded`；改持久化结构须升版本并写 `runMigrations`；`DataSchemaTests`（v2：语言偏好为新键，缺省跟随系统，无数据改写）
+- [x] **A3**：GitHub Actions CI（`.github/workflows/test.yml`：`macos-15`，push/PR 触发，动态解析 iPhone 模拟器，`-only-testing:cardsTests`，**`-testLanguage en -testRegion US`**）；补共享 scheme；无 secrets
+- [x] **A4**：`BlackjackGame.recordBraveHitProgress(beforeBest:currentBest:)`；`hit` / `doubleDown` / `redrawLastHitCard` 共用
+- [x] **L1**：`Localizable.xcstrings`（zh-Hans + **en 全量约 440 key**）+ `L10n.t` / `L10n.key` / `L10n.format`；缺译回退 zh-Hans；动态 key **必须** `L10n.key`
+- [x] **L3 第一刀**：`PrivacyInfo.xcprivacy`（不追踪 / 无采集 / UserDefaults CA92.1）+ `PrivacyView`（设置「关于」/ 帮助）；上架年龄分级与商店隐私标签仍待提审时填
+- [x] **语言切换**：设置「跟随系统 / 中文 / English」（`AppLanguagePreference`）；立即生效；与系统语言分轨
+- [x] **App 图标**：绯红缎带牌背 45° 扇形铺开（1024、无透明）；正式资源 `AppIcon.appiconset/AppIcon.png`
 
 ### 规划入库（效果未接线）
 - [x] P8 横竖屏 → 见 `docs/P8_ORIENTATION_AND_A11Y.md`（横屏仍后置）
@@ -94,7 +98,7 @@
 
 ## 产品方向（简）
 
-干净练习游戏；免费上 iOS 可轻度广告（后置）。广告不对局中打断；细则见 `ENGINEERING_REVIEW_BACKLOG.md`。
+**公平闯关为主**的干净练习游戏；娱乐道具分轨保留但不作为商店主卖点。免费上 iOS，轻度广告后置。广告不对局中打断；细则见 `ENGINEERING_REVIEW_BACKLOG.md`。
 
 ---
 
@@ -108,7 +112,8 @@
 - `SessionInsurancePanel`：买保险 / 不买
 - `Deck.returnCardToShoe`：回退 `dealtCount`；非空鞋禁止立即原样抽回
 - CI：`.github/workflows/test.yml`（仅 `cardsTests`）；共享 scheme 须入库
-- **L10n：** `Localizable.xcstrings` + `L10n`；扩英文只补 catalog 的 `en`；动态 key 用 `L10n.key`
+- **L10n：** `Localizable.xcstrings`（zh-Hans + en）+ `L10n`；设置可覆盖语言；扩语言只补 catalog；动态 key 用 `L10n.key`
+- **隐私：** `PrivacyInfo.xcprivacy` + `PrivacyView`；版本展示读 `CFBundleShortVersionString`（2.0）
 - 推送前：`./scripts/check-before-push.sh`；勿提交 `VERSION_ROADMAP.txt` / `.env` / 密钥
 - 单测：一次一个 `xcodebuild`，日志落文件，避免叠多个模拟器
 
@@ -116,13 +121,13 @@
 
 ## 建议下一步（按优先级）
 
-1. **系统语言抽查欢迎页英文** + **保险实机抽查**（可选）  
-2. **扩英文**：按屏在 `Localizable.xcstrings` 补 `en`（欢迎页已有）  
-3. **A5**（延后）：道具参数收敛；C5/新道具立项前再做  
-4. **L2 分牌**（须先锁产品）/ T 教学轨 — 见 `OPTIMIZATION_GUIDE`  
-5. 更后：广告专篇 / P8 横屏 / C5 / F10 正片  
+1. **T1 基础策略表**（无 UI，纯查表 + 单测）— 公平闯关的差异化地基  
+2. **T2 局末复盘**（默认关；挂 `SessionCoordinator`）  
+3. **L5 上架素材**（截图 6.7"/6.1"、副标题；图标已有）+ 提审时填年龄分级 / 商店隐私标签  
+4. **L2 分牌**须先锁产品；帮助已写明本版暂不分牌  
+5. 更后：广告专篇 / P8 横屏 / C5 / F10 正片 / A5（新道具前）  
 
-**已推送：** `398dc74`（L1）+ `0fa80e6`（检查点）。**交接：** `NEXT_SESSION_PROMPT.md` · 路线：`OPTIMIZATION_GUIDE.md`。
+**交接：** `NEXT_SESSION_PROMPT.md` · 路线：`OPTIMIZATION_GUIDE.md`。
 
 ---
 
@@ -152,4 +157,7 @@
 | 2026-08-01 | A3：GitHub Actions CI + 共享 `cards` scheme @ `91f1f4c`；push 后确认 Actions 绿 |
 | 2026-08-02 | A4：`recordBraveHitProgress` 去重 @ `0385e2a`；建议下一刀讨论 L1 |
 | 2026-08-04 | L1：String Catalog + 三刀迁移 @ `398dc74`；检查点 `0fa80e6` 已推送；动态 key 用 `L10n.key` |
+| 2026-08-05 | L10n 英文本地缺译回退 @ `6aa8c6b` |
+| 2026-08-30 | 绯红扇形牌背图标 + CI `-testLanguage en` @ `3ae3e74` |
+| 2026-08-30 | v2.0：公平闯关定位；语言切换；en 全量；PrivacyInfo + PrivacyView；DataSchema=2 |
 

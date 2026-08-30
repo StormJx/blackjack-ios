@@ -12,7 +12,7 @@ import Foundation
 /// 本地持久化 schema 版本管理（启动时、各 Store 初始化之前调用）。
 enum DataSchema {
     /// 当前代码期望的 schema 版本。改持久化结构时务必 +1 并写迁移。
-    static let currentVersion = 1
+    static let currentVersion = 2
 
     static let versionKey = "dataSchema.version"
 
@@ -64,6 +64,9 @@ enum DataSchema {
     static func applyMigrationStep(_ step: Int, defaults: UserDefaults) -> Bool {
         switch step {
         case 1:
+            return false
+        case 2:
+            // 语言偏好为新键，缺省即「跟随系统」，无需改写旧数据。
             return false
         default:
             return false

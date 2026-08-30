@@ -51,10 +51,10 @@ struct cardsTests {
     }
 
     @Test func practiceModeLabelsUseChineseDeckNames() {
-        #expect(PracticeMode.singleDeck.shortLabel == "一副牌")
-        #expect(PracticeMode.shoe2.shortLabel == "两副牌")
-        #expect(PracticeMode.shoe6.shortLabel == "六副牌")
-        #expect(PracticeMode.singleDeck.pickerLabel == "一副牌")
+        #expect(PracticeMode.singleDeck.shortLabel == L10n.t("practice.deck.single"))
+        #expect(PracticeMode.shoe2.shortLabel == L10n.t("practice.deck.shoe2"))
+        #expect(PracticeMode.shoe6.shortLabel == L10n.t("practice.deck.shoe6"))
+        #expect(PracticeMode.singleDeck.pickerLabel == L10n.t("practice.deck.single"))
     }
 
     @Test func cutPositionFallsWithinPenetrationRange() {

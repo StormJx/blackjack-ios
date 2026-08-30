@@ -26,9 +26,9 @@ struct DataSchemaTests {
         let defaults = makeDefaults()
         defaults.set(DataSchema.currentVersion, forKey: DataSchema.versionKey)
 
-        #expect(DataSchema.migrateIfNeeded(defaults: defaults) == .alreadyCurrent(version: 1))
-        #expect(DataSchema.migrateIfNeeded(defaults: defaults) == .alreadyCurrent(version: 1))
-        #expect(DataSchema.storedVersion(defaults: defaults) == 1)
+        #expect(DataSchema.migrateIfNeeded(defaults: defaults) == .alreadyCurrent(version: DataSchema.currentVersion))
+        #expect(DataSchema.migrateIfNeeded(defaults: defaults) == .alreadyCurrent(version: DataSchema.currentVersion))
+        #expect(DataSchema.storedVersion(defaults: defaults) == DataSchema.currentVersion)
     }
 
     /// 低版本 → 跑迁移钩子并升到 currentVersion；再次调用不再迁移。
@@ -42,7 +42,7 @@ struct DataSchemaTests {
         let result = DataSchema.migrateIfNeeded(defaults: defaults)
         #expect(result == .migrated(from: 0, to: DataSchema.currentVersion))
         #expect(DataSchema.storedVersion(defaults: defaults) == DataSchema.currentVersion)
-        #expect(DataSchema.migrateIfNeeded(defaults: defaults) == .alreadyCurrent(version: 1))
+        #expect(DataSchema.migrateIfNeeded(defaults: defaults) == .alreadyCurrent(version: DataSchema.currentVersion))
     }
 
     /// runMigrations 在 from < to 时按步执行且不崩溃。
@@ -51,7 +51,7 @@ struct DataSchemaTests {
         DataSchema.runMigrations(from: 0, to: DataSchema.currentVersion, defaults: defaults)
         // 迁移步骤不负责写版本号；由 migrateIfNeeded 写入。
         #expect(DataSchema.storedVersion(defaults: defaults) == nil)
-        #expect(DataSchema.migrateIfNeeded(defaults: defaults) == .freshInstall(wrote: 1))
+        #expect(DataSchema.migrateIfNeeded(defaults: defaults) == .freshInstall(wrote: DataSchema.currentVersion))
     }
 
     private func makeDefaults() -> UserDefaults {

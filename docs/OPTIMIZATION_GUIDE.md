@@ -13,7 +13,7 @@
 |------|------|------|------|
 | 0 | 既定 backlog | ~~UX9 设置提示统一~~ **已完成** | — |
 | 1 | A 工程加固 | ~~A1~~ ~~A2~~ ~~A3~~ ~~A4~~ **已完成** → A5 可穿插（C5/新道具前）；A6 长线 | — |
-| 2 | L 上架准备 | L1 本地化底座 → L2 分牌 → L3 合规 → L4 轻量统计 → L5 素材 | A2 建议先行 |
+| 2 | L 上架准备 | ~~L1~~ **已完成（含 en 全量 + 语言切换）** → L3 第一刀已完成（PrivacyInfo + 应用内说明）→ **L5 素材 / 提审标签**；L2 分牌仍须先锁产品 | A2 已完成 |
 | 3 | T 教学轨 | T1 策略引擎 → T2 局末复盘 → T3 正确率统计 → T4 实时提示 → T5 算牌训练 | A1（复盘挂局末编排） |
 | 4 | M 变现 | M1 广告 → M2 去广告 IAP → M3 外观 IAP | L3（ATT/隐私） |
 | 5 | R 留存 | R1 每日挑战 → R2 iCloud 同步 | 上架后迭代 |
@@ -57,7 +57,8 @@
 4. 单测：首启写入版本；已有版本不重写；模拟低版本 → 迁移钩子被调用。
 
 **验收**：新装与升级路径单测通过。**规模**：小（半刀）。**风险**：低。  
-**状态：已完成（2026-08-01）** — `DataSchema.migrateIfNeeded()` 在 `cardsApp.init` 于各 Store 之前调用；`DataSchemaTests` 覆盖三路径。
+**状态：已完成（2026-08-01）** — `DataSchema.migrateIfNeeded()` 在 `cardsApp.init` 于各 Store 之前调用；`DataSchemaTests` 覆盖三路径。  
+**2026-08-30：** `currentVersion = 2`（语言偏好新键，缺省跟随系统，step 2 无数据改写）。
 
 ### A3 GitHub Actions CI
 
@@ -104,7 +105,7 @@
 4. 注意拼接文案（如 `"解锁\(title)"`、点数读法）改用带插值的 format key。
 
 **验收**：源码无面向用户的裸中文字面量（`rg` 抽查）；UI 显示与现状一致。**规模**：中（2–3 刀）。  
-**状态：已完成（2026-08-04）** — `Localizable.xcstrings`（`sourceLanguage=zh-Hans`）+ `L10n.t` / `L10n.key` / `L10n.format`；欢迎页 9 个 key 含 `en`；动态 key 必须用 `L10n.key`（勿用 `LocalizationValue("a.\(id)")` 插值模板）。工程 `developmentRegion=zh-Hans`。`cardsTests` 已绿。
+**状态：已完成（2026-08-04；2026-08-30 补全）** — `Localizable.xcstrings`（`sourceLanguage=zh-Hans`，**en 约 440 key**）+ `L10n.t` / `L10n.key` / `L10n.format`；缺译回退 zh-Hans；设置「跟随系统 / 中文 / English」。动态 key 必须用 `L10n.key`。`developmentRegion=zh-Hans`。CI 锁定 `-testLanguage en`。
 
 ### L2 P6+ 分牌（既有 backlog 项，上架前建议提优）
 
@@ -226,3 +227,4 @@ App 图标全尺寸、截图（6.7"/6.1" 必备）、副标题与关键词（结
 | 2026-08-01 | A3 完成：GitHub Actions CI + 共享 `cards` scheme；下一刀建议 A4 搭刀或 L1 / 保险抽查 |
 | 2026-08-02 | A4 完成：`recordBraveHitProgress` 去重；可谈 L1 本地化；A5 仍延后至 C5/新道具前 |
 | 2026-08-04 | L1 完成：String Catalog + 三刀文案迁移；欢迎页英文化；动态 key 用 `L10n.key` |
+| 2026-08-30 | v2.0：en 全量 + 语言切换；L3 第一刀 PrivacyInfo / PrivacyView；建议下一刀 T1 |

@@ -14,6 +14,12 @@ struct HelpView: View {
         NavigationStack {
             List {
                 Section {
+                    Text(L10n.t("help.body.positioning"))
+                } header: {
+                    Text(L10n.t("help.section.positioning"))
+                }
+
+                Section {
                     Text(L10n.t("help.body.rules"))
                 } header: {
                     Text(L10n.t("help.section.rules"))
@@ -42,6 +48,7 @@ struct HelpView: View {
 
                 Section {
                     Text(L10n.t("help.body.note"))
+                    Text(L10n.t("help.body.privacy"))
                 } header: {
                     Text(L10n.t("help.section.note"))
                 }
