@@ -1,0 +1,24 @@
+{
+  "sourceLanguage": "zh-Hans",
+  "strings": {
+    "CFBundleDisplayName": {
+      "comment": "主屏幕图标下名称；商店 App 名在 App Store Connect 另填。",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blackjack"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "二十一点"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

@@ -19,7 +19,13 @@ struct cardsApp: App {
     init() {
         // A2：须在各 Store 读 UserDefaults 之前完成 schema 迁移。
         DataSchema.migrateIfNeeded()
-        _appSettings = StateObject(wrappedValue: AppSettings())
+        if let language = StoreScreenshotLaunch.languageRaw,
+           language == "en" || language == "zh-Hans" {
+            UserDefaults.standard.set(language, forKey: "appSettings.languagePreference")
+        }
+        let settings = AppSettings()
+        settings.applyLanguageOverride()
+        _appSettings = StateObject(wrappedValue: settings)
         _statsStore = StateObject(wrappedValue: StatsStore())
         _propStore = StateObject(wrappedValue: PropStore())
         _challengeProgress = StateObject(wrappedValue: ChallengeProgress())

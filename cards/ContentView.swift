@@ -124,6 +124,7 @@ struct ContentView: View {
                     challengeProgress: challengeProgress,
                     cosmeticsStore: cosmeticsStore
                 )
+                applyWelcomeStoreScreenshotIfNeeded()
             }
         }
     }
@@ -241,6 +242,23 @@ struct ContentView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .animation(.easeInOut(duration: 0.22), value: welcomeNotice)
+    }
+
+    private func applyWelcomeStoreScreenshotIfNeeded() {
+        switch StoreScreenshotLaunch.scene {
+        case "settings", "privacy":
+            showSettings = true
+        case "help":
+            showHelp = true
+        case "achievements":
+            showAchievements = true
+        case "stats":
+            showStats = true
+        case "bet", "table":
+            startSession(style: .challenge)
+        default:
+            break
+        }
     }
 
     private func startSession(style: PlayStyle) {
@@ -490,6 +508,13 @@ private struct GameSessionView: View {
             beginInitialFlow()
             if playStyle == .entertainment, propStore.needsGameplayPropsGuide {
                 showPropsGuide = true
+            }
+            if StoreScreenshotLaunch.scene == "table" {
+                let chip = ChipRules.betChipValues.first ?? 100
+                draftBet = min(chip, chipBank.balance)
+                confirmBetAndDeal()
+            } else if StoreScreenshotLaunch.scene == "bet" {
+                draftBet = ChipRules.betChipValues.first ?? 100
             }
         }
     }

@@ -7453,13 +7453,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "本应用为模拟筹码的二十一点练习，不含真实货币赌博。上架时将按模拟赌博相关分级申报。"
+            "value": "本应用为模拟筹码的二十一点练习，不含真实货币赌博。商店年龄分级按模拟赌博申报为 17+。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "This is a practice blackjack game with simulated chips, not real-money gambling. Store age rating will follow simulated-gambling guidelines."
+            "value": "This is a practice blackjack game with simulated chips, not real-money gambling. The store age rating is 17+ for simulated gambling."
           }
         }
       }

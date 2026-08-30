@@ -70,9 +70,11 @@
 - [x] **A3**：GitHub Actions CI（`.github/workflows/test.yml`：`macos-15`，push/PR 触发，动态解析 iPhone 模拟器，`-only-testing:cardsTests`，**`-testLanguage en -testRegion US`**）；补共享 scheme；无 secrets
 - [x] **A4**：`BlackjackGame.recordBraveHitProgress(beforeBest:currentBest:)`；`hit` / `doubleDown` / `redrawLastHitCard` 共用
 - [x] **L1**：`Localizable.xcstrings`（zh-Hans + **en 全量约 440 key**）+ `L10n.t` / `L10n.key` / `L10n.format`；缺译回退 zh-Hans；动态 key **必须** `L10n.key`
-- [x] **L3 第一刀**：`PrivacyInfo.xcprivacy`（不追踪 / 无采集 / UserDefaults CA92.1）+ `PrivacyView`（设置「关于」/ 帮助）；上架年龄分级与商店隐私标签仍待提审时填
+- [x] **L3 第一刀**：`PrivacyInfo.xcprivacy`（不追踪 / 无采集 / UserDefaults CA92.1）+ `PrivacyView`（设置「关于」/ 帮助）；Connect 问卷仍须按 `docs/APP_STORE.md` 勾选
+- [x] **L5 上架素材**：`docs/APP_STORE.md`（副标题 / 描述 / 关键词 / 17+ / 隐私标签）；`store/privacy-policy.html`；6.9″ 截图脚本与样张；主屏幕名「二十一点」/ Blackjack
 - [x] **语言切换**：设置「跟随系统 / 中文 / English」（`AppLanguagePreference`）；立即生效；与系统语言分轨
 - [x] **App 图标**：绯红缎带牌背 45° 扇形铺开（1024、无透明）；正式资源 `AppIcon.appiconset/AppIcon.png`
+- [x] **T1 基础策略表**：`BasicStrategy` 多副 S17 静态查表 + `BasicStrategyTests`；零 UI；输出要/停/加倍/投降/分牌
 
 ### 规划入库（效果未接线）
 - [x] P8 横竖屏 → 见 `docs/P8_ORIENTATION_AND_A11Y.md`（横屏仍后置）
@@ -92,7 +94,7 @@
 | 娱乐阶梯数值 | 试玩后再调 | 当前表保持 |
 | 广告（上架） | 免费 + 轻度广告 | **仅备案**；插点/频控须另点名；见 backlog「产品方向」 |
 
-**明确不做：** 闯关启用玩法道具；娱乐计入闯关成就；默认模式内独立「练习分」。
+**明确不做：** 闯关启用玩法道具；娱乐计入闯关成就；默认模式内独立「练习分」；**T2 局末复盘**。
 
 ---
 
@@ -113,7 +115,9 @@
 - `Deck.returnCardToShoe`：回退 `dealtCount`；非空鞋禁止立即原样抽回
 - CI：`.github/workflows/test.yml`（仅 `cardsTests`）；共享 scheme 须入库
 - **L10n：** `Localizable.xcstrings`（zh-Hans + en）+ `L10n`；设置可覆盖语言；扩语言只补 catalog；动态 key 用 `L10n.key`
-- **隐私：** `PrivacyInfo.xcprivacy` + `PrivacyView`；版本展示读 `CFBundleShortVersionString`（2.0）
+- **T1：** `BasicStrategy` / `StrategyHand` / `StrategyAction`；多副、庄家软 17 停、晚投降；不可用动作走表内回退
+- **隐私：** `PrivacyInfo.xcprivacy` + `PrivacyView` + `store/privacy-policy.html`；版本展示读 `CFBundleShortVersionString`（2.0）
+- **L5：** `docs/APP_STORE.md`；主屏幕 `CFBundleDisplayName`；截图 `store/screenshots/iphone-69/`
 - 推送前：`./scripts/check-before-push.sh`；勿提交 `VERSION_ROADMAP.txt` / `.env` / 密钥
 - 单测：一次一个 `xcodebuild`，日志落文件，避免叠多个模拟器
 
@@ -121,11 +125,10 @@
 
 ## 建议下一步（按优先级）
 
-1. **T1 基础策略表**（无 UI，纯查表 + 单测）— 公平闯关的差异化地基  
-2. **T2 局末复盘**（默认关；挂 `SessionCoordinator`）  
-3. **L5 上架素材**（截图 6.7"/6.1"、副标题；图标已有）+ 提审时填年龄分级 / 商店隐私标签  
-4. **L2 分牌**须先锁产品；帮助已写明本版暂不分牌  
-5. 更后：广告专篇 / P8 横屏 / C5 / F10 正片 / A5（新道具前）  
+1. 把 `store/privacy-policy.html` 托管为公开 URL，并在 Connect 粘贴 L5 文案 / 截图 / 17+ / 隐私标签（见 `docs/APP_STORE.md`）  
+2. **L2 分牌**须先锁产品；帮助已写明本版暂不分牌  
+3. 更后：T3 正确率 / T4 实时提示 / T5 算牌（均须点名）；广告专篇 / P8 横屏 / C5 / F10 正片 / A5  
+4. **T2 局末复盘已取消**，勿再排期  
 
 **交接：** `NEXT_SESSION_PROMPT.md` · 路线：`OPTIMIZATION_GUIDE.md`。
 
@@ -160,4 +163,6 @@
 | 2026-08-05 | L10n 英文本地缺译回退 @ `6aa8c6b` |
 | 2026-08-30 | 绯红扇形牌背图标 + CI `-testLanguage en` @ `3ae3e74` |
 | 2026-08-30 | v2.0 功能 @ `c3df947`：公平闯关定位；语言切换；en 全量；PrivacyInfo + PrivacyView；DataSchema=2 |
+| 2026-08-30 | T1：`BasicStrategy` + 单测；**T2 局末复盘取消**（文档计划删除，无实现代码） |
+| 2026-08-30 | L5：商店填写稿 + 隐私静态页 + 6.9″ 截图；Connect 勾选仍须用户提交 |
 

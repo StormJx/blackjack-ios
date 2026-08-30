@@ -148,6 +148,11 @@ struct SettingsView: View {
             .sheet(isPresented: $showPrivacy) {
                 PrivacyView()
             }
+            .onAppear {
+                if StoreScreenshotLaunch.scene == "privacy" {
+                    showPrivacy = true
+                }
+            }
             .onDisappear {
                 hintClearTask?.cancel()
                 hintClearTask = nil
