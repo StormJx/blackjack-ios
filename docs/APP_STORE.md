@@ -1,6 +1,6 @@
 # App Store 提审填写稿（L5）
 
-> 配合：应用内 `PrivacyView`、`PrivacyInfo.xcprivacy`、静态页 `store/privacy-policy.html`。  
+> 配合：应用内 `PrivacyView`、`PrivacyInfo.xcprivacy`、静态页 `docs/privacy.html`（GitHub Pages 步骤见 `docs/GITHUB_PAGES.md`）。  
 > 截图：`store/screenshots/`（由 `scripts/capture-store-screenshots.sh` 生成）。  
 > **本文件不能代替在 App Store Connect 里点选；按表填写即可。**
 
@@ -121,7 +121,8 @@ App Store Connect → App 信息 → 年龄分级问卷。含**模拟赌博**须
 | 第三方 / 广告 / 分析 SDK | 无 |
 | 使用的 API 声明 | UserDefaults，原因 **CA92.1**（仅本机进度与设置） |
 
-隐私政策 URL：把 `store/privacy-policy.html` 托管后填入（例如 GitHub Pages）。商店**需要**可公开访问的政策页；仅应用内说明不够。
+隐私政策 URL：按 `docs/GITHUB_PAGES.md` 发布后填  
+`https://stormjx.github.io/blackjack-ios/privacy.html`。商店**需要**可公开访问的政策页；仅应用内说明不够。
 
 联系邮箱、技术支持 URL：在 Connect 自行填（可用仓库 Issues 页作临支持）。
 
@@ -133,7 +134,7 @@ App Store Connect → App 信息 → 年龄分级问卷。含**模拟赌博**须
 - [ ] 6.9″ 截图已上传（建议中英各 5 张）
 - [ ] 年龄分级问卷已提交，显示 17+
 - [ ] 隐私标签为「不收集数据」
-- [ ] 隐私政策 URL 可打开，内容与 `store/privacy-policy.html` 一致
+- [ ] 隐私政策 URL 可打开，内容与 `docs/privacy.html` 一致
 - [ ] 出口合规 / 内容版权等其余问卷按实填（本 App 无加密定制、无第三方内容）
 - [ ] 定价：免费；销售范围避开尚未评估的大陆区（若采用该策略）
 

@@ -130,7 +130,7 @@ backlog「阶梯数值试玩后再调」需要数据支撑。第一版**不接�
 ### L5 上架素材
 
 App 图标全尺寸、截图、副标题与关键词、预览文案。纯执行项，放在提审前一刀完成。  
-**状态：已完成（2026-08-30）** — 填写稿 `docs/APP_STORE.md`；静态隐私页 `store/privacy-policy.html`；6.9″ 截图脚本 `scripts/capture-store-screenshots.sh`（2026 年 Connect 必传 6.9″，6.7″/6.1″ 由系统缩放）。副标题走「公平闯关练习 / Fair Challenge Practice」，**不**把尚未上 UI 的 T1 写成 trainer。Connect 里勾选 17+ 与「不收集数据」仍须用户提交。
+**状态：已完成（2026-08-30）** — 填写稿 `docs/APP_STORE.md`；静态隐私页 `docs/privacy.html`（Pages：`docs/GITHUB_PAGES.md`）；6.9″ 截图脚本 `scripts/capture-store-screenshots.sh`（2026 年 Connect 必传 6.9″，6.7″/6.1″ 由系统缩放）。副标题走「公平闯关练习 / Fair Challenge Practice」，**不**把尚未上 UI 的 T1 写成 trainer。Connect 里勾选 17+ 与「不收集数据」仍须用户提交。
 
 ---
 
@@ -231,3 +231,4 @@ App 图标全尺寸、截图、副标题与关键词、预览文案。纯执行�
 | 2026-08-30 | v2.0：en 全量 + 语言切换；L3 第一刀 PrivacyInfo / PrivacyView；建议下一刀 T1 |
 | 2026-08-30 | T1 完成：`BasicStrategy` 静态表 + 单测；**T2 局末复盘取消**（无代码可删）；建议下一刀 L5 |
 | 2026-08-30 | L5：商店文案 / 17+ 与隐私标签稿 / 隐私静态页 / 6.9″ 截图；建议下一刀 L2 讨论或托管隐私 URL |
+| 2026-08-30 | 隐私页迁至 `docs/privacy.html`；GitHub Pages 步骤见 `docs/GITHUB_PAGES.md` |

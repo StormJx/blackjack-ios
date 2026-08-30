@@ -71,7 +71,7 @@
 - [x] **A4**：`BlackjackGame.recordBraveHitProgress(beforeBest:currentBest:)`；`hit` / `doubleDown` / `redrawLastHitCard` 共用
 - [x] **L1**：`Localizable.xcstrings`（zh-Hans + **en 全量约 440 key**）+ `L10n.t` / `L10n.key` / `L10n.format`；缺译回退 zh-Hans；动态 key **必须** `L10n.key`
 - [x] **L3 第一刀**：`PrivacyInfo.xcprivacy`（不追踪 / 无采集 / UserDefaults CA92.1）+ `PrivacyView`（设置「关于」/ 帮助）；Connect 问卷仍须按 `docs/APP_STORE.md` 勾选
-- [x] **L5 上架素材**：`docs/APP_STORE.md`（副标题 / 描述 / 关键词 / 17+ / 隐私标签）；`store/privacy-policy.html`；6.9″ 截图脚本与样张；主屏幕名「二十一点」/ Blackjack
+- [x] **L5 上架素材**：`docs/APP_STORE.md`（副标题 / 描述 / 关键词 / 17+ / 隐私标签）；`docs/privacy.html` + `docs/GITHUB_PAGES.md`；6.9″ 截图脚本与样张；主屏幕名「二十一点」/ Blackjack
 - [x] **语言切换**：设置「跟随系统 / 中文 / English」（`AppLanguagePreference`）；立即生效；与系统语言分轨
 - [x] **App 图标**：绯红缎带牌背 45° 扇形铺开（1024、无透明）；正式资源 `AppIcon.appiconset/AppIcon.png`
 - [x] **T1 基础策略表**：`BasicStrategy` 多副 S17 静态查表 + `BasicStrategyTests`；零 UI；输出要/停/加倍/投降/分牌
@@ -116,7 +116,7 @@
 - CI：`.github/workflows/test.yml`（仅 `cardsTests`）；共享 scheme 须入库
 - **L10n：** `Localizable.xcstrings`（zh-Hans + en）+ `L10n`；设置可覆盖语言；扩语言只补 catalog；动态 key 用 `L10n.key`
 - **T1：** `BasicStrategy` / `StrategyHand` / `StrategyAction`；多副、庄家软 17 停、晚投降；不可用动作走表内回退
-- **隐私：** `PrivacyInfo.xcprivacy` + `PrivacyView` + `store/privacy-policy.html`；版本展示读 `CFBundleShortVersionString`（2.0）
+- **隐私：** `PrivacyInfo.xcprivacy` + `PrivacyView` + `docs/privacy.html`；Pages 步骤见 `docs/GITHUB_PAGES.md`；版本展示读 `CFBundleShortVersionString`（2.0）
 - **L5：** `docs/APP_STORE.md`；主屏幕 `CFBundleDisplayName`；截图 `store/screenshots/iphone-69/`
 - 推送前：`./scripts/check-before-push.sh`；勿提交 `VERSION_ROADMAP.txt` / `.env` / 密钥
 - 单测：一次一个 `xcodebuild`，日志落文件，避免叠多个模拟器
@@ -125,7 +125,7 @@
 
 ## 建议下一步（按优先级）
 
-1. 把 `store/privacy-policy.html` 托管为公开 URL，并在 Connect 粘贴 L5 文案 / 截图 / 17+ / 隐私标签（见 `docs/APP_STORE.md`）  
+1. 按 `docs/GITHUB_PAGES.md` 发布隐私页，并在 Connect 粘贴 L5 文案 / 截图 / 17+ / 隐私标签（见 `docs/APP_STORE.md`）  
 2. **L2 分牌**须先锁产品；帮助已写明本版暂不分牌  
 3. 更后：T3 正确率 / T4 实时提示 / T5 算牌（均须点名）；广告专篇 / P8 横屏 / C5 / F10 正片 / A5  
 4. **T2 局末复盘已取消**，勿再排期  
@@ -165,4 +165,5 @@
 | 2026-08-30 | v2.0 功能 @ `c3df947`：公平闯关定位；语言切换；en 全量；PrivacyInfo + PrivacyView；DataSchema=2 |
 | 2026-08-30 | T1：`BasicStrategy` + 单测；**T2 局末复盘取消**（文档计划删除，无实现代码） |
 | 2026-08-30 | L5：商店填写稿 + 隐私静态页 + 6.9″ 截图；Connect 勾选仍须用户提交 |
+| 2026-08-30 | 隐私页迁至 `docs/privacy.html`，Pages 步骤见 `docs/GITHUB_PAGES.md` |
 

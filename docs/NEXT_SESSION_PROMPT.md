@@ -81,13 +81,13 @@ P6 加倍、P6+ 投降/保险、OPTIMIZATION_GUIDE 入库。
 
 【T1 基础策略】`BasicStrategy` 多副 S17 静态查表 + 单测；零 UI。T2 局末复盘已取消。
 
-【L5 上架】docs/APP_STORE.md；store/privacy-policy.html；6.9″ 截图脚本；主屏幕名「二十一点」/ Blackjack。Connect 勾选须用户提交。
+【L5 上架】docs/APP_STORE.md；docs/privacy.html + docs/GITHUB_PAGES.md；6.9″ 截图脚本；主屏幕名「二十一点」/ Blackjack。Connect 勾选须用户提交。
 
 ================================================================================
 二、待后续完成（须用户点名后再做）— 见 OPTIMIZATION_GUIDE
 ================================================================================
 优先建议：
-1. 托管 store/privacy-policy.html 并在 App Store Connect 粘贴 docs/APP_STORE.md（文案 / 6.9″ 截图 / 17+ / 不收集数据）
+1. 按 docs/GITHUB_PAGES.md 发布隐私页，并在 App Store Connect 粘贴 docs/APP_STORE.md（文案 / 6.9″ 截图 / 17+ / 不收集数据）
 2. L2 分牌须先锁产品（见 OPTIMIZATION_GUIDE L2）
 3. 更后：T3 正确率 / T4 实时提示 / T5 算牌（须点名）；广告专篇 / P8 横屏 / C5 / F10 正片 / A5（新道具前）
 
