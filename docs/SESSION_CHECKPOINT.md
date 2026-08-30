@@ -5,7 +5,7 @@
 > P8：`docs/P8_ORIENTATION_AND_A11Y.md` · 评审批次 backlog：`docs/ENGINEERING_REVIEW_BACKLOG.md`  
 > 后续优化执行路线：`docs/OPTIMIZATION_GUIDE.md`（A 工程加固 / L 上架 / T 教学轨 / M 变现 / R 留存）
 
-**基线：** `main` @ 即将推送的 v2.0 本批（功能 + 检查点；回填 SHA）  
+**基线：** `main` @ `c3df947`（v2.0：语言切换 + en 全量 + 隐私清单；检查点随后同步）  
 工程版本：`MARKETING_VERSION = 2.0` / `CURRENT_PROJECT_VERSION = 2`  
 已推送里程碑：绯红图标 + CI 英文本地 @ `3ae3e74`；L10n 回退 @ `6aa8c6b`；Tag `v1.11.1` @ `12234c5`（UX9）；L1 @ `398dc74`  
 
@@ -159,5 +159,5 @@
 | 2026-08-04 | L1：String Catalog + 三刀迁移 @ `398dc74`；检查点 `0fa80e6` 已推送；动态 key 用 `L10n.key` |
 | 2026-08-05 | L10n 英文本地缺译回退 @ `6aa8c6b` |
 | 2026-08-30 | 绯红扇形牌背图标 + CI `-testLanguage en` @ `3ae3e74` |
-| 2026-08-30 | v2.0：公平闯关定位；语言切换；en 全量；PrivacyInfo + PrivacyView；DataSchema=2 |
+| 2026-08-30 | v2.0 功能 @ `c3df947`：公平闯关定位；语言切换；en 全量；PrivacyInfo + PrivacyView；DataSchema=2 |
 

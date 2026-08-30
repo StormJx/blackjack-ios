@@ -18,7 +18,7 @@ docs/P8_ORIENTATION_AND_A11Y.md。用中文回复。
 一、当前基线
 ================================================================================
 GitHub：https://github.com/StormJx/blackjack-ios
-分支 main；工程 MARKETING_VERSION = 2.0 / CURRENT_PROJECT_VERSION = 2
+分支 main @ `c3df947`；工程 MARKETING_VERSION = 2.0 / CURRENT_PROJECT_VERSION = 2
   - 本批：v2.0 公平闯关定位 + 语言切换 + en 全量 + PrivacyInfo / PrivacyView + DataSchema=2
   - 图标：绯红扇形牌背 @ `3ae3e74`
   - L10n 英文本地缺译回退 @ `6aa8c6b`
