@@ -19,7 +19,7 @@ docs/P8_ORIENTATION_AND_A11Y.md。用中文回复。
 ================================================================================
 GitHub：https://github.com/StormJx/blackjack-ios
 分支 main @ `c3df947`；工程 MARKETING_VERSION = 2.0 / CURRENT_PROJECT_VERSION = 2
-  - 本批：v2.0 公平闯关定位 + 语言切换 + en 全量 + PrivacyInfo / PrivacyView + DataSchema=2
+  - 本批：v2.0 公平闯关定位 + 语言切换 + en 全量 + PrivacyInfo / PrivacyView + DataSchema=3
   - 图标：绯红扇形牌背 @ `3ae3e74`
   - L10n 英文本地缺译回退 @ `6aa8c6b`
   - 更早：L1 @ `398dc74`；Tag `v1.11.1` @ `12234c5`（UX9）；A4 @ `0385e2a`/`6829d42`；
@@ -64,7 +64,7 @@ CI：macos-15；仅 cardsTests；必须带 -testLanguage en -testRegion US。
 P6 加倍、P6+ 投降/保险、OPTIMIZATION_GUIDE 入库。
 
 【A1 SessionCoordinator】局末结算/成就/进度可单测；欢迎页 sync 收敛。
-【A2 DataSchema】currentVersion=2；Store 前迁移；改持久化须升版本。
+【A2 DataSchema】currentVersion=3；Store 前迁移；改持久化须升版本。
 【A3 CI】macos-15；cardsTests；-testLanguage en -testRegion US。
 【A4】recordBraveHitProgress 险中求胜判定去重。
 
@@ -82,6 +82,10 @@ P6 加倍、P6+ 投降/保险、OPTIMIZATION_GUIDE 入库。
 【T1 基础策略】`BasicStrategy` 多副 S17 静态查表 + 单测；零 UI。T2 局末复盘已取消。
 
 【L5 上架】docs/APP_STORE.md；docs/privacy.html + docs/GITHUB_PAGES.md；6.9″ 截图脚本；主屏幕名「二十一点」/ Blackjack。Connect 勾选须用户提交。
+
+【UX10 首局引导】各模式第一次下注页一句「打穿庄家」目标；知道了或确认发牌后分轨持久化。全下倒计时仍用下注页已有 hint，不重复。
+
+【UX11 牌桌 HUD】顶栏「关卡/阶 · 庄家还剩」；状态条按阶段（选注 / 发牌 / 保险 / 轮到你 / 庄家出牌），不再用「等待本局结果」顶玩家回合。
 
 ================================================================================
 二、待后续完成（须用户点名后再做）— 见 OPTIMIZATION_GUIDE
@@ -109,7 +113,7 @@ P6 加倍、P6+ 投降/保险、OPTIMIZATION_GUIDE 入库。
 2. 与用户从第二节点名后再实现；未点名不改；按 OPTIMIZATION_GUIDE 一次一刀。
 3. 若做道具：仅娱乐模式接线；闯关保持禁用。
 4. 若做卡背：只做外观选用/解锁，不改赔率与牌值。
-5. 改持久化结构：必须升 DataSchema.currentVersion 并写迁移（当前为 2）。
+5. 改持久化结构：必须升 DataSchema.currentVersion 并写迁移（当前为 3）。
 6. 改用户可见文案：走 Localizable.xcstrings + L10n；动态 key 用 L10n.key；中英都补。
 7. 改完：可单测补测 → check-before-push.sh → 用户要求才 commit/push；
    勿提交 VERSION_ROADMAP.txt。
@@ -129,6 +133,7 @@ P6 加倍、P6+ 投降/保险、OPTIMIZATION_GUIDE 入库。
 |--------|----|------------|----------|
 | 1 | Connect 提交 L5 | 稿与截图已在仓库 | 托管隐私 URL；粘贴文案 / 17+ / 不收集数据 |
 | 2 | L2 分牌 | 须先产品锁 | 见 OPTIMIZATION_GUIDE L2 |
+| 后置 | 牌桌氛围 / 策略提示 | 须点名 | 绿桌氛围或默认关的 T4 弱提示 |
 | 后置 | T3 / T4 / T5 | 须点名 | 正确率 / 实时提示 / 算牌 |
 | 后置 | 广告 / 横屏 / C5 / F10 / A5 | 未齐 | 未点名不接 SDK |
 

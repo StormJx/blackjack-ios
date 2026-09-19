@@ -25,6 +25,9 @@ struct SessionBetPanel: View {
     let onSelectChip: (Int) -> Void
     let onAllIn: () -> Void
     var onRepeatLastBet: () -> Void = {}
+    /// 首局目标一句；`nil` 不展示（已看过或已确认发牌）。
+    var firstGuideLine: String? = nil
+    var onDismissFirstGuide: () -> Void = {}
     let onConfirm: () -> Void
 
     private var allInUnlocked: Bool {
@@ -78,6 +81,9 @@ struct SessionBetPanel: View {
                         Text(L10n.t("bet.title"))
                             .font(.title2.weight(.semibold))
                             .accessibilityAddTraits(.isHeader)
+                        if let firstGuideLine {
+                            firstGuideBanner(firstGuideLine)
+                        }
                         Text(balanceLine)
                             .font(.headline)
                             .monospacedDigit()
@@ -219,5 +225,29 @@ struct SessionBetPanel: View {
             )
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+    }
+
+    private func firstGuideBanner(_ line: String) -> some View {
+        HStack(alignment: .center, spacing: 10) {
+            Text(line)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(.primary)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
+            Button(L10n.t("guide.first.gotIt")) {
+                GameFeedback.shared.buttonTap()
+                onDismissFirstGuide()
+            }
+            .font(.caption.weight(.semibold))
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+            .accessibilityLabel(L10n.t("guide.first.gotIt"))
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .frame(maxWidth: .infinity)
+        .background(.quaternary.opacity(0.55), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .accessibilityElement(children: .contain)
     }
 }

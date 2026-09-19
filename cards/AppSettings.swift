@@ -60,6 +60,16 @@ final class AppSettings: ObservableObject {
         didSet { persist() }
     }
 
+    /// 闯关首局目标引导已看过（点「知道了」或确认发牌）。
+    @Published var hasSeenChallengeFirstGuide: Bool {
+        didSet { persist() }
+    }
+
+    /// 娱乐首局目标引导已看过。
+    @Published var hasSeenEntertainmentFirstGuide: Bool {
+        didSet { persist() }
+    }
+
     private let defaults: UserDefaults
 
     private enum Keys {
@@ -73,6 +83,8 @@ final class AppSettings: ObservableObject {
         static let haptics = "appSettings.hapticsEnabled"
         static let confirmMidHandAllIn = "appSettings.confirmMidHandAllIn"
         static let language = "appSettings.languagePreference"
+        static let seenChallengeFirstGuide = "appSettings.hasSeenChallengeFirstGuide"
+        static let seenEntertainmentFirstGuide = "appSettings.hasSeenEntertainmentFirstGuide"
     }
 
     init(defaults: UserDefaults = .standard) {
@@ -134,6 +146,9 @@ final class AppSettings: ObservableObject {
             languagePreference = .system
         }
 
+        hasSeenChallengeFirstGuide = defaults.bool(forKey: Keys.seenChallengeFirstGuide)
+        hasSeenEntertainmentFirstGuide = defaults.bool(forKey: Keys.seenEntertainmentFirstGuide)
+
         GameFeedback.shared.soundEnabled = soundEnabled
         GameFeedback.shared.hapticsEnabled = hapticsEnabled
     }
@@ -166,5 +181,25 @@ final class AppSettings: ObservableObject {
         defaults.set(hapticsEnabled, forKey: Keys.haptics)
         defaults.set(confirmMidHandAllIn, forKey: Keys.confirmMidHandAllIn)
         defaults.set(languagePreference.rawValue, forKey: Keys.language)
+        defaults.set(hasSeenChallengeFirstGuide, forKey: Keys.seenChallengeFirstGuide)
+        defaults.set(hasSeenEntertainmentFirstGuide, forKey: Keys.seenEntertainmentFirstGuide)
+    }
+
+    func markFirstSessionGuideSeen(for playStyle: PlayStyle) {
+        switch playStyle {
+        case .challenge:
+            guard !hasSeenChallengeFirstGuide else { return }
+            hasSeenChallengeFirstGuide = true
+        case .entertainment:
+            guard !hasSeenEntertainmentFirstGuide else { return }
+            hasSeenEntertainmentFirstGuide = true
+        }
+    }
+
+    func hasSeenFirstSessionGuide(for playStyle: PlayStyle) -> Bool {
+        switch playStyle {
+        case .challenge: return hasSeenChallengeFirstGuide
+        case .entertainment: return hasSeenEntertainmentFirstGuide
+        }
     }
 }

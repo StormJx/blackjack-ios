@@ -317,6 +317,10 @@ private struct GameSessionView: View {
     @StateObject private var coordinator: SessionCoordinator
     let practiceMode: PracticeMode
     let playStyle: PlayStyle
+    /// 本会话关卡/阶梯庄家起始池，供首局目标一句使用。
+    let sessionDealerStart: Int
+    /// 本会话关卡 / 娱乐阶，供牌桌顶栏目标使用。
+    let sessionStageLevel: Int
     @ObservedObject var propStore: PropStore
     @ObservedObject var cosmeticsStore: CosmeticsStore
     /// `true`：破产「返回主页」后提示进度已清空；主动退出叉号则为 `false`。
@@ -365,12 +369,16 @@ private struct GameSessionView: View {
         switch playStyle {
         case .challenge:
             let stage = challengeProgress.currentStage
+            self.sessionDealerStart = stage.dealerStart
+            self.sessionStageLevel = stage.level
             bank = ChipBank(
                 startingBalance: stage.playerStart,
                 dealerStartingBank: stage.dealerStart
             )
         case .entertainment:
             let stage = entertainmentProgress.currentStage
+            self.sessionDealerStart = stage.dealerStart
+            self.sessionStageLevel = stage.level
             let suiteName = "cards.chipBank.entertainment"
             let suite = UserDefaults(suiteName: suiteName) ?? .standard
             bank = ChipBank(
@@ -566,6 +574,12 @@ private struct GameSessionView: View {
             onSelectChip: selectChip,
             onAllIn: applyPreDealAllIn,
             onRepeatLastBet: applyRepeatLastBet,
+            firstGuideLine: appSettings.hasSeenFirstSessionGuide(for: playStyle)
+                ? nil
+                : FirstSessionGuide.goalLine(playStyle: playStyle, dealerStart: sessionDealerStart),
+            onDismissFirstGuide: {
+                appSettings.markFirstSessionGuideSeen(for: playStyle)
+            },
             onConfirm: confirmBetAndDeal
         )
     }
@@ -616,6 +630,7 @@ private struct GameSessionView: View {
             game: game,
             chipBank: chipBank,
             playStyle: playStyle,
+            sessionStageLevel: sessionStageLevel,
             showBetPanel: showBetSheet,
             showRoundEndPanel: showRoundEndSheet,
             canHit: canHit,
@@ -859,6 +874,7 @@ private struct GameSessionView: View {
 
     private func confirmBetAndDeal() {
         guard chipBank.placeBet(draftBet) else { return }
+        appSettings.markFirstSessionGuideSeen(for: playStyle)
         if playStyle == .entertainment {
             lastConfirmedBet = draftBet
         }

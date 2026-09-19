@@ -66,7 +66,7 @@
 - [x] **P8-1** 无障碍第一切片：下注/局末可滚动 + 粘性主按钮；VoiceOver（点数/余额/注码/结果/要牌停牌/道具具体禁用原因）；欢迎标题动态字体；洗牌页尊重减弱动态效果；设置页去开发者音效文案
 - [x] **Q2**：`GameTiming` / `GameFeedbackServing` 注入；`SessionConfiguration`；`cancelPendingWork()`；天然 BJ / hit 爆牌 / 软 17 默认停与道具要 / 牌尽 fallback 单测
 - [x] **A1**：`SessionCoordinator` 抽取局末结算/成就/进度/卡背同步；欢迎页 `syncOnAppAppear` / `syncProgressAndCosmetics`；`SessionCoordinatorTests` 四类场景
-- [x] **A2**：`DataSchema` 持久化版本号（**`currentVersion = 2`**）；`cardsApp.init` 在 Store 之前 `migrateIfNeeded`；改持久化结构须升版本并写 `runMigrations`；`DataSchemaTests`（v2：语言偏好为新键，缺省跟随系统，无数据改写）
+- [x] **A2**：`DataSchema` 持久化版本号（**`currentVersion = 3`**）；`cardsApp.init` 在 Store 之前 `migrateIfNeeded`；改持久化结构须升版本并写 `runMigrations`；`DataSchemaTests`（v2 语言偏好 / v3 首局引导均为新键，缺省无需改写）
 - [x] **A3**：GitHub Actions CI（`.github/workflows/test.yml`：`macos-15`，push/PR 触发，动态解析 iPhone 模拟器，`-only-testing:cardsTests`，**`-testLanguage en -testRegion US`**）；补共享 scheme；无 secrets
 - [x] **A4**：`BlackjackGame.recordBraveHitProgress(beforeBest:currentBest:)`；`hit` / `doubleDown` / `redrawLastHitCard` 共用
 - [x] **L1**：`Localizable.xcstrings`（zh-Hans + **en 全量约 440 key**）+ `L10n.t` / `L10n.key` / `L10n.format`；缺译回退 zh-Hans；动态 key **必须** `L10n.key`
@@ -75,6 +75,8 @@
 - [x] **语言切换**：设置「跟随系统 / 中文 / English」（`AppLanguagePreference`）；立即生效；与系统语言分轨
 - [x] **App 图标**：绯红缎带牌背 45° 扇形铺开（1024、无透明）；正式资源 `AppIcon.appiconset/AppIcon.png`
 - [x] **T1 基础策略表**：`BasicStrategy` 多副 S17 静态查表 + `BasicStrategyTests`；零 UI；输出要/停/加倍/投降/分牌
+- [x] **UX10 首局引导**：各模式第一次下注页一句「打穿庄家」目标；「知道了」或确认发牌后分轨持久化；不重复全下倒计时（下注页已有 `preDealAllInLockHint`）
+- [x] **UX11 牌桌目标 / 状态条**：顶栏 `关卡 · 庄家还剩`；玩家回合不再写「等待本局结果」，按阶段显示轮到你 / 庄家出牌 / 发牌 / 保险 / 选注
 
 ### 规划入库（效果未接线）
 - [x] P8 横竖屏 → 见 `docs/P8_ORIENTATION_AND_A11Y.md`（横屏仍后置）
@@ -116,6 +118,8 @@
 - CI：`.github/workflows/test.yml`（仅 `cardsTests`）；共享 scheme 须入库
 - **L10n：** `Localizable.xcstrings`（zh-Hans + en）+ `L10n`；设置可覆盖语言；扩语言只补 catalog；动态 key 用 `L10n.key`
 - **T1：** `BasicStrategy` / `StrategyHand` / `StrategyAction`；多副、庄家软 17 停、晚投降；不可用动作走表内回退
+- **UX10：** `FirstSessionGuide` + `AppSettings.hasSeenChallengeFirstGuide` / `hasSeenEntertainmentFirstGuide`；`DataSchema` v3
+- **UX11：** `TableHUD` 顶栏目标 + 阶段状态文案；`table.waitingResult` 不再用于玩家回合
 - **隐私：** `PrivacyInfo.xcprivacy` + `PrivacyView` + `docs/privacy.html`；Pages 步骤见 `docs/GITHUB_PAGES.md`；版本展示读 `CFBundleShortVersionString`（2.0）
 - **L5：** `docs/APP_STORE.md`；主屏幕 `CFBundleDisplayName`；截图 `store/screenshots/iphone-69/`
 - 推送前：`./scripts/check-before-push.sh`；勿提交 `VERSION_ROADMAP.txt` / `.env` / 密钥
@@ -127,8 +131,9 @@
 
 1. 按 `docs/GITHUB_PAGES.md` 发布隐私页，并在 Connect 粘贴 L5 文案 / 截图 / 17+ / 隐私标签（见 `docs/APP_STORE.md`）  
 2. **L2 分牌**须先锁产品；帮助已写明本版暂不分牌  
-3. 更后：T3 正确率 / T4 实时提示 / T5 算牌（均须点名）；广告专篇 / P8 横屏 / C5 / F10 正片 / A5  
-4. **T2 局末复盘已取消**，勿再排期  
+3. 体验后置（须点名）：牌桌氛围或默认关的策略提示  
+4. 更后：T3 正确率 / T4 实时提示 / T5 算牌（均须点名）；广告专篇 / P8 横屏 / C5 / F10 正片 / A5  
+5. **T2 局末复盘已取消**，勿再排期  
 
 **交接：** `NEXT_SESSION_PROMPT.md` · 路线：`OPTIMIZATION_GUIDE.md`。
 
@@ -166,4 +171,6 @@
 | 2026-08-30 | T1：`BasicStrategy` + 单测；**T2 局末复盘取消**（文档计划删除，无实现代码） |
 | 2026-08-30 | L5：商店填写稿 + 隐私静态页 + 6.9″ 截图；Connect 勾选仍须用户提交 |
 | 2026-08-30 | 隐私页迁至 `docs/privacy.html`，Pages 步骤见 `docs/GITHUB_PAGES.md` |
+| 2026-09-19 | UX10 首局引导：下注页一句目标；DataSchema=3；桌面目标/状态栏与氛围后置 |
+| 2026-09-19 | UX11 牌桌顶栏目标 + 状态条按阶段改文案；氛围仍后置 |
 

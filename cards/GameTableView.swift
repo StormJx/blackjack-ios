@@ -11,6 +11,7 @@ struct GameTableView: View {
     @ObservedObject var game: BlackjackGame
     @ObservedObject var chipBank: ChipBank
     let playStyle: PlayStyle
+    let sessionStageLevel: Int
     let showBetPanel: Bool
     let showRoundEndPanel: Bool
     let canHit: Bool
@@ -122,6 +123,16 @@ struct GameTableView: View {
                     .foregroundStyle(.secondary)
                     .monospacedDigit()
                 if playStyle.showsChips {
+                    Text(
+                        TableHUD.goalLine(
+                            playStyle: playStyle,
+                            level: sessionStageLevel,
+                            dealerRemaining: chipBank.dealerBank
+                        )
+                    )
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
                     HStack(spacing: 8) {
                         Text(L10n.format("table.youFormat", chipBank.balance))
                             .font(.caption.weight(.semibold))
@@ -250,13 +261,13 @@ struct GameTableView: View {
         let propHint = game.propActionHint
         let hasOutcome = game.lastOutcome != nil && !sheetOwnsResult
         let color = game.lastOutcome?.statusColor ?? .secondary
-        let icon = game.lastOutcome?.statusIconName ?? "hourglass.circle.fill"
+        let icon = game.lastOutcome?.statusIconName ?? TableHUD.phaseStatusIcon(phase: game.phase)
         let statusText: String = {
             if peeking { return L10n.t("table.peeking") }
             if sheetOwnsResult { return L10n.t("table.roundOver") }
             if hasOutcome { return game.outcomeMessage }
             if let propHint { return propHint }
-            return L10n.t("table.waitingResult")
+            return TableHUD.phaseStatusLine(phase: game.phase)
         }()
         let statusColor: Color = {
             if peeking { return .orange }

@@ -68,8 +68,17 @@ struct E1E4FeatureTests {
         #expect(reloaded.soundEnabled == false)
         #expect(reloaded.hapticsEnabled == false)
         #expect(reloaded.confirmMidHandAllIn == false)
+        #expect(reloaded.hasSeenChallengeFirstGuide == false)
+        #expect(reloaded.hasSeenEntertainmentFirstGuide == false)
         #expect(reloaded.tableLimitPreset == .standard)
         #expect(reloaded.tableLimitsSummary.contains("100"))
+
+        settings.markFirstSessionGuideSeen(for: .challenge)
+        let afterGuide = AppSettings(defaults: defaults)
+        #expect(afterGuide.hasSeenChallengeFirstGuide == true)
+        #expect(afterGuide.hasSeenEntertainmentFirstGuide == false)
+        #expect(afterGuide.hasSeenFirstSessionGuide(for: .challenge) == true)
+        #expect(afterGuide.hasSeenFirstSessionGuide(for: .entertainment) == false)
 
         settings.tableLimitPreset = .light
         settings.cutCardMode = .ceremonial

@@ -36,8 +36,10 @@ struct DataSchemaTests {
         let defaults = makeDefaults()
         defaults.set(0, forKey: DataSchema.versionKey)
 
-        // 钩子：from 0→1 时 step 1 可被单独调用（基线空步返回 false）。
+        // 钩子：空步返回 false；v3 首局引导为新键，无需改写。
         #expect(DataSchema.applyMigrationStep(1, defaults: defaults) == false)
+        #expect(DataSchema.applyMigrationStep(2, defaults: defaults) == false)
+        #expect(DataSchema.applyMigrationStep(3, defaults: defaults) == false)
 
         let result = DataSchema.migrateIfNeeded(defaults: defaults)
         #expect(result == .migrated(from: 0, to: DataSchema.currentVersion))

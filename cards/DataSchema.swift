@@ -12,7 +12,7 @@ import Foundation
 /// 本地持久化 schema 版本管理（启动时、各 Store 初始化之前调用）。
 enum DataSchema {
     /// 当前代码期望的 schema 版本。改持久化结构时务必 +1 并写迁移。
-    static let currentVersion = 2
+    static let currentVersion = 3
 
     static let versionKey = "dataSchema.version"
 
@@ -50,7 +50,7 @@ enum DataSchema {
     }
 
     /// 分步迁移：依次执行 `from+1 ... to`。
-    /// 当前无实质步骤（version 1 为基线）；升到 2 时在 `applyMigrationStep(2, ...)` 写具体逻辑。
+    /// 当前无实质数据改写（version 1 为基线；2 语言偏好、3 首局引导均为新键缺省）。
     static func runMigrations(from: Int, to: Int, defaults: UserDefaults) {
         guard from < to else { return }
         for step in (from + 1)...to {
@@ -67,6 +67,9 @@ enum DataSchema {
             return false
         case 2:
             // 语言偏好为新键，缺省即「跟随系统」，无需改写旧数据。
+            return false
+        case 3:
+            // 首局引导为新键，缺省未看过，无需改写旧数据。
             return false
         default:
             return false

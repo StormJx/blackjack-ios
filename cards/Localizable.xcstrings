@@ -4183,6 +4183,57 @@
         }
       }
     },
+    "guide.first.challengeFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目标：打穿庄家 %d"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Goal: clear the dealer bank (%d)"
+          }
+        }
+      }
+    },
+    "guide.first.entertainmentFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本阶目标：打穿庄家 %d"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stage goal: clear the dealer bank (%d)"
+          }
+        }
+      }
+    },
+    "guide.first.gotIt": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "知道了"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Got it"
+          }
+        }
+      }
+    },
     "help.body.challenge1": {
       "extractionState": "manual",
       "localizations": {
@@ -6716,6 +6767,23 @@
         }
       }
     },
+    "table.goal.remainingFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · 庄家还剩 %d"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · dealer has %d left"
+          }
+        }
+      }
+    },
     "table.idleHint": {
       "extractionState": "manual",
       "localizations": {
@@ -6780,6 +6848,91 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hand over"
+          }
+        }
+      }
+    },
+    "table.status.dealerTurn": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "庄家出牌中"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealer is playing"
+          }
+        }
+      }
+    },
+    "table.status.dealing": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "发牌中…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dealing…"
+          }
+        }
+      }
+    },
+    "table.status.insurance": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择是否买保险"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose insurance"
+          }
+        }
+      }
+    },
+    "table.status.pickBet": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择注码"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose your bet"
+          }
+        }
+      }
+    },
+    "table.status.yourTurn": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轮到你出牌"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your turn"
           }
         }
       }

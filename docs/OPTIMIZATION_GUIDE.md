@@ -58,7 +58,8 @@
 
 **验收**：新装与升级路径单测通过。**规模**：小（半刀）。**风险**：低。  
 **状态：已完成（2026-08-01）** — `DataSchema.migrateIfNeeded()` 在 `cardsApp.init` 于各 Store 之前调用；`DataSchemaTests` 覆盖三路径。  
-**2026-08-30：** `currentVersion = 2`（语言偏好新键，缺省跟随系统，step 2 无数据改写）。
+**2026-08-30：** `currentVersion = 2`（语言偏好新键，缺省跟随系统，step 2 无数据改写）。  
+**2026-09-19：** `currentVersion = 3`（首局引导新键，缺省未看过，step 3 无数据改写）。
 
 ### A3 GitHub Actions CI
 
@@ -232,3 +233,5 @@ App 图标全尺寸、截图、副标题与关键词、预览文案。纯执行�
 | 2026-08-30 | T1 完成：`BasicStrategy` 静态表 + 单测；**T2 局末复盘取消**（无代码可删）；建议下一刀 L5 |
 | 2026-08-30 | L5：商店文案 / 17+ 与隐私标签稿 / 隐私静态页 / 6.9″ 截图；建议下一刀 L2 讨论或托管隐私 URL |
 | 2026-08-30 | 隐私页迁至 `docs/privacy.html`；GitHub Pages 步骤见 `docs/GITHUB_PAGES.md` |
+| 2026-09-19 | UX10 首局引导：下注页一句「打穿庄家」；DataSchema=3；不重复全下倒计时 |
+| 2026-09-19 | UX11 牌桌目标 / 状态条：`TableHUD`；玩家回合不再「等待本局结果」 |
