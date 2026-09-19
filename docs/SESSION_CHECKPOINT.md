@@ -77,6 +77,7 @@
 - [x] **T1 基础策略表**：`BasicStrategy` 多副 S17 静态查表 + `BasicStrategyTests`；零 UI；输出要/停/加倍/投降/分牌
 - [x] **UX10 首局引导**：各模式第一次下注页一句「打穿庄家」目标；「知道了」或确认发牌后分轨持久化；不重复全下倒计时（下注页已有 `preDealAllInLockHint`）
 - [x] **UX11 牌桌目标 / 状态条**：顶栏 `关卡 · 庄家还剩`；玩家回合不再写「等待本局结果」，按阶段显示轮到你 / 庄家出牌 / 发牌 / 保险 / 选注
+- [x] **UX12 收尾三刀**：打穿回主页不再「进度已清空」；对局与欢迎页共用绿绒；下注默认选中可负担档，「继续」改为「再下一注」
 
 ### 规划入库（效果未接线）
 - [x] P8 横竖屏 → 见 `docs/P8_ORIENTATION_AND_A11Y.md`（横屏仍后置）
@@ -120,6 +121,7 @@
 - **T1：** `BasicStrategy` / `StrategyHand` / `StrategyAction`；多副、庄家软 17 停、晚投降；不可用动作走表内回退
 - **UX10：** `FirstSessionGuide` + `AppSettings.hasSeenChallengeFirstGuide` / `hasSeenEntertainmentFirstGuide`；`DataSchema` v3
 - **UX11：** `TableHUD` 顶栏目标 + 阶段状态文案；`table.waitingResult` 不再用于玩家回合
+- **UX12：** `ChipRules.shouldShowSessionEndReturnHint` / `defaultDraftBet`；`FeltBackgroundView` 欢迎/对局共用
 - **隐私：** `PrivacyInfo.xcprivacy` + `PrivacyView` + `docs/privacy.html`；Pages 步骤见 `docs/GITHUB_PAGES.md`；版本展示读 `CFBundleShortVersionString`（2.0）
 - **L5：** `docs/APP_STORE.md`；主屏幕 `CFBundleDisplayName`；截图 `store/screenshots/iphone-69/`
 - 推送前：`./scripts/check-before-push.sh`；勿提交 `VERSION_ROADMAP.txt` / `.env` / 密钥
@@ -131,7 +133,7 @@
 
 1. 按 `docs/GITHUB_PAGES.md` 发布隐私页，并在 Connect 粘贴 L5 文案 / 截图 / 17+ / 隐私标签（见 `docs/APP_STORE.md`）  
 2. **L2 分牌**须先锁产品；帮助已写明本版暂不分牌  
-3. 体验后置（须点名）：牌桌氛围或默认关的策略提示  
+3. 体验后置（须点名）：默认关的策略提示  
 4. 更后：T3 正确率 / T4 实时提示 / T5 算牌（均须点名）；广告专篇 / P8 横屏 / C5 / F10 正片 / A5  
 5. **T2 局末复盘已取消**，勿再排期  
 
@@ -173,4 +175,5 @@
 | 2026-08-30 | 隐私页迁至 `docs/privacy.html`，Pages 步骤见 `docs/GITHUB_PAGES.md` |
 | 2026-09-19 | UX10 首局引导：下注页一句目标；DataSchema=3；桌面目标/状态栏与氛围后置 |
 | 2026-09-19 | UX11 牌桌顶栏目标 + 状态条按阶段改文案；氛围仍后置 |
+| 2026-09-19 | UX12：破产才提示会话结束；绿绒对局底；默认注档 +「再下一注」 |
 

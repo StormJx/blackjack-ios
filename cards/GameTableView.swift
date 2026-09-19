@@ -50,6 +50,7 @@ struct GameTableView: View {
     let onSoft17Hit: () -> Void
     let onRedrawOne: () -> Void
     let onReshuffleDealerCard: () -> Void
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(spacing: 0) {
@@ -98,7 +99,21 @@ struct GameTableView: View {
         .background {
             RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .fill(.regularMaterial)
-                .shadow(color: .black.opacity(0.06), radius: 24, x: 0, y: 12)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .fill(
+                            Color(red: 0.12, green: 0.42, blue: 0.28)
+                                .opacity(colorScheme == .dark ? 0.22 : 0.10)
+                        )
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .strokeBorder(
+                            Color(red: 0.18, green: 0.50, blue: 0.32).opacity(0.35),
+                            lineWidth: 1
+                        )
+                )
+                .shadow(color: .black.opacity(0.16), radius: 24, x: 0, y: 12)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)

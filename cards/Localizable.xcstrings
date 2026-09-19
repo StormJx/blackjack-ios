@@ -3220,13 +3220,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "进度已清空，可重新开始。"
+            "value": "本会话已结束，可再开一局。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Progress cleared. You can start again."
+            "value": "This session is over. You can start another."
           }
         }
       }
@@ -5056,13 +5056,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "继续"
+            "value": "再下一注"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Continue"
+            "value": "Bet again"
           }
         }
       }

@@ -239,6 +239,27 @@ struct ChipSettlementTests {
         #expect(ChipRules.canSelectBetChip(100, balance: 150))
     }
 
+    @Test func defaultDraftBetPicksAffordableChipThenPreferred() {
+        ActiveTableLimits.apply(.standard)
+        defer { ActiveTableLimits.apply(.standard) }
+
+        #expect(ChipRules.defaultDraftBet(balance: 1000) == 100)
+        #expect(ChipRules.defaultDraftBet(balance: 150) == 100)
+        #expect(ChipRules.defaultDraftBet(balance: 1000, preferred: 200) == 200)
+        #expect(ChipRules.defaultDraftBet(balance: 150, preferred: 200) == 100)
+        #expect(ChipRules.defaultDraftBet(balance: 50) == 0)
+    }
+
+    @Test func sessionEndReturnHintOnlyForPlayerBroke() {
+        #expect(ChipRules.shouldShowSessionEndReturnHint(reason: .playerBroke))
+        #expect(ChipRules.shouldShowSessionEndReturnHint(reason: .dealerBroke) == false)
+        #expect(ChipRules.shouldShowSessionEndReturnHint(reason: nil) == false)
+        #expect(L10n.t("chips.sessionClearedHint", language: "zh-Hans") == "本会话已结束，可再开一局。")
+        #expect(L10n.t("chips.sessionClearedHint", language: "en") == "This session is over. You can start another.")
+        #expect(L10n.t("playStyle.continue", language: "zh-Hans") == "再下一注")
+        #expect(L10n.t("playStyle.continue", language: "en") == "Bet again")
+    }
+
     @Test func preDealAllInRequiresUnlockAndNoChipSelection() {
         ActivePreDealAllInUnlock.apply(5)
         defer { ActivePreDealAllInUnlock.apply(ChipRules.defaultPreDealAllInUnlockCompletedRounds) }

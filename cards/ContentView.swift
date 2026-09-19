@@ -774,7 +774,8 @@ private struct GameSessionView: View {
     }
 
     private func prepareBetDraft() {
-        draftBet = 0
+        let preferred = playStyle == .entertainment ? lastConfirmedBet : nil
+        draftBet = ChipRules.defaultDraftBet(balance: chipBank.balance, preferred: preferred)
     }
 
     private func clearDraftBet() {
@@ -927,8 +928,9 @@ private struct GameSessionView: View {
         game.cancelPendingWork()
         unlockNotices = []
         chipBank.acknowledgeRestoreHint()
+        let showEndHint = ChipRules.shouldShowSessionEndReturnHint(reason: chipBank.sessionEndReason)
         chipBank.abandonSession()
-        onEndSession(true)
+        onEndSession(showEndHint)
     }
 
     private func abandonSessionToWelcome() {
@@ -1051,18 +1053,31 @@ private struct ShuffleScreenOverlay: View {
 // MARK: - 欢迎页背景（牌桌绿）
 
 private struct WelcomeBackgroundView: View {
+    var body: some View {
+        FeltBackgroundView()
+    }
+}
+
+// MARK: - 牌桌背景（与欢迎页同一块绿绒）
+
+private struct TableBackgroundView: View {
+    var body: some View {
+        FeltBackgroundView()
+    }
+}
+
+/// 赌场绒布绿：欢迎页与对局外层共用，避免进桌后变成灰底。
+private struct FeltBackgroundView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         let isDark = colorScheme == .dark
         ZStack {
-            // 主色：赌场绒布绿（深色模式下略压暗）
             Color(
                 red: isDark ? 0.08 : 0.12,
                 green: isDark ? 0.28 : 0.42,
                 blue: isDark ? 0.18 : 0.28
             )
-            // 轻微微光，避免死板平涂
             RadialGradient(
                 colors: [
                     Color.white.opacity(isDark ? 0.06 : 0.10),
@@ -1072,54 +1087,10 @@ private struct WelcomeBackgroundView: View {
                 startRadius: 20,
                 endRadius: 420
             )
-            // 底部略暗，托住主按钮区
             LinearGradient(
                 colors: [
                     Color.clear,
                     Color.black.opacity(isDark ? 0.28 : 0.18),
-                ],
-                startPoint: .center,
-                endPoint: .bottom
-            )
-        }
-        .ignoresSafeArea()
-    }
-}
-
-// MARK: - 牌桌背景
-
-private struct TableBackgroundView: View {
-    @Environment(\.colorScheme) private var colorScheme
-
-    var body: some View {
-        let isDark = colorScheme == .dark
-        ZStack {
-            LinearGradient(
-                colors: isDark
-                    ? [
-                        Color(red: 0.10, green: 0.12, blue: 0.16),
-                        Color(red: 0.06, green: 0.08, blue: 0.11),
-                    ]
-                    : [
-                        Color(red: 0.94, green: 0.95, blue: 0.97),
-                        Color(red: 0.86, green: 0.88, blue: 0.93),
-                    ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            RadialGradient(
-                colors: [
-                    (isDark ? Color.white.opacity(0.08) : Color.white.opacity(0.55)),
-                    Color.clear,
-                ],
-                center: UnitPoint(x: 0.15, y: 0.1),
-                startRadius: 40,
-                endRadius: 520
-            )
-            LinearGradient(
-                colors: [
-                    Color.clear,
-                    Color.black.opacity(isDark ? 0.28 : 0.04),
                 ],
                 startPoint: .center,
                 endPoint: .bottom

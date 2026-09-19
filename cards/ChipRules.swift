@@ -44,6 +44,19 @@ enum ChipRules {
         betChipValues.contains(value) && value >= minimumBet && value <= balance
     }
 
+    /// 下注页默认档：优先 `preferred`（娱乐同上局），否则最小可负担档。
+    static func defaultDraftBet(balance: Int, preferred: Int? = nil) -> Int {
+        if let preferred, canSelectBetChip(preferred, balance: balance) {
+            return preferred
+        }
+        return betChipValues.first { canSelectBetChip($0, balance: balance) } ?? 0
+    }
+
+    /// 回主页是否提示本会话结束：仅玩家破产。打穿不提示，避免像进度被抹掉。
+    static func shouldShowSessionEndReturnHint(reason: SessionEndReason?) -> Bool {
+        reason == .playerBroke
+    }
+
     /// 开局下注页是否满足「全下」基础条件（余额 ≥ 最小注）。
     static func canPreDealAllIn(balance: Int) -> Bool {
         balance >= minimumBet
@@ -72,7 +85,7 @@ enum ChipRules {
         return L10n.format("chips.preDealAllInLockFormat", left)
     }
 
-    /// 破产回主页后欢迎页短提示。
+    /// 玩家破产回主页后的短提示（打穿不走这句）。
     static var sessionClearedReturnHomeHint: String { L10n.t("chips.sessionClearedHint") }
 
     /// 产品锁定：天然黑杰克开局见牌即结算，不进入玩家回合。
