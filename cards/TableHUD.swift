@@ -8,15 +8,14 @@
 import Foundation
 
 enum TableHUD {
-    static func goalLine(playStyle: PlayStyle, level: Int, dealerRemaining: Int) -> String {
-        let title: String
+    /// 顶栏只写关卡/阶名。庄家池数字留在余额行，避免同一数字出现两次。
+    static func goalLine(playStyle: PlayStyle, level: Int) -> String {
         switch playStyle {
         case .challenge:
-            title = ChallengeRules.stage(level: level).title
+            return ChallengeRules.stage(level: level).title
         case .entertainment:
-            title = EntertainmentRules.stage(level: level).title
+            return EntertainmentRules.stage(level: level).title
         }
-        return L10n.format("table.goal.remainingFormat", title, dealerRemaining)
     }
 
     static func phaseStatusLine(phase: BlackjackGame.Phase) -> String {

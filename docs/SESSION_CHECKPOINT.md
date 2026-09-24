@@ -76,8 +76,9 @@
 - [x] **App 图标**：绯红缎带牌背 45° 扇形铺开（1024、无透明）；正式资源 `AppIcon.appiconset/AppIcon.png`
 - [x] **T1 基础策略表**：`BasicStrategy` 多副 S17 静态查表 + `BasicStrategyTests`；零 UI；输出要/停/加倍/投降/分牌
 - [x] **UX10 首局引导**：各模式第一次下注页一句「打穿庄家」目标；「知道了」或确认发牌后分轨持久化；不重复全下倒计时（下注页已有 `preDealAllInLockHint`）
-- [x] **UX11 牌桌目标 / 状态条**：顶栏 `关卡 · 庄家还剩`；玩家回合不再写「等待本局结果」，按阶段显示轮到你 / 庄家出牌 / 发牌 / 保险 / 选注
+- [x] **UX11 牌桌目标 / 状态条**：顶栏关卡名（UX13 起不再重复庄家池）；玩家回合不再写「等待本局结果」，按阶段显示轮到你 / 庄家出牌 / 发牌 / 保险 / 选注
 - [x] **UX12 收尾三刀**：打穿回主页不再「进度已清空」；对局与欢迎页共用绿绒；下注默认选中可负担档，「继续」改为「再下一注」
+- [x] **UX13 进度与牌副**：局末一行距下一关；欢迎页一行当前牌副与切牌；顶栏只留关卡名，庄家池只在余额行
 
 ### 规划入库（效果未接线）
 - [x] P8 横竖屏 → 见 `docs/P8_ORIENTATION_AND_A11Y.md`（横屏仍后置）
@@ -122,6 +123,7 @@
 - **UX10：** `FirstSessionGuide` + `AppSettings.hasSeenChallengeFirstGuide` / `hasSeenEntertainmentFirstGuide`；`DataSchema` v3
 - **UX11：** `TableHUD` 顶栏目标 + 阶段状态文案；`table.waitingResult` 不再用于玩家回合
 - **UX12：** `ChipRules.shouldShowSessionEndReturnHint` / `defaultDraftBet`；`FeltBackgroundView` 欢迎/对局共用
+- **UX13：** `SessionProgress.gapLine` 局末距下一关；`WelcomeChrome.setupLine`；顶栏 `TableHUD.goalLine` 只写关卡名
 - **隐私：** `PrivacyInfo.xcprivacy` + `PrivacyView` + `docs/privacy.html`；Pages 步骤见 `docs/GITHUB_PAGES.md`；版本展示读 `CFBundleShortVersionString`（2.0）
 - **L5：** `docs/APP_STORE.md`；主屏幕 `CFBundleDisplayName`；截图 `store/screenshots/iphone-69/`
 - 推送前：`./scripts/check-before-push.sh`；勿提交 `VERSION_ROADMAP.txt` / `.env` / 密钥
@@ -176,4 +178,5 @@
 | 2026-09-19 | UX10 首局引导：下注页一句目标；DataSchema=3；桌面目标/状态栏与氛围后置 |
 | 2026-09-19 | UX11 牌桌顶栏目标 + 状态条按阶段改文案；氛围仍后置 |
 | 2026-09-19 | UX12：破产才提示会话结束；绿绒对局底；默认注档 +「再下一注」 |
+| 2026-09-24 | UX13：局末距下一关；欢迎页牌副/切牌一行；顶栏不再重复庄家池 |
 

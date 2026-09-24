@@ -138,13 +138,7 @@ struct GameTableView: View {
                     .foregroundStyle(.secondary)
                     .monospacedDigit()
                 if playStyle.showsChips {
-                    Text(
-                        TableHUD.goalLine(
-                            playStyle: playStyle,
-                            level: sessionStageLevel,
-                            dealerRemaining: chipBank.dealerBank
-                        )
-                    )
+                    Text(TableHUD.goalLine(playStyle: playStyle, level: sessionStageLevel))
                     .font(.caption.weight(.medium))
                     .foregroundStyle(.secondary)
                     .monospacedDigit()

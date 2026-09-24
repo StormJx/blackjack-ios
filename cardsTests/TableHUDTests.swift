@@ -10,32 +10,10 @@ import Testing
 
 struct TableHUDTests {
 
-    @Test func goalLineUsesStageTitleAndRemainingBank() {
-        #expect(L10n.t("table.goal.remainingFormat", language: "zh-Hans") == "%@ · 庄家还剩 %d")
-        #expect(L10n.t("table.goal.remainingFormat", language: "en") == "%@ · dealer has %d left")
-
-        let challengeTitle = ChallengeRules.stage(level: 2).title
-        #expect(
-            TableHUD.goalLine(playStyle: .challenge, level: 2, dealerRemaining: 1400)
-                == L10n.format("table.goal.remainingFormat", challengeTitle, 1400)
-        )
-        #expect(
-            String(format: L10n.t("table.goal.remainingFormat", language: "zh-Hans"), "第二关", 1400)
-                == "第二关 · 庄家还剩 1400"
-        )
-        #expect(
-            String(
-                format: L10n.t("table.goal.remainingFormat", language: "en"),
-                "Stage 2",
-                1400
-            ) == "Stage 2 · dealer has 1400 left"
-        )
-
-        let entertainmentTitle = EntertainmentRules.stage(level: 1).title
-        #expect(
-            TableHUD.goalLine(playStyle: .entertainment, level: 1, dealerRemaining: 2000)
-                == L10n.format("table.goal.remainingFormat", entertainmentTitle, 2000)
-        )
+    @Test func goalLineUsesStageTitleOnly() {
+        #expect(TableHUD.goalLine(playStyle: .challenge, level: 2) == ChallengeRules.stage(level: 2).title)
+        #expect(TableHUD.goalLine(playStyle: .entertainment, level: 1) == EntertainmentRules.stage(level: 1).title)
+        #expect(TableHUD.goalLine(playStyle: .challenge, level: 2).contains("1400") == false)
     }
 
     @Test @MainActor
@@ -63,5 +41,42 @@ struct TableHUDTests {
         #expect(TableHUD.phaseStatusIcon(phase: .playerTurn) == "hand.tap.fill")
         #expect(TableHUD.phaseStatusIcon(phase: .dealerTurn) == "person.fill")
         #expect(TableHUD.phaseStatusIcon(phase: .finished) == "checkmark.circle")
+    }
+}
+
+struct SessionChromeTests {
+
+    @Test func welcomeSetupLineNamesDeckAndCuts() {
+        #expect(L10n.t("welcome.setupFormat", language: "zh-Hans") == "%@ · 闯关：%@ · 娱乐固定真实切牌")
+        #expect(
+            L10n.t("welcome.setupFormat", language: "en")
+                == "%@ · Challenge: %@ · Entertainment stays on a real cut"
+        )
+        #expect(
+            WelcomeChrome.setupLine(practiceMode: .singleDeck, challengeCut: .real)
+                == L10n.format(
+                    "welcome.setupFormat",
+                    PracticeMode.singleDeck.shortLabel,
+                    CutCardMode.real.title
+                )
+        )
+        #expect(
+            String(
+                format: L10n.t("welcome.setupFormat", language: "zh-Hans"),
+                "一副牌",
+                "真实切牌"
+            ) == "一副牌 · 闯关：真实切牌 · 娱乐固定真实切牌"
+        )
+    }
+
+    @Test func gapLineMatchesProgressHint() {
+        #expect(
+            SessionProgress.gapLine(playStyle: .challenge, level: 1, dealerClears: 0, chipsWon: 200)
+                == ChallengeRules.progressHint(unlockedLevel: 1, dealerClears: 0, totalChipsWon: 200)
+        )
+        #expect(
+            SessionProgress.gapLine(playStyle: .entertainment, level: 2, dealerClears: 1, chipsWon: 100)
+                == EntertainmentRules.progressHint(unlockedLevel: 2, dealerClears: 1, totalChipsWon: 100)
+        )
     }
 }

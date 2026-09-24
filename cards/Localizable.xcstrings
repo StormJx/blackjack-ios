@@ -6767,23 +6767,6 @@
         }
       }
     },
-    "table.goal.remainingFormat": {
-      "extractionState": "manual",
-      "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ · 庄家还剩 %d"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ · dealer has %d left"
-          }
-        }
-      }
-    },
     "table.idleHint": {
       "extractionState": "manual",
       "localizations": {
@@ -7205,6 +7188,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Achievements"
+          }
+        }
+      }
+    },
+    "welcome.setupFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · 闯关：%@ · 娱乐固定真实切牌"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · Challenge: %@ · Entertainment stays on a real cut"
           }
         }
       }

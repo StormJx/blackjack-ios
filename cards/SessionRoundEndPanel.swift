@@ -17,6 +17,8 @@ struct SessionRoundEndPanel: View {
     let balance: Int
     let dealerBank: Int
     let shoeStatusLine: String
+    /// 距下一关：再打穿几次，或再赢多少。
+    let nextStageLine: String
     /// 娱乐模式本会话胜负统计；闯关传 nil。
     let fastStats: FastSessionStats?
     /// UX3：本局解锁队列（成就 / 道具 / 卡背等短标题）。
@@ -92,6 +94,13 @@ struct SessionRoundEndPanel: View {
                                 .multilineTextAlignment(.center)
                                 .accessibilityLabel(fastStats.summaryLine)
                         }
+                        Text(nextStageLine)
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(.secondary)
+                            .monospacedDigit()
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .accessibilityLabel(nextStageLine)
                         Text(shoeStatusLine)
                             .font(.caption)
                             .foregroundStyle(.tertiary)

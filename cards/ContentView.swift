@@ -172,13 +172,26 @@ struct ContentView: View {
             Spacer(minLength: 24)
 
             VStack(spacing: 28) {
-                Text(L10n.t("welcome.appTitle"))
-                    .font(.system(.largeTitle, design: .rounded).weight(.bold))
-                    .minimumScaleFactor(0.7)
-                    .lineLimit(1)
-                    .foregroundStyle(.white)
-                    .shadow(color: .black.opacity(0.25), radius: 8, y: 2)
-                    .accessibilityAddTraits(.isHeader)
+                VStack(spacing: 8) {
+                    Text(L10n.t("welcome.appTitle"))
+                        .font(.system(.largeTitle, design: .rounded).weight(.bold))
+                        .minimumScaleFactor(0.7)
+                        .lineLimit(1)
+                        .foregroundStyle(.white)
+                        .shadow(color: .black.opacity(0.25), radius: 8, y: 2)
+                        .accessibilityAddTraits(.isHeader)
+
+                    Text(
+                        WelcomeChrome.setupLine(
+                            practiceMode: appSettings.defaultPracticeMode,
+                            challengeCut: appSettings.cutCardMode
+                        )
+                    )
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.white.opacity(0.82))
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 24)
+                }
 
                 if let welcomeNotice {
                     Text(welcomeNotice)
@@ -613,6 +626,7 @@ private struct GameSessionView: View {
             balance: chipBank.balance,
             dealerBank: chipBank.dealerBank,
             shoeStatusLine: game.shoeStatusLine,
+            nextStageLine: nextStageLine,
             fastStats: playStyle == .entertainment ? entertainmentSessionStats : nil,
             unlockNotices: unlockNotices,
             onReturnHome: returnToWelcomeAfterSessionEnd,
@@ -623,6 +637,25 @@ private struct GameSessionView: View {
                 }
             }
         )
+    }
+
+    private var nextStageLine: String {
+        switch playStyle {
+        case .challenge:
+            return SessionProgress.gapLine(
+                playStyle: .challenge,
+                level: coordinator.challengeProgress.unlockedLevel,
+                dealerClears: coordinator.statsStore.dealerBankClearCount,
+                chipsWon: coordinator.statsStore.totalChipsWon
+            )
+        case .entertainment:
+            return SessionProgress.gapLine(
+                playStyle: .entertainment,
+                level: coordinator.entertainmentProgress.unlockedLevel,
+                dealerClears: coordinator.entertainmentProgress.dealerClearCount,
+                chipsWon: coordinator.entertainmentProgress.totalChipsWon
+            )
+        }
     }
 
     private var gameTableView: some View {
