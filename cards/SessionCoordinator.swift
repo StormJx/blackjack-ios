@@ -95,7 +95,28 @@ final class SessionCoordinator: ObservableObject {
 
     /// 有结局则结算并记账；无结局则退回未完成主注/保险。
     @discardableResult
-    func settleRound(outcome: RoundOutcome?, insuranceWon: Bool) -> SettlementResult? {
+    func settleRound(
+        outcome: RoundOutcome?,
+        insuranceWon: Bool,
+        splitOutcomes: [RoundOutcome] = []
+    ) -> SettlementResult? {
+        if splitOutcomes.count == 2 {
+            guard let result = chipBank.settleSplit(
+                first: splitOutcomes[0],
+                second: splitOutcomes[1],
+                insuranceWon: insuranceWon
+            ) else {
+                return nil
+            }
+            switch playStyle {
+            case .challenge:
+                statsStore.recordChipSettlement(netChange: result.netChange)
+                _ = syncProgressAndCosmetics()
+            case .entertainment:
+                entertainmentProgress.recordChipsWon(result.netChange)
+            }
+            return result
+        }
         if let outcome {
             guard let result = chipBank.settle(
                 outcome: outcome,
@@ -112,7 +133,7 @@ final class SessionCoordinator: ObservableObject {
             }
             return result
         }
-        if chipBank.activeBet > 0 || chipBank.activeInsurance > 0 {
+        if chipBank.activeBet > 0 || chipBank.activeInsurance > 0 || chipBank.splitSecondBet > 0 {
             chipBank.refundActiveBet()
         }
         return nil
@@ -224,9 +245,14 @@ final class SessionCoordinator: ObservableObject {
     func finishRound(
         outcome: RoundOutcome?,
         insuranceWon: Bool,
+        splitOutcomes: [RoundOutcome] = [],
         makeSnapshot: (_ wasAllInBet: Bool) -> RoundSnapshot?
     ) -> RoundFinishResult {
-        let settlement = settleRound(outcome: outcome, insuranceWon: insuranceWon)
+        let settlement = settleRound(
+            outcome: outcome,
+            insuranceWon: insuranceWon,
+            splitOutcomes: splitOutcomes
+        )
         guard let outcome else {
             return RoundFinishResult(
                 settlement: nil,

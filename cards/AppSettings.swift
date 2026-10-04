@@ -70,6 +70,11 @@ final class AppSettings: ObservableObject {
         didSet { persist() }
     }
 
+    /// T4：娱乐模式玩家回合显示基础策略弱提示。默认关闭，不替玩家操作。
+    @Published var strategyHintEnabled: Bool {
+        didSet { persist() }
+    }
+
     private let defaults: UserDefaults
 
     private enum Keys {
@@ -85,6 +90,7 @@ final class AppSettings: ObservableObject {
         static let language = "appSettings.languagePreference"
         static let seenChallengeFirstGuide = "appSettings.hasSeenChallengeFirstGuide"
         static let seenEntertainmentFirstGuide = "appSettings.hasSeenEntertainmentFirstGuide"
+        static let strategyHint = "appSettings.strategyHintEnabled"
     }
 
     init(defaults: UserDefaults = .standard) {
@@ -148,6 +154,7 @@ final class AppSettings: ObservableObject {
 
         hasSeenChallengeFirstGuide = defaults.bool(forKey: Keys.seenChallengeFirstGuide)
         hasSeenEntertainmentFirstGuide = defaults.bool(forKey: Keys.seenEntertainmentFirstGuide)
+        strategyHintEnabled = defaults.bool(forKey: Keys.strategyHint)
 
         GameFeedback.shared.soundEnabled = soundEnabled
         GameFeedback.shared.hapticsEnabled = hapticsEnabled
@@ -183,6 +190,7 @@ final class AppSettings: ObservableObject {
         defaults.set(languagePreference.rawValue, forKey: Keys.language)
         defaults.set(hasSeenChallengeFirstGuide, forKey: Keys.seenChallengeFirstGuide)
         defaults.set(hasSeenEntertainmentFirstGuide, forKey: Keys.seenEntertainmentFirstGuide)
+        defaults.set(strategyHintEnabled, forKey: Keys.strategyHint)
     }
 
     func markFirstSessionGuideSeen(for playStyle: PlayStyle) {

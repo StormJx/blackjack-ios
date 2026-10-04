@@ -35,6 +35,10 @@ struct SessionRoundEndPanel: View {
         outcome?.statusColor ?? .secondary
     }
 
+    private var winMoment: Bool {
+        (settlement?.netChange ?? 0) > 0
+    }
+
     private var primaryButtonTitle: String {
         if playStyle.showsChips && isSessionOver {
             return L10n.t("roundEnd.returnHome")
@@ -70,8 +74,15 @@ struct SessionRoundEndPanel: View {
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
                     }
+                    if let settlement, settlement.netChange > 0, !reduceMotion {
+                        Image(systemName: "sparkles")
+                            .font(.title2.weight(.bold))
+                            .foregroundStyle(.yellow)
+                            .scaleEffect(settlementPulse ? 1.18 : 0.92)
+                            .accessibilityHidden(true)
+                    }
                     Text(outcomeMessage)
-                        .font(isSessionOver ? .body.weight(.semibold) : .title3.weight(.semibold))
+                        .font(isSessionOver ? .body.weight(.semibold) : (winMoment ? .title2.weight(.bold) : .title3.weight(.semibold)))
                         .foregroundStyle(statusColor)
                         .multilineTextAlignment(.center)
                         .lineLimit(4)
@@ -108,7 +119,7 @@ struct SessionRoundEndPanel: View {
                             .accessibilityLabel(shoeStatusLine)
                     }
                     .padding(.top, 8)
-                    .scaleEffect((!reduceMotion && settlementPulse) ? 1.04 : 1)
+                    .scaleEffect((!reduceMotion && settlementPulse) ? (winMoment ? 1.08 : 1.04) : 1)
                     .animation(
                         reduceMotion ? nil : .spring(response: 0.42, dampingFraction: 0.72),
                         value: settlementPulse

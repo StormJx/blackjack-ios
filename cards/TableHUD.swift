@@ -51,4 +51,11 @@ enum TableHUD {
             return "checkmark.circle"
         }
     }
+
+    /// 庄家池从满到空的比例。超出开局池时停在 1。
+    static func dealerBankFraction(remaining: Int, capacity: Int) -> Double {
+        guard capacity > 0 else { return 0 }
+        let clamped = min(capacity, max(0, remaining))
+        return Double(clamped) / Double(capacity)
+    }
 }

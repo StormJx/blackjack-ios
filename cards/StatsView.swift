@@ -11,15 +11,39 @@ struct StatsView: View {
     @ObservedObject var stats: StatsStore
     @ObservedObject var challengeProgress: ChallengeProgress
     @ObservedObject var entertainmentProgress: EntertainmentProgress
+    @ObservedObject var dailyGoals: DailyGoalStore
 
     var body: some View {
         NavigationStack {
             List {
+                dailySection
                 challengeSection
                 entertainmentSection
             }
             .navigationTitle(L10n.t("stats.navTitle"))
             .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+
+    private var dailySection: some View {
+        let snapshot = dailyGoals.snapshot
+        return Section {
+            Text(DailyGoalRules.progressLine(snapshot))
+                .font(.subheadline.weight(.semibold))
+                .monospacedDigit()
+            Text(DailyGoalRules.streakLine(snapshot))
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .monospacedDigit()
+            if DailyGoalRules.isComplete(snapshot) {
+                Text(L10n.t("stats.daily.badge"))
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.orange)
+            }
+        } header: {
+            Text(L10n.t("stats.section.daily"))
+        } footer: {
+            Text(L10n.t("stats.daily.footer"))
         }
     }
 

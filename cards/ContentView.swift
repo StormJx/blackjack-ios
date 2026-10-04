@@ -20,6 +20,7 @@ struct ContentView: View {
     @EnvironmentObject private var challengeProgress: ChallengeProgress
     @EnvironmentObject private var entertainmentProgress: EntertainmentProgress
     @EnvironmentObject private var cosmeticsStore: CosmeticsStore
+    @EnvironmentObject private var dailyGoals: DailyGoalStore
 
     @State private var session: ActiveSession?
     @State private var showSettings = false
@@ -99,7 +100,8 @@ struct ContentView: View {
                 StatsView(
                     stats: statsStore,
                     challengeProgress: challengeProgress,
-                    entertainmentProgress: entertainmentProgress
+                    entertainmentProgress: entertainmentProgress,
+                    dailyGoals: dailyGoals
                 )
                 .presentationDetents([.medium, .large])
             }
@@ -357,6 +359,7 @@ private struct GameSessionView: View {
     /// UX5：娱乐本会话胜负统计。
     @State private var entertainmentSessionStats = FastSessionStats()
     @EnvironmentObject private var appSettings: AppSettings
+    @EnvironmentObject private var dailyGoals: DailyGoalStore
 
     init(
         practiceMode: PracticeMode,
@@ -664,6 +667,7 @@ private struct GameSessionView: View {
             chipBank: chipBank,
             playStyle: playStyle,
             sessionStageLevel: sessionStageLevel,
+            sessionDealerStart: sessionDealerStart,
             showBetPanel: showBetSheet,
             showRoundEndPanel: showRoundEndSheet,
             canHit: canHit,
@@ -672,6 +676,9 @@ private struct GameSessionView: View {
             doubleDownDisabledReason: doubleDownDisabledReason,
             canSurrender: canSurrender,
             surrenderDisabledReason: surrenderDisabledReason,
+            canSplit: canSplit,
+            splitDisabledReason: splitDisabledReason,
+            actionHint: actionHintText,
             showsMidHandAllIn: propStore.canUse(.midHandAllIn, in: playStyle),
             canMidHandAllIn: canMidHandAllIn,
             midHandAllInDisabledReason: midHandAllInDisabledReason,
@@ -707,6 +714,7 @@ private struct GameSessionView: View {
             onStand: { Task { await game.stand() } },
             onDoubleDown: executeDoubleDown,
             onSurrender: executeSurrender,
+            onSplit: executeSplit,
             onAllIn: requestMidHandAllIn,
             onPeekHole: { Task { await game.peekHoleCard() } },
             onSoft17Hit: { _ = game.activateDealerSoft17Hit() },
@@ -753,7 +761,14 @@ private struct GameSessionView: View {
     private var canDoubleDown: Bool {
         game.canDoubleDownHand
             && !controlsLockedAfterAllIn
-            && chipBank.canAffordDoubleDown
+            && canAffordCurrentHandDouble
+    }
+
+    private var canAffordCurrentHandDouble: Bool {
+        if game.isPlayingSecondSplitHand {
+            return chipBank.splitSecondBet > 0 && chipBank.balance >= chipBank.splitSecondBet
+        }
+        return chipBank.canAffordDoubleDown
     }
 
     private var canSurrender: Bool {
@@ -761,6 +776,26 @@ private struct GameSessionView: View {
             && !controlsLockedAfterAllIn
             && chipBank.activeBet > 0
             && !chipBank.activeBetWasAllIn
+    }
+
+    private var canSplit: Bool {
+        game.canOfferSplit
+            && !controlsLockedAfterAllIn
+            && chipBank.canBeginSplit
+    }
+
+    private var actionHintText: String? {
+        guard playStyle == .entertainment, appSettings.strategyHintEnabled else { return nil }
+        guard game.phase == .playerTurn, !game.isAnimating, game.playerCards.count >= 2 else { return nil }
+        guard let dealerUp = game.dealerCards.first?.rank else { return nil }
+        let action = BasicStrategy.advise(
+            playerCards: game.playerCards,
+            dealerUp: dealerUp,
+            canDouble: canDoubleDown,
+            canSurrender: canSurrender,
+            canSplit: canSplit
+        )
+        return ActionHint.line(for: action)
     }
 
     private var canMidHandAllIn: Bool {
@@ -854,7 +889,7 @@ private struct GameSessionView: View {
             return handReason
         }
         if chipBank.activeBet == 0 { return L10n.t("disabled.noBet") }
-        if !chipBank.canAffordDoubleDown { return L10n.t("disabled.insufficientDouble") }
+        if !canAffordCurrentHandDouble { return L10n.t("disabled.insufficientDouble") }
         return L10n.t("disabled.unavailable")
     }
 
@@ -875,11 +910,30 @@ private struct GameSessionView: View {
         return base ?? L10n.t("disabled.unavailable")
     }
 
+    private var splitDisabledReason: String? {
+        if canSplit { return nil }
+        if controlsLockedAfterAllIn { return L10n.t("disabled.waitingSettlement") }
+        if chipBank.activeBetWasAllIn { return L10n.t("disabled.splitAllIn") }
+        if game.canOfferSplit, !chipBank.canBeginSplit { return L10n.t("disabled.splitInsufficient") }
+        return L10n.t("disabled.splitUnavailable")
+    }
+
     private func executeDoubleDown() {
         guard canDoubleDown else { return }
-        guard chipBank.doubleDown() else { return }
+        if game.isPlayingSecondSplitHand {
+            guard chipBank.doubleSplitSecondHand() else { return }
+        } else {
+            guard chipBank.doubleDown() else { return }
+        }
         pulseChipBalance()
         Task { await game.doubleDown() }
+    }
+
+    private func executeSplit() {
+        guard canSplit else { return }
+        guard chipBank.beginSplit() else { return }
+        pulseChipBalance()
+        Task { await game.split() }
     }
 
     private func executeSurrender() {
@@ -931,13 +985,23 @@ private struct GameSessionView: View {
         let result = coordinator.finishRound(
             outcome: game.lastOutcome,
             insuranceWon: game.lastInsuranceWon,
+            splitOutcomes: game.splitHandOutcomes,
             makeSnapshot: { wasAllIn in
                 game.makeRoundSnapshot(wasAllInBet: wasAllIn)
             }
         )
         unlockNotices = result.unlockNotices
-        if let outcome = result.recordedOutcome, playStyle == .entertainment {
-            entertainmentSessionStats.record(outcome)
+        if let outcome = result.recordedOutcome {
+            if playStyle == .entertainment {
+                entertainmentSessionStats.record(outcome)
+            }
+            if let badge = dailyGoals.record(
+                playStyle: playStyle,
+                outcome: outcome,
+                playerBusted: game.playerBustedAllHands
+            ) {
+                unlockNotices.append(badge)
+            }
         }
         if result.shouldPulseBalance {
             pulseChipBalance()
@@ -1141,4 +1205,5 @@ private struct FeltBackgroundView: View {
         .environmentObject(ChallengeProgress())
         .environmentObject(EntertainmentProgress())
         .environmentObject(CosmeticsStore())
+        .environmentObject(DailyGoalStore())
 }

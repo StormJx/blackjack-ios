@@ -12,6 +12,7 @@ struct GameTableView: View {
     @ObservedObject var chipBank: ChipBank
     let playStyle: PlayStyle
     let sessionStageLevel: Int
+    let sessionDealerStart: Int
     let showBetPanel: Bool
     let showRoundEndPanel: Bool
     let canHit: Bool
@@ -20,6 +21,10 @@ struct GameTableView: View {
     var doubleDownDisabledReason: String? = nil
     let canSurrender: Bool
     var surrenderDisabledReason: String? = nil
+    let canSplit: Bool
+    var splitDisabledReason: String? = nil
+    /// 娱乐模式且设置开启时的弱策略句。闯关不传。
+    var actionHint: String? = nil
     /// 娱乐模式 + 已解锁道具时为 true。
     let showsMidHandAllIn: Bool
     let canMidHandAllIn: Bool
@@ -45,6 +50,7 @@ struct GameTableView: View {
     let onStand: () -> Void
     let onDoubleDown: () -> Void
     let onSurrender: () -> Void
+    let onSplit: () -> Void
     let onAllIn: () -> Void
     let onPeekHole: () -> Void
     let onSoft17Hit: () -> Void
@@ -149,7 +155,12 @@ struct GameTableView: View {
                         Text(L10n.format("table.dealerFormat", chipBank.dealerBank))
                             .font(.caption.weight(.semibold))
                             .monospacedDigit()
-                        if chipBank.activeBet > 0 {
+                        if chipBank.splitSecondBet > 0 {
+                            Text(L10n.format("table.betSplitFormat", chipBank.activeBet, chipBank.splitSecondBet))
+                                .font(.caption)
+                                .monospacedDigit()
+                                .foregroundStyle(.tertiary)
+                        } else if chipBank.activeBet > 0 {
                             Text(L10n.format("table.betFormat", chipBank.activeBet))
                                 .font(.caption)
                                 .monospacedDigit()
@@ -167,6 +178,7 @@ struct GameTableView: View {
                     .animation(.spring(response: 0.36, dampingFraction: 0.7), value: chipBalancePulse)
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(chipBalanceAccessibilityLabel)
+                    dealerBankMeter
                 }
             }
             Spacer(minLength: 0)
@@ -238,29 +250,90 @@ struct GameTableView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
+    @ViewBuilder
+    private var dealerBankMeter: some View {
+        if playStyle.showsChips, sessionDealerStart > 0, chipBank.activeBet > 0 || game.phase != .idle {
+            let fraction = TableHUD.dealerBankFraction(
+                remaining: chipBank.dealerBank,
+                capacity: sessionDealerStart
+            )
+            DealerBankMeter(
+                fraction: fraction,
+                accessibilityText: L10n.format("table.dealerMeterA11y", Int((fraction * 100).rounded()))
+            )
+            .frame(height: 6)
+        }
+    }
+
     private var playerSection: some View {
         sectionCard {
-            VStack(alignment: .leading, spacing: 8) {
-                Text(L10n.t("common.player"))
-                    .font(.title3.weight(.semibold))
-                LazyVGrid(columns: cardGridColumns, alignment: .leading, spacing: 8) {
-                    ForEach(0..<game.playerCards.count, id: \.self) { i in
-                        PlayingCardView(face: .faceUp(game.playerCards[i]))
-                            .id("\(game.roundToken)-p-\(i)")
-                            .cardDealEntrance()
-                    }
-                }
-                .animation(.spring(response: 0.38, dampingFraction: 0.78), value: game.playerCards.count)
-                Text(L10n.format("table.pointsFormat", playerPointsLabel))
-                    .font(.subheadline.weight(.medium))
-                    .monospacedDigit()
-                    .foregroundStyle(.primary.opacity(0.78))
-                    .accessibilityLabel(
-                        L10n.format("table.a11y.playerPointsFormat", playerPointsLabel)
+            VStack(alignment: .leading, spacing: 10) {
+                if game.splitFirstHand.isEmpty && game.splitPendingCard == nil {
+                    singlePlayerHand
+                } else {
+                    splitHandRow(
+                        index: 1,
+                        cards: game.splitFirstHand.isEmpty ? game.playerCards : game.splitFirstHand,
+                        active: game.splitFirstHand.isEmpty && game.phase == .playerTurn
                     )
+                    splitHandRow(
+                        index: 2,
+                        cards: game.splitFirstHand.isEmpty
+                            ? (game.splitPendingCard.map { [$0] } ?? [])
+                            : game.playerCards,
+                        active: !game.splitFirstHand.isEmpty && game.phase == .playerTurn
+                    )
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var singlePlayerHand: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(L10n.t("common.player"))
+                .font(.title3.weight(.semibold))
+            cardRow(game.playerCards, identityPrefix: "p")
+            Text(L10n.format("table.pointsFormat", playerPointsLabel))
+                .font(.subheadline.weight(.medium))
+                .monospacedDigit()
+                .foregroundStyle(.primary.opacity(0.78))
+                .accessibilityLabel(
+                    L10n.format("table.a11y.playerPointsFormat", playerPointsLabel)
+                )
+        }
+    }
+
+    private func splitHandRow(index: Int, cards: [Card], active: Bool) -> some View {
+        let points = cards.isEmpty ? "—" : "\(Hand(cards: cards).bestValue)"
+        return VStack(alignment: .leading, spacing: 6) {
+            Text(L10n.format("table.splitHandFormat", index, points))
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(active ? Color.primary : Color.secondary)
+            cardRow(cards, identityPrefix: "s\(index)")
+        }
+        .padding(8)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(active ? Color.primary.opacity(0.06) : Color.clear)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .strokeBorder(active ? Color.primary.opacity(0.18) : Color.clear, lineWidth: 1)
+        )
+        .accessibilityElement(children: .combine)
+    }
+
+    private func cardRow(_ cards: [Card], identityPrefix: String) -> some View {
+        LazyVGrid(columns: cardGridColumns, alignment: .leading, spacing: 8) {
+            ForEach(0..<cards.count, id: \.self) { i in
+                PlayingCardView(face: .faceUp(cards[i]))
+                    .id("\(game.roundToken)-\(identityPrefix)-\(i)")
+                    .cardDealEntrance()
+            }
+        }
+        .animation(.spring(response: 0.38, dampingFraction: 0.78), value: cards.count)
     }
 
     private var statusSection: some View {
@@ -320,6 +393,13 @@ struct GameTableView: View {
 
     private var controls: some View {
         VStack(spacing: 10) {
+            if let actionHint {
+                Text(actionHint)
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.tertiary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .accessibilityLabel(actionHint)
+            }
             HStack(spacing: 12) {
                 Button(L10n.t("action.hit")) {
                     GameFeedback.shared.buttonTap()
@@ -390,6 +470,25 @@ struct GameTableView: View {
                         ? L10n.t("action.a11y.surrenderHint")
                         : (surrenderDisabledReason ?? L10n.t("action.a11y.surrenderDisabled"))
                 )
+
+                if game.canOfferSplit || canSplit {
+                    Button(L10n.t("action.split")) {
+                        GameFeedback.shared.buttonTap()
+                        onSplit()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    .frame(maxWidth: .infinity)
+                    .tint(.purple)
+                    .disabled(!canSplit)
+                    .opacity(canSplit ? 1 : 0.55)
+                    .saturation(canSplit ? 1 : 0.2)
+                    .accessibilityHint(
+                        canSplit
+                            ? L10n.t("action.a11y.splitHint")
+                            : (splitDisabledReason ?? L10n.t("action.a11y.splitDisabled"))
+                    )
+                }
 
                 if showsMidHandAllIn {
                     Button(midHandAllInTitle) {
@@ -484,12 +583,13 @@ struct GameTableView: View {
 
     private var chipBalanceAccessibilityLabel: String {
         if chipBank.activeBet > 0 {
+            let stake = chipBank.activeBet + chipBank.splitSecondBet
             if chipBank.activeInsurance > 0 {
                 return L10n.format(
                     "table.a11y.chipsFullFormat",
                     chipBank.balance,
                     chipBank.dealerBank,
-                    chipBank.activeBet,
+                    stake,
                     chipBank.activeInsurance
                 )
             }
@@ -497,7 +597,7 @@ struct GameTableView: View {
                 "table.a11y.chipsBetFormat",
                 chipBank.balance,
                 chipBank.dealerBank,
-                chipBank.activeBet
+                stake
             )
         }
         return L10n.format("table.a11y.chipsFormat", chipBank.balance, chipBank.dealerBank)
@@ -586,5 +686,24 @@ private struct PeekCountdownBar: View {
             }
         }
         .accessibilityHidden(true)
+    }
+}
+
+private struct DealerBankMeter: View {
+    let fraction: Double
+    let accessibilityText: String
+
+    var body: some View {
+        GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                Capsule(style: .continuous)
+                    .fill(Color.primary.opacity(0.12))
+                Capsule(style: .continuous)
+                    .fill(Color(red: 0.18, green: 0.55, blue: 0.32))
+                    .frame(width: max(0, geo.size.width * fraction))
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(accessibilityText)
     }
 }

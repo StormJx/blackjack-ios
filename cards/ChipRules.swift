@@ -159,6 +159,8 @@ enum ChipRules {
 
     /// UserDefaults 键：尚未结算的保险侧注。
     static let activeInsuranceStorageKey = "chipBank.activeInsurance"
+    /// 分牌第二手未结算注码。杀进程时与主注一并退回。
+    static let splitSecondBetStorageKey = "chipBank.splitSecondBet"
 
     /// 保险注码：主注一半（向下取整）。
     static func insuranceBetAmount(forMainBet bet: Int) -> Int {

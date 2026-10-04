@@ -28,7 +28,7 @@
 
 二十一点是一款以公平闯关为主的练习应用。用模拟筹码挑战庄家资金池，打穿或累计获胜即可升关；娱乐模式独立进阶，已解锁的玩法道具只在该模式生效。
 
-规则为简化赌场二十一点：庄家小于 17 要牌、17 及以上停牌（软 17 同停）。开局两张可加倍或投降；庄家明 A 可买保险。本版暂不分牌。筹码仅供练习，不能兑换现金，也不出售筹码。
+规则为简化赌场二十一点：庄家小于 17 要牌、17 及以上停牌（软 17 同停）。开局两张可加倍、投降或分牌（同点数，只分一次；A 分牌只补一张）。庄家明 A 可买保险。筹码仅供练习，不能兑换现金，也不出售筹码。
 
 可在设置中选择跟随系统、中文或 English。战绩、成就与进度只存在本机。当前版本没有广告 SDK，对局进行中不会插广告。
 
@@ -48,7 +48,7 @@
 
 Blackjack is a fair-challenge-first practice app. Play with simulated chips against a dealer bank; clear the bank or accumulate winnings to advance stages. Entertainment mode has its own ladder, and gameplay props stay in that mode only.
 
-Rules are simplified casino blackjack: the dealer hits below 17 and stands on 17 or more, including soft 17. On your first two cards you may double or surrender; insurance is offered when the dealer shows an Ace. This version does not include splitting. Chips are for practice only — they cannot be cashed out, and the app does not sell chips.
+Rules are simplified casino blackjack: the dealer hits below 17 and stands on 17 or more, including soft 17. On your first two cards you may double, surrender, or split a pair once (split aces get one card each). Insurance is offered when the dealer shows an Ace. Chips are for practice only — they cannot be cashed out, and the app does not sell chips.
 
 Choose Follow System, Chinese, or English in Settings. Stats, achievements, and progress stay on this device. This version has no ad SDK and will not insert ads during a hand.
 

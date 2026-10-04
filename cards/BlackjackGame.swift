@@ -44,6 +44,14 @@ final class BlackjackGame: ObservableObject {
     @Published private(set) var lastOutcome: RoundOutcome?
     /// P6+：本局保险是否赔付（庄家黑杰克且已买保险）；供 `ChipBank.settle` 使用。
     @Published private(set) var lastInsuranceWon: Bool = false
+    /// L2：分牌后已打完的第一手。第二手进行中或已结算时非空。
+    @Published private(set) var splitFirstHand: [Card] = []
+    /// L2：尚未开打的第二张起手牌。
+    @Published private(set) var splitPendingCard: Card?
+    /// L2：两手各自结局。非分牌为空。
+    @Published private(set) var splitHandOutcomes: [RoundOutcome] = []
+    /// 本局由一对 A 分出：每手只补一张，不能再要或加倍。
+    private var splitAces = false
     /// 娱乐道具：本局已开启「庄家软 17 要牌」。
     @Published private(set) var dealerHitsSoft17ThisRound = false
     /// 娱乐道具：正在窥视暗牌（约 1 秒）。
@@ -102,14 +110,22 @@ final class BlackjackGame: ObservableObject {
         guard let outcome = lastOutcome else { return nil }
         let playerHand = Hand(cards: playerCards)
         let dealerHand = Hand(cards: dealerCards)
+        let didSplit = !splitFirstHand.isEmpty
+        let firstHand = Hand(cards: splitFirstHand)
+        let busted = didSplit ? (firstHand.isBusted && playerHand.isBusted) : playerHand.isBusted
+        let best: Int = {
+            guard didSplit else { return playerHand.bestValue }
+            let standing = [firstHand, playerHand].filter { !$0.isBusted }.map(\.bestValue)
+            return standing.max() ?? playerHand.bestValue
+        }()
         return RoundSnapshot(
             outcome: outcome,
-            playerCardCount: playerCards.count,
-            playerBest: playerHand.bestValue,
+            playerCardCount: didSplit ? splitFirstHand.count + playerCards.count : playerCards.count,
+            playerBest: best,
             dealerBest: dealerHand.bestValue,
-            playerBusted: playerHand.isBusted,
+            playerBusted: busted,
             dealerBusted: dealerHand.isBusted,
-            playerNaturalBlackjack: playerHand.isNaturalBlackjack,
+            playerNaturalBlackjack: didSplit ? false : playerHand.isNaturalBlackjack,
             hitSurvivedFromOver17: hitSurvivedFromOver17,
             hitSurvivedFromOver18: hitSurvivedFromOver18,
             hitSurvivedFromOver19: hitSurvivedFromOver19,
@@ -138,28 +154,58 @@ final class BlackjackGame: ObservableObject {
         Hand(cards: dealerCards).bestValue
     }
 
-    /// P6：手牌是否满足加倍时机（恰好两张、玩家回合、非动画中）。余额门控在 `ChipBank`。
+    /// 当前手是否在打分牌的第二手。加倍注码由调用方按此选择。
+    var isPlayingSecondSplitHand: Bool {
+        !splitFirstHand.isEmpty && phase == .playerTurn
+    }
+
+    /// 两手都爆才算爆牌（每日零爆、成就快照共用）。
+    var playerBustedAllHands: Bool {
+        let current = Hand(cards: playerCards).isBusted
+        guard !splitFirstHand.isEmpty else { return current }
+        return current && Hand(cards: splitFirstHand).isBusted
+    }
+
+    /// L2：起手两张同点数，且尚未分过。余额与全下由 `ChipBank` 再拦一层。
+    var canOfferSplit: Bool {
+        phase == .playerTurn
+            && !isAnimating
+            && splitFirstHand.isEmpty
+            && splitPendingCard == nil
+            && playerCards.count == 2
+            && SplitRules.samePointValue(playerCards[0].rank, playerCards[1].rank)
+    }
+
+    /// P6：手牌是否满足加倍时机（恰好两张、玩家回合、非动画中）。A 分牌不可加倍。余额门控在 `ChipBank`。
     var canDoubleDownHand: Bool {
-        phase == .playerTurn && !isAnimating && playerCards.count == 2
+        phase == .playerTurn && !isAnimating && playerCards.count == 2 && !splitAces
     }
 
     /// VoiceOver：加倍手牌侧不可用原因（不含余额）。
     var doubleDownHandDisabledReason: String? {
         guard phase == .playerTurn else { return L10n.t("disabled.playerTurnOnly") }
         if isAnimating { return L10n.t("disabled.animating") }
+        if splitAces { return L10n.t("disabled.noDoubleAceSplit") }
         if playerCards.count != 2 { return L10n.t("disabled.doubleOnlyTwoCards") }
         return nil
     }
 
-    /// P6+：手牌是否满足投降时机（恰好两张、玩家回合、非动画中）。全下门控在 UI / ChipBank。
+    /// P6+：手牌是否满足投降时机。分牌后不可投降。全下门控在 UI / ChipBank。
     var canSurrenderHand: Bool {
-        phase == .playerTurn && !isAnimating && playerCards.count == 2
+        phase == .playerTurn
+            && !isAnimating
+            && playerCards.count == 2
+            && splitFirstHand.isEmpty
+            && splitPendingCard == nil
     }
 
     /// VoiceOver：投降手牌侧不可用原因（不含全下）。
     var surrenderHandDisabledReason: String? {
         guard phase == .playerTurn else { return L10n.t("disabled.playerTurnOnly") }
         if isAnimating { return L10n.t("disabled.animating") }
+        if splitPendingCard != nil || !splitFirstHand.isEmpty {
+            return L10n.t("disabled.noSurrenderAfterSplit")
+        }
         if playerCards.count != 2 { return L10n.t("disabled.surrenderOnlyTwoCards") }
         return nil
     }
@@ -302,6 +348,7 @@ final class BlackjackGame: ObservableObject {
         outcomeMessage = ""
         lastOutcome = nil
         lastInsuranceWon = false
+        clearSplitState()
         playerCards = []
         dealerCards = []
         hitSurvivedFromOver17 = false
@@ -419,7 +466,7 @@ final class BlackjackGame: ObservableObject {
     }
 
     func hit() async {
-        guard phase == .playerTurn, !isAnimating else { return }
+        guard phase == .playerTurn, !isAnimating, !splitAces else { return }
         isAnimating = true
         defer {
             if phase == .playerTurn { isAnimating = false }
@@ -430,9 +477,9 @@ final class BlackjackGame: ObservableObject {
         let beforeBest = Hand(cards: playerCards).bestValue
 
         guard let card = deck.draw() else {
-            // 尾牌已尽：不再报错，按现有手牌进入庄家回合并结算。
+            // 尾牌已尽：不再报错。分牌则转入下一手，否则按现有手牌结算。
             publishDeckCounts()
-            await playDealerTurnAsync()
+            await finishCurrentHandOrRound(busted: false)
             return
         }
         publishDeckCounts()
@@ -445,13 +492,7 @@ final class BlackjackGame: ObservableObject {
 
         let hand = Hand(cards: playerCards)
         if hand.isBusted {
-            finishRound(
-                message: L10n.t("outcome.bustLose"),
-                outcome: .playerLose,
-                playerWon: false,
-                isPush: false
-            )
-            isAnimating = false
+            await finishCurrentHandOrRound(busted: true)
             return
         }
 
@@ -459,13 +500,52 @@ final class BlackjackGame: ObservableObject {
         recordBraveHitProgress(beforeBest: beforeBest, currentBest: hand.bestValue)
 
         if hand.bestValue == 21 {
-            await playDealerTurnAsync()
+            await finishCurrentHandOrRound(busted: false)
             return
         }
     }
 
     func stand() async {
-        guard phase == .playerTurn, !isAnimating else { return }
+        guard phase == .playerTurn, !isAnimating, !splitAces else { return }
+        isAnimating = true
+        await finishCurrentHandOrRound(busted: false)
+    }
+
+    /// L2：同点数两张分成两手。第二注由调用方先 `ChipBank.beginSplit()`。
+    /// A 分牌每手只补一张并直接进入庄家回合；其他对子先打第一手。不再分牌。
+    func split() async {
+        guard canOfferSplit else { return }
+        isAnimating = true
+        let second = playerCards.removeLast()
+        splitAces = SplitRules.isAcePair(playerCards[0].rank, second.rank)
+        splitPendingCard = second
+
+        if let card = deck.draw() {
+            publishDeckCounts()
+            withAnimation(cardDealAnimation) {
+                playerCards.append(card)
+            }
+            feedback.cardDealt()
+            await timing.sleep(nanoseconds: delayAfterHit)
+        }
+
+        guard splitAces else {
+            isAnimating = false
+            return
+        }
+
+        splitFirstHand = playerCards
+        splitPendingCard = nil
+        var secondCards = [second]
+        if let card = deck.draw() {
+            publishDeckCounts()
+            secondCards.append(card)
+            feedback.cardDealt()
+        }
+        withAnimation(cardDealAnimation) {
+            playerCards = secondCards
+        }
+        await timing.sleep(nanoseconds: delayAfterHit)
         await playDealerTurnAsync()
     }
 
@@ -481,7 +561,7 @@ final class BlackjackGame: ObservableObject {
 
         guard let card = deck.draw() else {
             publishDeckCounts()
-            await playDealerTurnAsync()
+            await finishCurrentHandOrRound(busted: false)
             return
         }
         publishDeckCounts()
@@ -494,19 +574,13 @@ final class BlackjackGame: ObservableObject {
 
         let hand = Hand(cards: playerCards)
         if hand.isBusted {
-            finishRound(
-                message: L10n.t("outcome.bustLose"),
-                outcome: .playerLose,
-                playerWon: false,
-                isPush: false
-            )
-            isAnimating = false
+            await finishCurrentHandOrRound(busted: true)
             return
         }
 
         recordBraveHitProgress(beforeBest: beforeBest, currentBest: hand.bestValue)
 
-        await playDealerTurnAsync()
+        await finishCurrentHandOrRound(busted: false)
     }
 
     /// P6+：投降——仅前两张时结束本局；半注结算由 `ChipBank` / `RoundSettlement` 完成。
@@ -560,7 +634,7 @@ final class BlackjackGame: ObservableObject {
 
         guard let card = deck.draw() else {
             publishDeckCounts()
-            await playDealerTurnAsync()
+            await finishCurrentHandOrRound(busted: false)
             return
         }
         publishDeckCounts()
@@ -573,20 +647,14 @@ final class BlackjackGame: ObservableObject {
 
         let hand = Hand(cards: playerCards)
         if hand.isBusted {
-            finishRound(
-                message: L10n.t("outcome.bustLose"),
-                outcome: .playerLose,
-                playerWon: false,
-                isPush: false
-            )
-            isAnimating = false
+            await finishCurrentHandOrRound(busted: true)
             return
         }
 
         recordBraveHitProgress(beforeBest: beforeBest, currentBest: hand.bestValue)
 
         if hand.bestValue == 21 {
-            await playDealerTurnAsync()
+            await finishCurrentHandOrRound(busted: false)
         }
     }
 
@@ -637,6 +705,7 @@ final class BlackjackGame: ObservableObject {
         outcomeMessage = ""
         lastOutcome = nil
         lastInsuranceWon = false
+        clearSplitState()
         dealingCaption = nil
         isShowingShuffleScreen = false
         handAreaOpacity = 1
@@ -669,6 +738,7 @@ final class BlackjackGame: ObservableObject {
         deck.installOrderedShoeForTesting(orderedFrontFirst)
         playerCards = []
         dealerCards = []
+        clearSplitState()
         phase = .idle
         outcomeMessage = ""
         lastOutcome = nil
@@ -820,7 +890,115 @@ final class BlackjackGame: ObservableObject {
         totalCardCount = deck.totalCardCount
     }
 
+    private func clearSplitState() {
+        splitFirstHand = []
+        splitPendingCard = nil
+        splitAces = false
+        splitHandOutcomes = []
+    }
+
+    /// 当前手结束。还有第二手就转入第二手；两手都爆则不请庄家。
+    private func finishCurrentHandOrRound(busted: Bool) async {
+        if await advanceToSecondSplitHandIfNeeded() { return }
+        if busted, !splitFirstHand.isEmpty, Hand(cards: splitFirstHand).isBusted {
+            dealerHoleRevealed = true
+            let outcomes: [RoundOutcome] = [.playerLose, .playerLose]
+            splitHandOutcomes = outcomes
+            finishRound(
+                message: splitOutcomeMessage(outcomes),
+                outcome: .playerLose,
+                playerWon: false,
+                isPush: false
+            )
+            isAnimating = false
+            return
+        }
+        if busted, splitFirstHand.isEmpty {
+            finishRound(
+                message: L10n.t("outcome.bustLose"),
+                outcome: .playerLose,
+                playerWon: false,
+                isPush: false
+            )
+            isAnimating = false
+            return
+        }
+        await playDealerTurnAsync()
+    }
+
+    private func advanceToSecondSplitHandIfNeeded() async -> Bool {
+        guard let pending = splitPendingCard else { return false }
+        splitFirstHand = playerCards
+        splitPendingCard = nil
+        var second = [pending]
+        if let card = deck.draw() {
+            publishDeckCounts()
+            second.append(card)
+            feedback.cardDealt()
+        }
+        withAnimation(cardDealAnimation) {
+            playerCards = second
+        }
+        await timing.sleep(nanoseconds: delayAfterHit)
+        phase = .playerTurn
+        isAnimating = false
+        return true
+    }
+
+    private func splitHandResult(cards: [Card], dealer: Hand) -> RoundOutcome {
+        let hand = Hand(cards: cards)
+        if hand.isBusted { return .playerLose }
+        return RoundOutcome.fromFinalPoints(playerBest: hand.bestValue, dealerBest: dealer.bestValue)
+    }
+
+    private func splitOutcomeMessage(_ outcomes: [RoundOutcome]) -> String {
+        guard outcomes.count == 2 else { return L10n.t("outcome.win") }
+        return L10n.format(
+            "outcome.splitFormat",
+            splitHandWord(outcomes[0]),
+            splitHandWord(outcomes[1])
+        )
+    }
+
+    private func splitHandWord(_ outcome: RoundOutcome) -> String {
+        switch outcome {
+        case .playerBlackjack, .playerWin:
+            return L10n.t("outcome.split.win")
+        case .playerLose, .playerSurrender:
+            return L10n.t("outcome.split.lose")
+        case .push:
+            return L10n.t("outcome.split.push")
+        }
+    }
+
+    private func resolveSplitHands() {
+        let dealer = Hand(cards: dealerCards)
+        let outcomes = [
+            splitHandResult(cards: splitFirstHand, dealer: dealer),
+            splitHandResult(cards: playerCards, dealer: dealer)
+        ]
+        splitHandOutcomes = outcomes
+        let combined = ChipBank.combinedSplitOutcome(outcomes[0], outcomes[1])
+        let playerWon: Bool? = {
+            switch combined {
+            case .playerWin, .playerBlackjack: return true
+            case .push: return nil
+            case .playerLose, .playerSurrender: return false
+            }
+        }()
+        finishRound(
+            message: splitOutcomeMessage(outcomes),
+            outcome: combined,
+            playerWon: playerWon,
+            isPush: combined == .push
+        )
+    }
+
     private func resolveOutcome() {
+        if !splitFirstHand.isEmpty {
+            resolveSplitHands()
+            return
+        }
         let p = Hand(cards: playerCards).bestValue
         let d = Hand(cards: dealerCards).bestValue
         let outcome = RoundOutcome.fromFinalPoints(playerBest: p, dealerBest: d)

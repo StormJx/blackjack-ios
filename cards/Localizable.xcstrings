@@ -2177,6 +2177,232 @@
         }
       }
     },
+    "action.split": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "分牌"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split"
+          }
+        }
+      }
+    },
+    "action.a11y.splitHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "把同点数的两张分成两手，每手再押一注"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split the pair into two hands with a second equal bet"
+          }
+        }
+      }
+    },
+    "action.a11y.splitDisabled": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "现在不能分牌"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split is unavailable"
+          }
+        }
+      }
+    },
+    "disabled.splitAllIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "全下后不能分牌" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Can't split after all-in" } }
+      }
+    },
+    "disabled.splitInsufficient": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "余额不够再押一注" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Not enough chips for a second bet" } }
+      }
+    },
+    "disabled.splitUnavailable": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "现在不能分牌" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Split is unavailable" } }
+      }
+    },
+    "disabled.noSurrenderAfterSplit": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "分牌后不能投降" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Can't surrender after a split" } }
+      }
+    },
+    "disabled.noDoubleAceSplit": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "A 分牌后每手只补一张" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Split aces get one card only" } }
+      }
+    },
+    "hint.action.hit": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "建议：要牌" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Suggestion: Hit" } }
+      }
+    },
+    "hint.action.stand": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "建议：停牌" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Suggestion: Stand" } }
+      }
+    },
+    "hint.action.double": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "建议：加倍" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Suggestion: Double" } }
+      }
+    },
+    "hint.action.surrender": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "建议：投降" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Suggestion: Surrender" } }
+      }
+    },
+    "hint.action.split": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "建议：分牌" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Suggestion: Split" } }
+      }
+    },
+    "outcome.splitFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "第一手%@ · 第二手%@" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Hand 1 %@ · Hand 2 %@" } }
+      }
+    },
+    "outcome.split.win": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "胜" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Win" } }
+      }
+    },
+    "outcome.split.lose": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "负" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Loss" } }
+      }
+    },
+    "outcome.split.push": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "平" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Push" } }
+      }
+    },
+    "settings.toggle.strategyHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "行动建议" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Action hint" } }
+      }
+    },
+    "settings.footer.strategyHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "仅娱乐模式。打开后在要牌时给出弱提示，不替你操作。默认关闭。" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Entertainment only. A weak hint on your turn. It never plays for you. Off by default." } }
+      }
+    },
+    "stats.section.daily": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "每日目标" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Daily goals" } }
+      }
+    },
+    "stats.daily.progressFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "娱乐胜 %d/%d · 零爆 %d/%d" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Entertainment wins %d/%d · No bust %d/%d" } }
+      }
+    },
+    "stats.daily.streakFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "连续 %d 天" } },
+        "en": { "stringUnit": { "state": "translated", "value": "%d-day streak" } }
+      }
+    },
+    "stats.daily.badge": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "今日徽章已达成" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Today's badge earned" } }
+      }
+    },
+    "stats.daily.footer": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "娱乐赢 3 局，或零爆完成 5 局，当天记一枚徽章。不给筹码。" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Win 3 Entertainment hands, or finish 5 hands without busting, for a badge. No chips." } }
+      }
+    },
+    "stats.daily.awardNotice": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "每日目标达成" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Daily goal complete" } }
+      }
+    },
+    "table.dealerMeterA11y": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "庄家筹码还剩百分之 %d" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Dealer bank %d percent left" } }
+      }
+    },
+    "table.splitHandFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "第 %d 手 · %@ 点" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Hand %d · %@" } }
+      }
+    },
+    "table.betSplitFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "注 %d+%d" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Bet %d+%d" } }
+      }
+    },
     "action.forceAllIn": {
       "extractionState": "manual",
       "localizations": {
@@ -4342,13 +4568,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "本应用面向练习与娱乐，规则为简化版赌场二十一点，不等同于线下赌场全部选项（如分牌尚未开放）。"
+            "value": "本应用面向练习与娱乐。分牌只限同点数起手两张，不分第二次；A 分牌每手只补一张，分牌后的 21 不是天然黑杰克。全下不能分牌，分牌后不能投降。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "This app is for practice and play. Rules are simplified casino blackjack and do not include every live option (split is not available yet)."
+            "value": "This app is for practice and play. You can split two cards of the same value once. Split aces get one card each, and 21 after a split is not a natural blackjack. All-in cannot split, and you cannot surrender after a split."
           }
         }
       }
@@ -4359,13 +4585,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "比点数接近 21 且不爆牌。庄家点数小于 17 必须要牌，大于等于 17 停牌（软 17 同停）。玩家回合开局两张时可「加倍」（再押等额、只补一张）或「投降」（退回半注；本局全下时不可投降）。庄家明牌为 A 时可买半注「保险」（2:1；全下不可买）；随后庄家查看是否黑杰克，有则直接结算。天然黑杰克赔率 3:2，普通获胜 1:1，平局退注。"
+            "value": "比点数接近 21 且不爆牌。庄家点数小于 17 必须要牌，大于等于 17 停牌（软 17 同停）。玩家回合开局两张时可「加倍」（再押等额、只补一张）或「投降」（退回半注；本局全下时不可投降）。同点数的两张可「分牌」成两手，每手再押一注；不分第二次。A 分牌每手只补一张。分牌后不能投降，21 按普通 1:1，不是天然黑杰克。全下时不能分牌。庄家明牌为 A 时可买半注「保险」（2:1；全下不可买）；随后庄家查看是否黑杰克，有则直接结算。天然黑杰克赔率 3:2，普通获胜 1:1，平局退注。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Get closer to 21 than the dealer without busting. The dealer hits below 17 and stands on 17 or more (soft 17 stands). On your first two cards you may Double (match the bet, one card only) or Surrender (half bet back; not after all-in). If the dealer upcard is an Ace, you may buy half-bet Insurance (2:1; not after all-in); the dealer then checks for blackjack and settles if they have it. Natural blackjack pays 3:2, a regular win pays 1:1, and a push returns the bet."
+            "value": "Get closer to 21 than the dealer without busting. The dealer hits below 17 and stands on 17 or more (soft 17 stands). On your first two cards you may Double (match the bet, one card only) or Surrender (half bet back; not after all-in). Two cards of the same value may Split into two hands with a second equal bet; no re-split. Split aces get one card each. You cannot surrender after a split, and 21 after a split pays 1:1, not a natural blackjack. All-in cannot split. If the dealer upcard is an Ace, you may buy half-bet Insurance (2:1; not after all-in); the dealer then checks for blackjack and settles if they have it. Natural blackjack pays 3:2, a regular win pays 1:1, and a push returns the bet."
           }
         }
       }
