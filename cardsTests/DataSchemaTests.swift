@@ -41,6 +41,7 @@ struct DataSchemaTests {
         #expect(DataSchema.applyMigrationStep(2, defaults: defaults) == false)
         #expect(DataSchema.applyMigrationStep(3, defaults: defaults) == false)
         #expect(DataSchema.applyMigrationStep(4, defaults: defaults) == false)
+        #expect(DataSchema.applyMigrationStep(5, defaults: defaults) == false)
 
         let result = DataSchema.migrateIfNeeded(defaults: defaults)
         #expect(result == .migrated(from: 0, to: DataSchema.currentVersion))

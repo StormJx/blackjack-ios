@@ -52,6 +52,9 @@ final class BlackjackGame: ObservableObject {
     @Published private(set) var splitHandOutcomes: [RoundOutcome] = []
     /// 本局由一对 A 分出：每手只补一张，不能再要或加倍。
     private var splitAces = false
+    /// 娱乐好运：本局玩家要牌若会爆，且下一张不会爆，则悄悄换成下一张。每局限一次。闯关保持关闭。
+    var luckRescueEnabled = false
+    private var luckRescueUsedThisRound = false
     /// 娱乐道具：本局已开启「庄家软 17 要牌」。
     @Published private(set) var dealerHitsSoft17ThisRound = false
     /// 娱乐道具：正在窥视暗牌（约 1 秒）。
@@ -355,6 +358,7 @@ final class BlackjackGame: ObservableObject {
         hitSurvivedFromOver18 = false
         hitSurvivedFromOver19 = false
         hitFrom20To21 = false
+        luckRescueUsedThisRound = false
         resetRoundPropState()
 
         if hadCards {
@@ -465,6 +469,17 @@ final class BlackjackGame: ObservableObject {
         isAnimating = false
     }
 
+    /// 娱乐好运开启时，本局第一次会爆的玩家抽牌可换成下一张安全牌。
+    private func drawCardForPlayer(current: [Card]) -> Card? {
+        guard let drawn = deck.draw() else { return nil }
+        guard luckRescueEnabled, !luckRescueUsedThisRound else { return drawn }
+        let rescued = deck.rescueBustingPlayerCard(drawn, current: current)
+        if rescued.didRescue {
+            luckRescueUsedThisRound = true
+        }
+        return rescued.card
+    }
+
     func hit() async {
         guard phase == .playerTurn, !isAnimating, !splitAces else { return }
         isAnimating = true
@@ -476,7 +491,7 @@ final class BlackjackGame: ObservableObject {
 
         let beforeBest = Hand(cards: playerCards).bestValue
 
-        guard let card = deck.draw() else {
+        guard let card = drawCardForPlayer(current: playerCards) else {
             // 尾牌已尽：不再报错。分牌则转入下一手，否则按现有手牌结算。
             publishDeckCounts()
             await finishCurrentHandOrRound(busted: false)
@@ -559,7 +574,7 @@ final class BlackjackGame: ObservableObject {
 
         let beforeBest = Hand(cards: playerCards).bestValue
 
-        guard let card = deck.draw() else {
+        guard let card = drawCardForPlayer(current: playerCards) else {
             publishDeckCounts()
             await finishCurrentHandOrRound(busted: false)
             return
@@ -632,7 +647,7 @@ final class BlackjackGame: ObservableObject {
         let beforeBest = Hand(cards: Array(playerCards.dropLast())).bestValue
         playerCards.removeLast()
 
-        guard let card = deck.draw() else {
+        guard let card = drawCardForPlayer(current: playerCards) else {
             publishDeckCounts()
             await finishCurrentHandOrRound(busted: false)
             return
@@ -717,6 +732,7 @@ final class BlackjackGame: ObservableObject {
         hitSurvivedFromOver18 = false
         hitSurvivedFromOver19 = false
         hitFrom20To21 = false
+        luckRescueUsedThisRound = false
         resetRoundPropState()
         deck.shuffleAndCut()
         phase = .playerTurn

@@ -16,6 +16,7 @@ struct cardsApp: App {
     @StateObject private var entertainmentProgress: EntertainmentProgress
     @StateObject private var cosmeticsStore: CosmeticsStore
     @StateObject private var dailyGoals: DailyGoalStore
+    @StateObject private var luckDice: LuckDiceStore
 
     init() {
         // A2：须在各 Store 读 UserDefaults 之前完成 schema 迁移。
@@ -33,6 +34,7 @@ struct cardsApp: App {
         _entertainmentProgress = StateObject(wrappedValue: EntertainmentProgress())
         _cosmeticsStore = StateObject(wrappedValue: CosmeticsStore())
         _dailyGoals = StateObject(wrappedValue: DailyGoalStore())
+        _luckDice = StateObject(wrappedValue: LuckDiceStore())
     }
 
     var body: some Scene {
@@ -45,6 +47,7 @@ struct cardsApp: App {
                 .environmentObject(entertainmentProgress)
                 .environmentObject(cosmeticsStore)
                 .environmentObject(dailyGoals)
+                .environmentObject(luckDice)
                 .environment(\.locale, appSettings.languagePreference.locale)
                 .id(appSettings.languagePreference.rawValue)
                 .onAppear {

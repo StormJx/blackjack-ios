@@ -21,8 +21,10 @@ struct ContentView: View {
     @EnvironmentObject private var entertainmentProgress: EntertainmentProgress
     @EnvironmentObject private var cosmeticsStore: CosmeticsStore
     @EnvironmentObject private var dailyGoals: DailyGoalStore
+    @EnvironmentObject private var luckDice: LuckDiceStore
 
     @State private var session: ActiveSession?
+    @State private var showLuckDice = false
     @State private var showSettings = false
     @State private var showStats = false
     @State private var showAchievements = false
@@ -242,6 +244,18 @@ struct ContentView: View {
 
                 Button {
                     GameFeedback.shared.buttonTap()
+                    showLuckDice = true
+                } label: {
+                    Label(luckButtonTitle, systemImage: "dice.fill")
+                        .font(.subheadline.weight(.semibold))
+                        .padding(.horizontal, 8)
+                }
+                .buttonStyle(.bordered)
+                .tint(.white)
+                .accessibilityHint(L10n.t("luck.prompt"))
+
+                Button {
+                    GameFeedback.shared.buttonTap()
                     showHelp = true
                 } label: {
                     Label(L10n.t("welcome.help"), systemImage: "questionmark.circle")
@@ -257,6 +271,16 @@ struct ContentView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .animation(.easeInOut(duration: 0.22), value: welcomeNotice)
+        .sheet(isPresented: $showLuckDice) {
+            LuckDiceSheet(store: luckDice)
+        }
+    }
+
+    private var luckButtonTitle: String {
+        if luckDice.state.roundsRemaining > 0 {
+            return L10n.format("luck.welcome.activeFormat", luckDice.state.roundsRemaining)
+        }
+        return L10n.t("luck.welcome.button")
     }
 
     private func applyWelcomeStoreScreenshotIfNeeded() {
@@ -360,6 +384,7 @@ private struct GameSessionView: View {
     @State private var entertainmentSessionStats = FastSessionStats()
     @EnvironmentObject private var appSettings: AppSettings
     @EnvironmentObject private var dailyGoals: DailyGoalStore
+    @EnvironmentObject private var luckDice: LuckDiceStore
 
     init(
         practiceMode: PracticeMode,
@@ -967,6 +992,7 @@ private struct GameSessionView: View {
             lastConfirmedBet = draftBet
         }
         chipBank.acknowledgeRestoreHint()
+        game.luckRescueEnabled = playStyle == .entertainment && luckDice.state.roundsRemaining > 0
         GameFeedback.shared.betPlaced()
         pulseChipBalance()
         showBetSheet = false
@@ -991,6 +1017,9 @@ private struct GameSessionView: View {
             }
         )
         unlockNotices = result.unlockNotices
+        if playStyle == .entertainment, game.luckRescueEnabled {
+            luckDice.consumeRound()
+        }
         if let outcome = result.recordedOutcome {
             if playStyle == .entertainment {
                 entertainmentSessionStats.record(outcome)
@@ -1206,4 +1235,5 @@ private struct FeltBackgroundView: View {
         .environmentObject(EntertainmentProgress())
         .environmentObject(CosmeticsStore())
         .environmentObject(DailyGoalStore())
+        .environmentObject(LuckDiceStore())
 }

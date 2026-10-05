@@ -124,6 +124,7 @@
 - **UX11：** `TableHUD` 顶栏目标 + 阶段状态文案；`table.waitingResult` 不再用于玩家回合
 - **UX12：** `ChipRules.shouldShowSessionEndReturnHint` / `defaultDraftBet`；`FeltBackgroundView` 欢迎/对局共用
 - **UX13：** `SessionProgress.gapLine` 局末距下一关；`WelcomeChrome.setupLine`；顶栏 `TableHUD.goalLine` 只写关卡名
+- **骰子：** 欢迎页 1–3 颗一键掷点；高点给娱乐接下来 3 局一次免爆换牌。闯关不加这个帮助
 - **隐私：** `PrivacyInfo.xcprivacy` + `PrivacyView` + `docs/privacy.html`；Pages 步骤见 `docs/GITHUB_PAGES.md`；版本展示读 `CFBundleShortVersionString`（2.0）
 - **L5：** `docs/APP_STORE.md`；主屏幕 `CFBundleDisplayName`；截图 `store/screenshots/iphone-69/`
 - 推送前：`./scripts/check-before-push.sh`；勿提交 `VERSION_ROADMAP.txt` / `.env` / 密钥

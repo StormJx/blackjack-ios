@@ -93,6 +93,19 @@ struct Deck: Sendable {
         return cards.removeFirst()
     }
 
+    /// 玩家这张牌会爆，且牌堆下一张不会爆时，换成下一张。
+    /// 会爆的那张留在牌堆最前，发给之后的抽牌。未交换时原样返回。
+    mutating func rescueBustingPlayerCard(_ drawn: Card, current: [Card]) -> (card: Card, didRescue: Bool) {
+        guard Hand(cards: current + [drawn]).isBusted, let next = cards.first else {
+            return (drawn, false)
+        }
+        guard !Hand(cards: current + [next]).isBusted else {
+            return (drawn, false)
+        }
+        cards[0] = drawn
+        return (next, true)
+    }
+
     /// 道具 `reshuffleDealerCard`：将一张已发牌插回剩余牌堆随机位置。
     /// - 回退 `dealtCount`（穿透深度按「净发出」计；随后再 `draw` 则净变化为 0）。
     /// - 不重算切牌点。

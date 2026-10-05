@@ -4528,6 +4528,121 @@
         }
       }
     },
+    "help.body.entertainment3": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "欢迎页可以掷骰子，最多三颗。点数高时，娱乐接下来 3 局会在后台帮一次：要牌即将爆牌时，若下一张不会爆就换成那一张。闯关不受影响。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roll up to three dice on the home screen. A high total gives Entertainment a quiet assist for the next 3 hands: if a hit would bust and the next card would not, that card is used instead. Challenge is unchanged."
+          }
+        }
+      }
+    },
+    "luck.welcome.button": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "骰子" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Dice" } }
+      }
+    },
+    "luck.welcome.activeFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "好运 %d" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Luck %d" } }
+      }
+    },
+    "luck.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "骰子" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Dice" } }
+      }
+    },
+    "luck.prompt": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "一键掷出点数，最多三颗。点数高说明今天运气不错。" } },
+        "en": { "stringUnit": { "state": "translated", "value": "One tap rolls the total, up to three dice. A high total means today's luck is good." } }
+      }
+    },
+    "luck.roll": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "掷出" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Roll" } }
+      }
+    },
+    "luck.waiting": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "掷出看今天的手气" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Roll to see today's luck" } }
+      }
+    },
+    "luck.totalFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "%d 点" } },
+        "en": { "stringUnit": { "state": "translated", "value": "%d" } }
+      }
+    },
+    "luck.lucky": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "今天运气不错" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Luck is good today" } }
+      }
+    },
+    "luck.plain": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "今天一般" } },
+        "en": { "stringUnit": { "state": "translated", "value": "An ordinary roll" } }
+      }
+    },
+    "luck.buffFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "娱乐接下来 %d 局会顺一些" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Entertainment gets a little help for %d hands" } }
+      }
+    },
+    "luck.challengeNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "只加在娱乐模式，闯关保持原样。" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Entertainment only. Challenge stays as it is." } }
+      }
+    },
+    "luck.diceCount": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "骰子颗数" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Number of dice" } }
+      }
+    },
+    "luck.diceCountFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "%d 颗" } },
+        "en": { "stringUnit": { "state": "translated", "value": "%d" } }
+      }
+    },
+    "luck.a11y.faceFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "第 %d 颗 %d 点" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Die %d shows %d" } }
+      }
+    },
     "help.body.meta1": {
       "extractionState": "manual",
       "localizations": {

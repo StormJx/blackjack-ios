@@ -35,6 +35,7 @@ struct HelpView: View {
                 Section {
                     Text(L10n.t("help.body.entertainment1"))
                     Text(L10n.t("help.body.entertainment2"))
+                    Text(L10n.t("help.body.entertainment3"))
                 } header: {
                     Text(L10n.t("help.section.entertainment"))
                 }
