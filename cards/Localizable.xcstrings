@@ -6581,6 +6581,62 @@
         }
       }
     },
+    "settings.section.wallpaper": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "背景" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Background" } }
+      }
+    },
+    "settings.footer.wallpaper": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "欢迎页和对局共用，换上立即生效。以后换图只要替换同名文件。" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Used on the home screen and the table, and it changes right away. Later swaps can replace the file of the same name." } }
+      }
+    },
+    "settings.wallpaper.inUse": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "使用中" } },
+        "en": { "stringUnit": { "state": "translated", "value": "In use" } }
+      }
+    },
+    "wallpaper.classicFelt.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "绿绒" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Green felt" } }
+      }
+    },
+    "wallpaper.nightCasino.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "夜场" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Night floor" } }
+      }
+    },
+    "wallpaper.mahoganySalon.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "木厅" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Wood salon" } }
+      }
+    },
+    "wallpaper.harborDusk.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "港湾" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Harbor" } }
+      }
+    },
+    "wallpaper.lanternRoom.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "灯笼" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Lanterns" } }
+      }
+    },
     "settings.section.cardBack": {
       "extractionState": "manual",
       "localizations": {

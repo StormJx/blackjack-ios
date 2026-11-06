@@ -1192,13 +1192,37 @@ private struct TableBackgroundView: View {
     }
 }
 
-/// 赌场绒布绿：欢迎页与对局外层共用，避免进桌后变成灰底。
+/// 欢迎页与对局外层共用的背景。绿绒是绘制的；其余场景读壁纸资源。
 private struct FeltBackgroundView: View {
+    @EnvironmentObject private var appSettings: AppSettings
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        let isDark = colorScheme == .dark
         ZStack {
+            if let name = appSettings.tableWallpaper.assetName,
+               appSettings.tableWallpaper.imageIsAvailable {
+                Image(name)
+                    .resizable()
+                    .scaledToFill()
+                LinearGradient(
+                    colors: [
+                        Color.black.opacity(0.42),
+                        Color.black.opacity(0.18),
+                        Color.black.opacity(0.50),
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            } else {
+                classicFelt
+            }
+        }
+        .ignoresSafeArea()
+    }
+
+    private var classicFelt: some View {
+        let isDark = colorScheme == .dark
+        return ZStack {
             Color(
                 red: isDark ? 0.08 : 0.12,
                 green: isDark ? 0.28 : 0.42,
@@ -1222,7 +1246,6 @@ private struct FeltBackgroundView: View {
                 endPoint: .bottom
             )
         }
-        .ignoresSafeArea()
     }
 }
 

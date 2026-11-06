@@ -18,6 +18,9 @@ xcuserdata/
 # 可选：若使用 CocoaPods
 # Pods/
 
+# 本地壁纸供图说明（像素、格式；勿推送）
+wallpaper-brief/
+
 # 本地产品路线图 / 后续计划（勿推送到公开仓库）
 VERSION_ROADMAP.txt
 *ROADMAP*.txt

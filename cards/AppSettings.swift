@@ -75,6 +75,11 @@ final class AppSettings: ObservableObject {
         didSet { persist() }
     }
 
+    /// 欢迎页和对局共用的背景。换图立即生效。
+    @Published var tableWallpaper: TableWallpaper {
+        didSet { persist() }
+    }
+
     private let defaults: UserDefaults
 
     private enum Keys {
@@ -91,6 +96,7 @@ final class AppSettings: ObservableObject {
         static let seenChallengeFirstGuide = "appSettings.hasSeenChallengeFirstGuide"
         static let seenEntertainmentFirstGuide = "appSettings.hasSeenEntertainmentFirstGuide"
         static let strategyHint = "appSettings.strategyHintEnabled"
+        static let wallpaper = "appSettings.tableWallpaper"
     }
 
     init(defaults: UserDefaults = .standard) {
@@ -155,6 +161,7 @@ final class AppSettings: ObservableObject {
         hasSeenChallengeFirstGuide = defaults.bool(forKey: Keys.seenChallengeFirstGuide)
         hasSeenEntertainmentFirstGuide = defaults.bool(forKey: Keys.seenEntertainmentFirstGuide)
         strategyHintEnabled = defaults.bool(forKey: Keys.strategyHint)
+        tableWallpaper = TableWallpaper.resolved(defaults.string(forKey: Keys.wallpaper))
 
         GameFeedback.shared.soundEnabled = soundEnabled
         GameFeedback.shared.hapticsEnabled = hapticsEnabled
@@ -191,6 +198,7 @@ final class AppSettings: ObservableObject {
         defaults.set(hasSeenChallengeFirstGuide, forKey: Keys.seenChallengeFirstGuide)
         defaults.set(hasSeenEntertainmentFirstGuide, forKey: Keys.seenEntertainmentFirstGuide)
         defaults.set(strategyHintEnabled, forKey: Keys.strategyHint)
+        defaults.set(tableWallpaper.rawValue, forKey: Keys.wallpaper)
     }
 
     func markFirstSessionGuideSeen(for playStyle: PlayStyle) {

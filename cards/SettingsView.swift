@@ -103,6 +103,16 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    ForEach(TableWallpaper.allCases) { wallpaper in
+                        wallpaperRow(wallpaper)
+                    }
+                } header: {
+                    Text(L10n.t("settings.section.wallpaper"))
+                } footer: {
+                    Text(L10n.t("settings.footer.wallpaper"))
+                }
+
+                Section {
                     ForEach(CardBackStyle.allCases) { style in
                         cardBackRow(style)
                     }
@@ -168,6 +178,30 @@ struct SettingsView: View {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "2.0"
     }
 
+    private func wallpaperRow(_ wallpaper: TableWallpaper) -> some View {
+        let selected = settings.tableWallpaper == wallpaper
+        return Button {
+            GameFeedback.shared.buttonTap()
+            settings.tableWallpaper = wallpaper
+        } label: {
+            HStack(spacing: 12) {
+                WallpaperThumb(wallpaper: wallpaper)
+                Text(wallpaper.title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                Spacer(minLength: 0)
+                if selected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(.green)
+                        .accessibilityLabel(L10n.t("settings.wallpaper.inUse"))
+                }
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("\(wallpaper.title)，\(selected ? L10n.t("settings.wallpaper.inUse") : "")")
+    }
+
     private func cardBackRow(_ style: CardBackStyle) -> some View {
         let owned = cosmetics.owns(style)
         let selected = cosmetics.selectedBack == style
@@ -210,6 +244,28 @@ struct SettingsView: View {
         .accessibilityLabel(
             "\(style.title)，\(owned ? (selected ? L10n.t("settings.cardBack.inUse") : L10n.t("settings.cardBack.unlocked")) : L10n.t("settings.cardBack.locked"))"
         )
+    }
+
+    private struct WallpaperThumb: View {
+        let wallpaper: TableWallpaper
+
+        var body: some View {
+            Group {
+                if let name = wallpaper.assetName, wallpaper.imageIsAvailable {
+                    Image(name)
+                        .resizable()
+                        .scaledToFill()
+                } else {
+                    Color(red: 0.12, green: 0.42, blue: 0.28)
+                }
+            }
+            .frame(width: 36, height: 56)
+            .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    .strokeBorder(Color.primary.opacity(0.15), lineWidth: 1)
+            )
+        }
     }
 
     private func flashSessionLockedHint() {
